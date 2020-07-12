@@ -1,0 +1,12 @@
+# Binaries
+bin/
+quadris
+*.out
+*.exe
+
+# Text Files
+*.txt
+
+# VS Code
+.vscode
+*.code-workspace
