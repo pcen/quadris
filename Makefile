@@ -31,6 +31,10 @@ DEPENDS = ${OBJ:.o=.d}
 
 all: output
 
+${BIN_DIR}/%.o: ${SRC_DIR}/window/%.cc
+	@echo "building $@ from $^..."
+	@${CXX} ${CXXFLAGS} -c $< -o $@
+
 ${BIN_DIR}/%.o: ${SRC_DIR}/%.cc
 	@echo "building $@ from $^..."
 	@${CXX} ${CXXFLAGS} -c $< -o $@
