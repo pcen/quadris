@@ -27,10 +27,3 @@ void Window::set_title(const std::string& title)
 	this->_title = title;
 }
 
-void Window::fullscreen(bool fullscreen)
-{
-	if (fullscreen)
-		this->_window.fullscreen();
-	else
-		this->_window.unfullscreen();
-}

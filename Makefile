@@ -1,9 +1,9 @@
 # Commands
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -g `pkg-config gtkmm-2.4 --cflags`
+CXXFLAGS = -std=c++14 -Wall -g -MMD
+GTKFLAGS = `pkg-config gtkmm-3.0 --cflags --libs`
 RM = rm -f
 MKDIR = mkdir -p
-LDFLAGS = `pkg-config gtkmm-2.4 --libs`
 
 # Source locations
 SRC_DIR = ./src
@@ -32,16 +32,16 @@ DEPENDS = ${OBJ:.o=.d}
 all: output
 
 ${BIN_DIR}/%.o: ${SRC_DIR}/window/%.cc
-	@echo "building $@ from $^..."
-	@${CXX} ${CXXFLAGS} -c $< -o $@
+	@echo "building $@..."
+	@${CXX} ${CXXFLAGS} -c $< -o $@ ${GTKFLAGS}
 
 ${BIN_DIR}/%.o: ${SRC_DIR}/%.cc
-	@echo "building $@ from $^..."
-	@${CXX} ${CXXFLAGS} -c $< -o $@
+	@echo "building $@..."
+	@${CXX} ${CXXFLAGS} -c $< -o $@ ${GTKFLAGS}
 
 output: bin ${OBJ}
 	@echo "linking ${OUTPUT}..."
-	@${CXX} ${OBJ} ${LDFLAGS} -o ${OUTPUT}
+	@${CXX} ${OBJ} ${LDFLAGS} -o ${OUTPUT} ${GTKFLAGS}
 
 -include ${DEPENDS}
 
