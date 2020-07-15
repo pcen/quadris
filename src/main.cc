@@ -4,7 +4,8 @@
 
 int main(int argc, char* argv[])
 {
-	Window Window("Quadris", 640, 480, &argc, &argv);
-	Window.launch();
+	Gtk::Main gtk_main(argc, argv);
+	Window window("Quadris", 640, 480, &gtk_main);
+	window.launch();
 	return 0;
 }

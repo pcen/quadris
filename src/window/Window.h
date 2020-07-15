@@ -8,14 +8,15 @@
 class Window
 {
 public:
-	Window(std::string title, int width, int height, int* argc, char*** argv);
+	Window(std::string title, int width, int height, Gtk::Main* main);
 
 	void launch(void);
 	void set_size(int width, int height);
 
 private:
-	GtkWidget* _window;
 	std::string _title;
+	Gtk::Window _window;
+	Gtk::Main* _gtk_main;
 };
 
 #endif // WINDOW_H
