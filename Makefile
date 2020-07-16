@@ -35,6 +35,10 @@ ${BIN_DIR}/%.o: ${SRC_DIR}/window/%.cc
 	@echo "building $@..."
 	@${CXX} ${CXXFLAGS} -c $< -o $@ ${GTKFLAGS}
 
+${BIN_DIR}/%.o: ${SRC_DIR}/misc/%.cc
+	@echo "building $@..."
+	@${CXX} ${CXXFLAGS} -c $< -o $@ ${GTKFLAGS}
+
 ${BIN_DIR}/%.o: ${SRC_DIR}/%.cc
 	@echo "building $@..."
 	@${CXX} ${CXXFLAGS} -c $< -o $@ ${GTKFLAGS}
