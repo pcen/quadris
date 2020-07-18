@@ -1,18 +1,21 @@
 #ifndef CONSOLEVIEW_H
 #define CONSOLEVIEW_H
 
-#include <iostream>
-
 #include "View.h"
 #include "../generic/Trie.h"
 #include "../game/Game.h"
+
+#include <iostream>
+#include <future>
 
 class ConsoleView : public View
 {
 public:
 	ConsoleView(std::istream& in, Game* game);
-	std::future<void> start(void) override;
+	void start(void) override;
 	void update(void) const override;
+
+	static std::future<void> create(Game* game);
 
 private:
 	std::istream& _in;

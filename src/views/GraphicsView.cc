@@ -15,13 +15,20 @@ void GraphicsView::update(void) const
 		_window->close();
 }
 
-std::future<void> GraphicsView::start(void)
+void GraphicsView::start(void)
 {
-	return std::async(std::launch::async, [&](){
-		_window->start();
-		// if the window is closed while the game is still being
-		// played, unsubscribe from the game
-		_game->unsubscribe(this);
-		return;
+	_window->start();
+	// if the window is closed while the game is still being
+	// played, unsubscribe from the game
+	_game->unsubscribe(this);
+}
+
+std::future<void> GraphicsView::create(Game* game)
+{
+	return std::async(std::launch::async, [game](){
+		std::cerr << "creating graphics view\n";
+		GraphicsView graphics_view("Quadris", game);
+		graphics_view.start();
+		std::cerr << "graphics view thread closed\n";
 	});
 }
