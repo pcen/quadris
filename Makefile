@@ -31,18 +31,27 @@ DEPENDS = ${OBJ:.o=.d}
 
 all: output
 
+# ./views
+${BIN_DIR}/%.o: ${SRC_DIR}/views/%.cc
+	@echo "building $@..."
+	@${CXX} ${CXXFLAGS} -c $< -o $@
+
+# ./window
 ${BIN_DIR}/%.o: ${SRC_DIR}/window/%.cc
 	@echo "building $@..."
 	@${CXX} ${CXXFLAGS} -c $< -o $@
 
+# ./game
 ${BIN_DIR}/%.o: ${SRC_DIR}/game/%.cc
 	@echo "building $@..."
 	@${CXX} ${CXXFLAGS} -c $< -o $@
 
+# ./generic
 ${BIN_DIR}/%.o: ${SRC_DIR}/generic/%.cc
 	@echo "building $@..."
 	@${CXX} ${CXXFLAGS} -c $< -o $@
 
+# ./main.cc
 ${BIN_DIR}/%.o: ${SRC_DIR}/%.cc
 	@echo "building $@..."
 	@${CXX} ${CXXFLAGS} -c $< -o $@
