@@ -13,11 +13,15 @@ Game::~Game()
 
 }
 
-void Game::update(const std::string& command)
+void Game::update(const Command& command)
 {
-	std::cerr << "Game::update: " << command << "\n";
-	if (command == "quit")
+	switch(command.type) {
+	case CMD::QUIT:
 		this->_running = false;
+			break;
+		default:
+			break;
+	}
 
 	this->_notify();
 }

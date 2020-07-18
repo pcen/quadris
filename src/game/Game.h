@@ -4,13 +4,14 @@
 #include <string>
 
 #include "../generic/Subject.h"
+#include "../controller/Command.h"
 
 class Game: public Subject
 {
 public:
 	Game();
 	~Game();
-	void update(const std::string& command);
+	void update(const Command& command);
 	bool is_running(void) const;
 
 private:

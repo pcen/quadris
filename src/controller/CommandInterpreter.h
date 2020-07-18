@@ -14,13 +14,14 @@ public:
 
 	bool empty(void);
 
+	void push(Command command);
 	void push(const std::string& command);
 	void flush_commands(void);
 
 private:
 	std::mutex _lock;
 	Game* _game;
-	std::queue<std::string> _command_queue;
+	std::queue<Command> _command_queue;
 
 };
 

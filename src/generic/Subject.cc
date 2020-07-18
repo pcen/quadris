@@ -1,6 +1,7 @@
 #include "Subject.h"
 
 #include <cassert>
+#include <iostream>
 
 typedef std::lock_guard<std::mutex> thread_lock;
 
@@ -27,7 +28,11 @@ void Subject::unsubscribe(Observer* observer)
 // subscribe or unsubscribe
 void Subject::_notify(void)
 {
+	std::cerr << "locking _notify mutex...\n";
 	thread_lock lk(_lock);
-	for (auto& observer: _observers)
+	std::cerr << "_notify mutex locked...\n";
+	for (auto& observer: _observers) {
 		observer->notify();
+		std::cerr << "notified an observer.\n";
+	}
 }

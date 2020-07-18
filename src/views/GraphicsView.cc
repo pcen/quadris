@@ -10,8 +10,7 @@ GraphicsView::GraphicsView(const std::string& name, Game* game, CommandInterpret
 
 void GraphicsView::notify(void) const
 {
-	std::cerr << "GraphicsView::notify\n";
-	std::cerr << "Thread ID: " << get_thread_id() << "\n";
+	std::cerr << "GraphicsView notified on " << get_thread_id() << "\n";
 	if (!_game->is_running())
 		_window->close();
 }
@@ -22,6 +21,7 @@ void GraphicsView::start(void)
 	// if the window is closed while the game is still being
 	// played, unsubscribe from the game
 	_game->unsubscribe(this);
+	_subscribed = false;
 }
 
 std::future<void> GraphicsView::create(const std::string& name, Game* game, CommandInterpreter* interpreter)
@@ -30,6 +30,6 @@ std::future<void> GraphicsView::create(const std::string& name, Game* game, Comm
 		GraphicsView gv(name, game, interpreter);
 		std::cerr << "graphics view thread: " << gv.get_thread_id() << "\n";
 		gv.start();
-		std::cerr << "graphics view thread closed\n";
+		std::cerr << "graphics view thread returning\n";
 	});
 }

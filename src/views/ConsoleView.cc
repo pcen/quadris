@@ -12,13 +12,13 @@ void ConsoleView::start(void)
 	while (_game->is_running()) {
 		std::cin >> command;
 
-		// Since the game may terminate while waiting for
-		// input, check if the game is still running before
-		// sending the command
+		// Since the game may terminate while waiting for input, check if the
+		// game is still running before  sending the command
 		if (_game != nullptr && _game->is_running()) {
 			_interpreter->push(command);
+
 			// when quitting, kill thread immediately
-			if (command == "quit")
+			if (command == "quit") // TODO: get interpretation from trie/interpreter ?
 				return;
 		}
 	}
@@ -26,9 +26,9 @@ void ConsoleView::start(void)
 
 void ConsoleView::notify(void) const
 {
-	std::cerr << "ConsoleView::notify\n";
-	std::cerr << "Thread ID " << get_thread_id() << "\n";
+	std::cerr << "ConsoleView notified on " << get_thread_id() << "\n";
 	if (!_game->is_running()) {
+		std::cerr << "ConsoleView updated from game that's not running\n";
 		// TODO: somehow kill waiting for in >> command
 	}
 }
@@ -39,6 +39,6 @@ std::future<void> ConsoleView::create(Game* game, CommandInterpreter* interprete
 		ConsoleView cv(game, interpreter);
 		std::cerr << "console view thread: " << cv.get_thread_id() << "\n";
 		cv.start();
-		std::cerr << "console view thread closed\n";
+		std::cerr << "console view thread returning\n";
 	});
 }

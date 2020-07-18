@@ -19,6 +19,7 @@ public:
 protected:
 	Game* _game;
 	CommandInterpreter* _interpreter;
+	bool _subscribed;
 };
 
 #endif // VIEW_H

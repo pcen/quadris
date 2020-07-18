@@ -19,10 +19,23 @@ bool CommandInterpreter::empty(void)
 
 // lock mutex to prevent writing to queue while another thread
 // is adding accessing or modifying the queue
-void CommandInterpreter::push(const std::string& command)
+void CommandInterpreter::push(Command command)
 {
 	thread_lock lk(_lock);
 	_command_queue.push(command);
+}
+
+void CommandInterpreter::push(const std::string& command)
+{
+	thread_lock lk(_lock);
+
+	Command c;
+
+	// TODO: interpret text command using Trie
+	if (command == "quit")
+		c.type = CMD::QUIT;
+
+	_command_queue.push(c);
 }
 
 // lock mutex to prevent the queue from being accessed while
