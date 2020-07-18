@@ -53,10 +53,8 @@ X11Window::~X11Window()
 
 void X11Window::start(void)
 {
-	while (is_open()) {
-		std::cerr << "loop\n";
+	while (is_open())
 		this->_handle_events();
-	}
 }
 
 void X11Window::close(void)
