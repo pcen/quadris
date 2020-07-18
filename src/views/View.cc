@@ -14,7 +14,7 @@ View::~View()
 		_game->unsubscribe(this);
 }
 
-void View::update(void) const
+void View::notify(void) const
 {
 	std::cerr << "View::update\n";
 }

@@ -8,7 +8,7 @@ GraphicsView::GraphicsView(const std::string& name, Game* game)
 	_window = std::make_unique<X11Window>(name);
 }
 
-void GraphicsView::update(void) const
+void GraphicsView::notify(void) const
 {
 	std::cerr << "GraphicsView::update\n";
 	if (!_game->is_running())

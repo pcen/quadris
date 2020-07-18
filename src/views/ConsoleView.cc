@@ -22,7 +22,7 @@ void ConsoleView::start(void)
 	}
 }
 
-void ConsoleView::update(void) const
+void ConsoleView::notify(void) const
 {
 	std::cerr << "ConsoleView::update\n";
 	if (!_game->is_running()) {
@@ -34,6 +34,8 @@ std::future<void> ConsoleView::create(Game* game)
 {
 	return std::async(std::launch::async, [game](){
 		std::cerr << "creating console view\n";
+		std::thread::id tid = std::this_thread::get_id();
+		std::cerr << "Thread ID: " << tid << "\n";
 		ConsoleView cv(std::cin, game);
 		cv.start();
 		std::cerr << "console view thread closed\n";

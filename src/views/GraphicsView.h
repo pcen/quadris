@@ -13,7 +13,7 @@ class GraphicsView : public View
 public:
 	GraphicsView(const std::string& name, Game* game);
 	void start() override;
-	void update(void) const override;
+	void notify(void) const override;
 
 	std::unique_ptr<X11Window> _window;
 

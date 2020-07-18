@@ -9,7 +9,7 @@ public:
 	View(Game* _game);
 	virtual ~View();
 	virtual void start(void) = 0;
-	void update(void) const override;
+	void notify(void) const override;
 
 protected:
 	Game* _game;

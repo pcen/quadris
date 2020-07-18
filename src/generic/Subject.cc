@@ -17,5 +17,5 @@ void Subject::unsubscribe(Observer* observer)
 void Subject::_notify(void)
 {
 	for (auto& observer: _observers)
-		observer->update();
+		observer->notify();
 }
