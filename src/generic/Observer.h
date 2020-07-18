@@ -5,7 +5,7 @@ class Observer
 {
 public:
 	virtual ~Observer() {}
-	void update(void);
+	virtual void update(void) const = 0;
 };
 
 #endif // OBSERVER_H

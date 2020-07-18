@@ -8,6 +8,11 @@ Game::Game()
 
 }
 
+Game::~Game()
+{
+
+}
+
 void Game::update(const std::string& command)
 {
 	std::cerr << "Game::update: " << command << "\n";

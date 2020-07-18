@@ -5,6 +5,12 @@
 
 class GraphicsView : public View
 {
+public:
+	GraphicsView(Game* game);
+	std::future<void> start() override;
+	void update(void) const override;
+
+private:
 
 };
 

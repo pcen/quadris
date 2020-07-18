@@ -18,7 +18,7 @@ ${wildcard ${SRC_DIR}/blocks/*.cc}              \
 ${wildcard ${SRC_DIR}/game/*.cc}                \
 ${wildcard ${SRC_DIR}/graphics/*.cc}            \
 ${wildcard ${SRC_DIR}/levels/*.cc}              \
-${wildcard ${SRC_DIR}/misc/*.cc}                \
+${wildcard ${SRC_DIR}/generic/*.cc}             \
 ${wildcard ${SRC_DIR}/views/*.cc}               \
 ${wildcard ${SRC_DIR}/window/*.cc}              \
 ${wildcard ${SRC_DIR}/*.cc}                     \
@@ -30,11 +30,6 @@ DEPENDS = ${OBJ:.o=.d}
 .PHONY: all bin clean output
 
 all: output
-
-# ./views
-${BIN_DIR}/%.o: ${SRC_DIR}/views/%.cc
-	@echo "building $@..."
-	@${CXX} ${CXXFLAGS} -c $< -o $@
 
 # ./window
 ${BIN_DIR}/%.o: ${SRC_DIR}/window/%.cc
@@ -48,6 +43,11 @@ ${BIN_DIR}/%.o: ${SRC_DIR}/game/%.cc
 
 # ./generic
 ${BIN_DIR}/%.o: ${SRC_DIR}/generic/%.cc
+	@echo "building $@..."
+	@${CXX} ${CXXFLAGS} -c $< -o $@
+
+# ./views
+${BIN_DIR}/%.o: ${SRC_DIR}/views/%.cc
 	@echo "building $@..."
 	@${CXX} ${CXXFLAGS} -c $< -o $@
 

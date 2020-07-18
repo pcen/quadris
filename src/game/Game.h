@@ -3,16 +3,13 @@
 
 #include <string>
 
-#include "Board.h"
+#include "../generic/Subject.h"
 
-#include "../window/X11Window.h"
-class X11Window;
-
-class Game
+class Game: public Subject
 {
-
 public:
 	Game();
+	~Game();
 	void update(const std::string& command);
 	bool is_running(void) const;
 

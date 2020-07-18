@@ -8,7 +8,7 @@
 class Subject
 {
 public:
-	virtual ~Subject() {};
+	virtual ~Subject() {}
 	void subscribe(Observer*);
 	void unsubscribe(Observer*);
 

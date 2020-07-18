@@ -3,12 +3,14 @@
 
 #include "window/X11Window.h"
 #include "views/ConsoleView.h"
+#include "views/GraphicsView.h"
 #include "game/Game.h"
 
 int main(int argc, char* argv[])
 {
 	Game game;
 	ConsoleView cv(std::cin, &game);
+	GraphicsView gv(&game);
 
 	std::string flag1;
 	if (argc > 1)
