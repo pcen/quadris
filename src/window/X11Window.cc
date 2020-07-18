@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <iostream>
 
+#define SIZE_OF_LONG 32
+
 // https://en.wikibooks.org/wiki/X_Window_Programming/Xlib
 // http://mech.math.msu.su/~nap/2/GWindow/xintro.html
 
@@ -39,22 +41,30 @@ X11Window::X11Window(std::string title, int width, int height)
 
 	this->bring_to_front();
 	this->set_title(title);
-	this->set_size(width, height);
 	this->_register_callbacks();
 	_open = true;
 }
 
 X11Window::~X11Window()
 {
-	// if the X11 window hasn not been closed do cleanup
 	if (is_open())
-		_cleanup_resources();
+		this->_cleanup_resources();
 }
 
 void X11Window::start(void)
 {
 	while (is_open()) {
-		_handle_events();
+		std::cerr << "loop\n";
+		this->_handle_events();
+	}
+}
+
+void X11Window::close(void)
+{
+	if (is_open()) {
+		XEvent e = this->_wm_delete_window_event();
+		XSendEvent(_display, _window, 0, 0, &e);
+		XFlush(_display);
 	}
 }
 
@@ -67,21 +77,17 @@ void X11Window::set_size(int width, int height)
 {
 	_width = width;
 	_height = height;
+	unsigned int w = (unsigned int) width;
+	unsigned int h = (unsigned int) height;
+	XMoveResizeWindow(_display, _window, 0, 0, w, h);
+	XFlush(_display);
 }
 
 void X11Window::set_title(const std::string& title)
 {
 	_title = title;
-	XSetStandardProperties(
-		_display,
-		_window,
-		_title.c_str(),
-		_title.c_str(),
-		0,
-		nullptr,
-		0,
-		nullptr
-	);
+	XSetStandardProperties(_display, _window, _title.c_str(),
+	                       _title.c_str(), 0, nullptr, 0, nullptr);
 	XFlush(_display);
 }
 
@@ -102,8 +108,8 @@ void X11Window::_handle_events(void)
 	XNextEvent(_display, &_event);
 	switch (_event.type) {
 		case ClientMessage:
-			// TODO: check if the client message is window closed
-			_cleanup_resources();
+			this->_cleanup_resources();
+			this->_open = false;
 			break;
 		default:
 			break;
@@ -112,8 +118,6 @@ void X11Window::_handle_events(void)
 
 void X11Window::_register_callbacks(void)
 {
-	// handle window closing in event loop to manage
-	// cleanup of X11 resources
 	Atom WM_DELETE_WINDOW = XInternAtom(_display, "WM_DELETE_WINDOW", 1);
 	XSetWMProtocols(_display, _window, &WM_DELETE_WINDOW, 1);
 	XFlush(_display);
@@ -125,7 +129,20 @@ void X11Window::_cleanup_resources(void)
 	XFreeGC(_display, _context);
 	XDestroyWindow(_display, _window);
 	XCloseDisplay(_display);
-	// _open = false prevents double deletion of X11 resources
-	// in the class destructor
+	// prevents double deletion of X11 resources in the class destructor
+	// TODO: should probably have a separate _has_resources boolean
 	_open = false;
+}
+
+// use to close X11 window with an XEvent
+XEvent X11Window::_wm_delete_window_event(void) const
+{
+	XEvent e;
+	e.xclient.type = ClientMessage;
+	e.xclient.window = _window;
+	e.xclient.message_type = XInternAtom(_display, "WM_PROTOCOLS", 1);
+	e.xclient.format = SIZE_OF_LONG;
+	e.xclient.data.l[0] = XInternAtom(_display, "WM_DELETE_WINDOW", 1);
+	e.xclient.data.l[1] = 0;
+	return e;
 }

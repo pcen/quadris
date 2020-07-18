@@ -14,6 +14,8 @@ public:
 
 	void start(void);
 
+	void close(void);
+
 	void set_size(int width, int height);
 	void set_title(const std::string& title);
 	void set_background(unsigned long colour);
@@ -25,6 +27,7 @@ private:
 	void _handle_events(void);
 	void _register_callbacks(void);
 	void _cleanup_resources(void);
+	XEvent _wm_delete_window_event(void) const;
 
 	Display* _display; // the X server
 	int _screen;       // the screen

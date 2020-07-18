@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 {
 	Game game;
 	ConsoleView cv(std::cin, &game);
-	GraphicsView gv(&game);
+	GraphicsView gv("Quadris", &game);
 
 	std::string flag1;
 	if (argc > 1)
@@ -18,12 +18,11 @@ int main(int argc, char* argv[])
 	else
 		flag1 = "\0";
 
+	std::cerr << "starting threads...\n";
 	auto thread1 = cv.start();
-
-	X11Window window("Quadris");
-	// TODO: window should be notified when game is done running,
-	// currently window will remain open even when game quits
-	window.start();
+	std::cerr << "thread1 started\n";
+	auto thread2 = gv.start();
+	std::cerr << "thread2 started\n";
 
 	return 0;
 }
