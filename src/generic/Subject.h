@@ -2,6 +2,7 @@
 #define SUBJECT_H
 
 #include <set>
+#include <mutex>
 
 #include "Observer.h"
 
@@ -16,6 +17,7 @@ protected:
 	void _notify(void);
 
 private:
+	std::mutex _subject_lock;
 	std::set<Observer*> _observers;
 };
 

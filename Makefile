@@ -21,8 +21,10 @@ ${wildcard ${SRC_DIR}/levels/*.cc}              \
 ${wildcard ${SRC_DIR}/generic/*.cc}             \
 ${wildcard ${SRC_DIR}/views/*.cc}               \
 ${wildcard ${SRC_DIR}/window/*.cc}              \
+${wildcard ${SRC_DIR}/controller/*.cc}          \
 ${wildcard ${SRC_DIR}/*.cc}                     \
 }}}
+
 # Compile to bin/*.o
 OBJ = ${addprefix ${BIN_DIR}/, ${OBJ_FILES}}
 DEPENDS = ${OBJ:.o=.d}
@@ -48,6 +50,11 @@ ${BIN_DIR}/%.o: ${SRC_DIR}/generic/%.cc
 
 # ./views
 ${BIN_DIR}/%.o: ${SRC_DIR}/views/%.cc
+	@echo "building $@..."
+	@${CXX} ${CXXFLAGS} -c $< -o $@
+
+# ./controller
+${BIN_DIR}/%.o: ${SRC_DIR}/controller/%.cc
 	@echo "building $@..."
 	@${CXX} ${CXXFLAGS} -c $< -o $@
 

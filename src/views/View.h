@@ -2,13 +2,14 @@
 #define VIEW_H
 
 #include "../game/Game.h"
+#include "../controller/CommandInterpreter.h"
 
 #include <string>
 
 class View: public Observer
 {
 public:
-	View(Game* _game);
+	View(Game* _game, CommandInterpreter* interpreter);
 	virtual ~View();
 	virtual void start(void) = 0;
 	void notify(void) const override;
@@ -17,6 +18,7 @@ public:
 
 protected:
 	Game* _game;
+	CommandInterpreter* _interpreter;
 };
 
 #endif // VIEW_H

@@ -4,8 +4,8 @@
 #include <sstream>
 #include <thread>
 
-View::View(Game* game)
-	: _game{ game }
+View::View(Game* game, CommandInterpreter* interpreter)
+	: _game{ game }, _interpreter{ interpreter }
 {
 	_game->subscribe(this);
 }

@@ -11,11 +11,11 @@
 class ConsoleView : public View
 {
 public:
-	ConsoleView(Game* game);
+	ConsoleView(Game* game, CommandInterpreter* interpreter);
 	void start(void) override;
 	void notify(void) const override;
 
-	static std::future<void> create(Game* game);
+	static std::future<void> create(Game*, CommandInterpreter*);
 };
 
 #endif // CONSOLEVIEW_H

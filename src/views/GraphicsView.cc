@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-GraphicsView::GraphicsView(const std::string& name, Game* game)
-	: View{ game }
+GraphicsView::GraphicsView(const std::string& name, Game* game, CommandInterpreter* interpreter)
+	: View{ game, interpreter }
 {
 	_window = std::make_unique<X11Window>(name);
 }
@@ -24,10 +24,10 @@ void GraphicsView::start(void)
 	_game->unsubscribe(this);
 }
 
-std::future<void> GraphicsView::create(const std::string& name, Game* game)
+std::future<void> GraphicsView::create(const std::string& name, Game* game, CommandInterpreter* interpreter)
 {
-	return std::async(std::launch::async, [name, game](){
-		GraphicsView gv(name, game);
+	return std::async(std::launch::async, [name, game, interpreter](){
+		GraphicsView gv(name, game, interpreter);
 		std::cerr << "graphics view thread: " << gv.get_thread_id() << "\n";
 		gv.start();
 		std::cerr << "graphics view thread closed\n";
