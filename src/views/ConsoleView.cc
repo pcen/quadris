@@ -18,8 +18,11 @@ void ConsoleView::start(void)
 			_interpreter->push(command);
 
 			// when quitting, kill thread immediately
-			if (command == "quit") // TODO: get interpretation from trie/interpreter ?
+			if (command == "quit") {
+				_game->unsubscribe(this);
+				_subscribed = false;
 				return;
+			}
 		}
 	}
 }
