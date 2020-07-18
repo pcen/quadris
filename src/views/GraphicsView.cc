@@ -10,7 +10,8 @@ GraphicsView::GraphicsView(const std::string& name, Game* game)
 
 void GraphicsView::notify(void) const
 {
-	std::cerr << "GraphicsView::update\n";
+	std::cerr << "GraphicsView::notify\n";
+	std::cerr << "Thread ID: " << get_thread_id() << "\n";
 	if (!_game->is_running())
 		_window->close();
 }
@@ -23,12 +24,12 @@ void GraphicsView::start(void)
 	_game->unsubscribe(this);
 }
 
-std::future<void> GraphicsView::create(Game* game)
+std::future<void> GraphicsView::create(const std::string& name, Game* game)
 {
-	return std::async(std::launch::async, [game](){
-		std::cerr << "creating graphics view\n";
-		GraphicsView graphics_view("Quadris", game);
-		graphics_view.start();
+	return std::async(std::launch::async, [name, game](){
+		GraphicsView gv(name, game);
+		std::cerr << "graphics view thread: " << gv.get_thread_id() << "\n";
+		gv.start();
 		std::cerr << "graphics view thread closed\n";
 	});
 }

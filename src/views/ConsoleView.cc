@@ -1,7 +1,7 @@
 #include "ConsoleView.h"
 
-ConsoleView::ConsoleView(std::istream& in, Game* game)
-	: View{ game }, _in{ in }
+ConsoleView::ConsoleView(Game* game)
+	: View{ game }
 {
 
 }
@@ -10,7 +10,7 @@ void ConsoleView::start(void)
 {
 	std::string command;
 	while (_game->is_running()) {
-		_in >> command;
+		std::cin >> command;
 
 		// TODO: route this through controller class
 
@@ -24,7 +24,8 @@ void ConsoleView::start(void)
 
 void ConsoleView::notify(void) const
 {
-	std::cerr << "ConsoleView::update\n";
+	std::cerr << "ConsoleView::notify\n";
+	std::cerr << "Thread ID " << get_thread_id() << "\n";
 	if (!_game->is_running()) {
 		// TODO: somehow kill waiting for in >> command
 	}
@@ -33,10 +34,8 @@ void ConsoleView::notify(void) const
 std::future<void> ConsoleView::create(Game* game)
 {
 	return std::async(std::launch::async, [game](){
-		std::cerr << "creating console view\n";
-		std::thread::id tid = std::this_thread::get_id();
-		std::cerr << "Thread ID: " << tid << "\n";
-		ConsoleView cv(std::cin, game);
+		ConsoleView cv(game);
+		std::cerr << "console view thread: " << cv.get_thread_id() << "\n";
 		cv.start();
 		std::cerr << "console view thread closed\n";
 	});

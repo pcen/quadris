@@ -11,14 +11,11 @@
 class ConsoleView : public View
 {
 public:
-	ConsoleView(std::istream& in, Game* game);
+	ConsoleView(Game* game);
 	void start(void) override;
 	void notify(void) const override;
 
 	static std::future<void> create(Game* game);
-
-private:
-	std::istream& _in;
 };
 
 #endif // CONSOLEVIEW_H

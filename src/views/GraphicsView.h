@@ -15,11 +15,10 @@ public:
 	void start() override;
 	void notify(void) const override;
 
-	std::unique_ptr<X11Window> _window;
-
-	static std::future<void> create(Game* game);
+	static std::future<void> create(const std::string& name, Game* game);
 
 private:
+	std::unique_ptr<X11Window> _window;
 
 };
 
