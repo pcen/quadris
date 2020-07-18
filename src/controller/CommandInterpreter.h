@@ -5,13 +5,14 @@
 #include <string>
 #include <mutex>
 #include "../game/Game.h"
+#include "Command.h"
 
 class CommandInterpreter
 {
 public:
 	CommandInterpreter(Game* game);
 
-	bool empty(void) const;
+	bool empty(void);
 
 	void push(const std::string& command);
 	void flush_commands(void);
