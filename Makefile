@@ -1,9 +1,9 @@
 # Commands
 CXX = g++
-CXXFLAGS = -std=c++14 -Wall -g -MMD
-GTKFLAGS = `pkg-config gtkmm-3.0 --cflags --libs`
+CXXFLAGS = -std=c++17 -Wall -g -MMD
 RM = rm -f
 MKDIR = mkdir -p
+LDFLAGS = -lX11 -L/usr/X11/lib -pthread
 
 # Source locations
 SRC_DIR = ./src
@@ -33,19 +33,23 @@ all: output
 
 ${BIN_DIR}/%.o: ${SRC_DIR}/window/%.cc
 	@echo "building $@..."
-	@${CXX} ${CXXFLAGS} -c $< -o $@ ${GTKFLAGS}
+	@${CXX} ${CXXFLAGS} -c $< -o $@
 
-${BIN_DIR}/%.o: ${SRC_DIR}/misc/%.cc
+${BIN_DIR}/%.o: ${SRC_DIR}/game/%.cc
 	@echo "building $@..."
-	@${CXX} ${CXXFLAGS} -c $< -o $@ ${GTKFLAGS}
+	@${CXX} ${CXXFLAGS} -c $< -o $@
+
+${BIN_DIR}/%.o: ${SRC_DIR}/generic/%.cc
+	@echo "building $@..."
+	@${CXX} ${CXXFLAGS} -c $< -o $@
 
 ${BIN_DIR}/%.o: ${SRC_DIR}/%.cc
 	@echo "building $@..."
-	@${CXX} ${CXXFLAGS} -c $< -o $@ ${GTKFLAGS}
+	@${CXX} ${CXXFLAGS} -c $< -o $@
 
 output: bin ${OBJ}
 	@echo "linking ${OUTPUT}..."
-	@${CXX} ${OBJ} ${LDFLAGS} -o ${OUTPUT} ${GTKFLAGS}
+	@${CXX} ${OBJ} -o ${OUTPUT} ${LDFLAGS}
 
 -include ${DEPENDS}
 

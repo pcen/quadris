@@ -1,30 +1,52 @@
 #include <iostream>
+#include <future>
+#include <thread>
 
-#include "window/Window.h"
-#include "misc/Trie.h"
+#include "window/X11Window.h"
+#include "generic/Trie.h"
+#include "game/Game.h"
 
-// Test Prototypes
-// TODO: move tests to designated location
-void test_trie(void);
+void poll_console(Game* game)
+{
+	std::string cmd;
+	while (game->is_running()) {
+		std::cin >> cmd;
+		game->update(cmd);
+	}
+}
+
+class ConsoleView
+{
+public:
+	Game* _game;
+
+	ConsoleView(Game* game) : _game{ game } {}
+
+	std::future<void> start()
+	{
+		return std::async(std::launch::async, [&](){
+			return poll_console(_game);
+		});
+	}
+};
 
 int main(int argc, char* argv[])
 {
-	// Window window("Quadris", 640, 480, argc, argv);
-	// window.launch();
-	test_trie();
+	Game game;
+	ConsoleView cv(&game);
+
+	std::string flag1;
+	if (argc > 1)
+		flag1 = argv[1];
+	else
+		flag1 = "\0";
+
+	auto thread1 = cv.start();
+
+	X11Window window("Quadris");
+	// TODO: window should be notified when game is done running,
+	// currently window will remain open even when game quits
+	window.start();
+
 	return 0;
-}
-
-
-// Tests
-// TODO: move tests to designated location
-void test_trie(void)
-{
-	Trie t;
-	t.push("yeet");
-	t.print(); std::cout << '\n';
-	t.push("yeetus");
-	t.print(); std::cout << '\n';
-	t.push("reereereereeree");
-	t.print(); std::cout << '\n';
 }
