@@ -3,6 +3,7 @@
 
 #include <queue>
 #include <string>
+#include <mutex>
 #include "../game/Game.h"
 
 class CommandInterpreter
@@ -16,6 +17,7 @@ public:
 	void flush_commands(void);
 
 private:
+	std::mutex _lock;
 	Game* _game;
 	std::queue<std::string> _command_queue;
 

@@ -17,7 +17,7 @@ protected:
 	void _notify(void);
 
 private:
-	std::mutex _subject_lock;
+	std::mutex _lock;
 	std::set<Observer*> _observers;
 };
 
