@@ -1,5 +1,4 @@
 #include <iostream>
-#include <thread>
 
 #include "views/ConsoleView.h"
 #include "views/GraphicsView.h"

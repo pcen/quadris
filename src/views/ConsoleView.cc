@@ -14,9 +14,14 @@ ConsoleView::~ConsoleView()
 		this->_in_thread.join();
 }
 
+// read_in_stream runs in separate thread for the lifetime
+// of a ConsoleView instance. This method may attempt to
+// call methods of CommandInterpreter, and Subject::unsubscribe,
+// so these classes / methods should ensure that data members are
+// thread safe in instances where read_in_stream may call them
 void ConsoleView::read_in_stream(void)
 {
-	std::cerr << "in stream thread start\n";
+	std::cerr << "read_in_stream thread start\n";
 	std::string command;
 	while (_game->is_running()) {
 		_in >> command;
@@ -35,7 +40,7 @@ void ConsoleView::read_in_stream(void)
 			}
 		}
 	}
-	std::cerr << "in stream thread end\n";
+	std::cerr << "read_in_stream thread end\n";
 }
 
 void ConsoleView::poll_input(void)

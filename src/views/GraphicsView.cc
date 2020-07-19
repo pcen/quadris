@@ -30,8 +30,7 @@ void GraphicsView::poll_input(void)
 		this->_shutdown();
 
 		// quit game
-		Command c(CommandType::QUIT);
-		_interpreter->push(c);
+		_interpreter->push(Command(CMD::QUIT));
 	}
 }
 
@@ -40,6 +39,8 @@ void GraphicsView::_shutdown(void)
 	// unsubscribing stops game from notifying view
 	if (this->_game)
 		this->_game->unsubscribe(this);
+	this->_subscribed = false;
+
 	// closing stops view manager letting view respond to input
 	this->_open = false;
 }
