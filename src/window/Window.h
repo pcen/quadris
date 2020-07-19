@@ -14,24 +14,23 @@ class Window: public QMainWindow
 	Q_OBJECT
 
 public:
-	explicit Window(QWidget* parent = 0);
-	virtual ~Window() override {}
+	explicit Window(const std::string& title, QWidget* parent = 0, int width=640, int height=480);
+	~Window();
 
-	void close(void);
-
-	void poll_input(void);
-	void set_size(int width, int height);
-	void set_title(const std::string& title);
-	void set_background(unsigned long colour);
-
-	bool is_open(void) const;
+	void open(void);
+	bool isOpen(void) const;
+	void setTitle(const std::string& title);
+	void setSize(int height, int width);
 
 protected:
-	void closeEvent(QCloseEvent *event);
-	// void contextMenuEvent(QContextMenuEvent* event);
-
+	// override to catch and handle Qt events
+	bool event(QEvent* event) override;
 	bool confirmClose(void);
 
+private:
+	bool _open;
+	int _width, _height;
+	std::string _title;
 };
 
 #endif // WINDOW_H

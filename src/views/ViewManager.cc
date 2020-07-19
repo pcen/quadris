@@ -17,8 +17,11 @@ void ViewManager::pop(View* view)
 		this->_views.erase(view);
 }
 
-void ViewManager::poll_events(void)
+void ViewManager::poll_input(void)
 {
-	for (auto& view: this->_views)
-		view->poll_input();
+	for (auto& view: this->_views) {
+		// only poll for events in open views
+		if (view->isOpen())
+			view->poll_input();
+	}
 }

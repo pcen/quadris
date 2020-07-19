@@ -28,7 +28,8 @@ void ConsoleView::read_in_stream(void)
 
 			// when quitting, kill thread immediately
 			if (command == "quit") {
-				_game->unsubscribe(this);
+				if (this->_game != nullptr) // TODO make shutdown a View method?
+					_game->unsubscribe(this);
 				_subscribed = false;
 				return;
 			}
@@ -40,6 +41,8 @@ void ConsoleView::read_in_stream(void)
 void ConsoleView::poll_input(void)
 {
 	// input stream must be polled from separate thread
+	// TODO: maybe here if game is not running the input stream thread
+	//       can somehow be killed so the user in not requred to type "quit"
 }
 
 void ConsoleView::notify(void) const
@@ -49,4 +52,11 @@ void ConsoleView::notify(void) const
 		std::cerr << "ConsoleView updated from game that's not running\n";
 		// TODO: somehow kill waiting for in >> command
 	}
+}
+
+// A normal ConsoleView tied to the program's execution and thus is
+// open as long as the instance exists
+bool ConsoleView::isOpen(void) const
+{
+	return true;
 }

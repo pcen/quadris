@@ -13,6 +13,7 @@ public:
 	virtual ~View();
 
 	virtual void poll_input(void) = 0;
+	virtual bool isOpen(void) const = 0;
 
 protected:
 	Game* _game;

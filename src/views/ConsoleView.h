@@ -16,6 +16,7 @@ public:
 
 	void poll_input(void) override;
 	void read_in_stream(void);
+	bool isOpen(void) const override;
 
 	void notify(void) const override;
 

@@ -15,7 +15,14 @@ public:
 
 	void notify(void) const override;
 
+	bool isOpen(void) const override;
+
 private:
+
+	void _shutdown(void);
+
+	bool _open;
+	std::string _name;
 	QApplication _app;
 	Window _window;
 };

@@ -1,19 +1,18 @@
 TEMPLATE = app
-
-TARGET = quadris
-
-INCLUDEPATH += .
-
-OBJECTS_DIR = ./bin
-MOC_DIR = ./bin
-
 CONFIG += c++17
+TARGET = quadris
 
 QT += core gui widgets
 
-# Warn deprecated Qt features
-DEFINES += QT_DEPRECATED_WARNINGS
+INCLUDEPATH += .
 
-# Files
+# Source Files
 SOURCES = $$files(*.cc, true)
 HEADERS = $$files(*.h, true)
+
+# Output Files
+OBJECTS_DIR = ./bin
+MOC_DIR = ./bin
+
+# Warn deprecated Qt features
+DEFINES += QT_DEPRECATED_WARNINGS

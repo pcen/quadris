@@ -3,58 +3,50 @@
 #include <stdexcept>
 #include <iostream>
 
-#include <QtGui/QtGui>
-#include <QMessageBox>
-
-Window::Window(QWidget* parent)
-	: QMainWindow(parent)
+Window::Window(const std::string& title, QWidget* parent, int width, int height)
+	: QMainWindow(parent), _open{ false }
 {
-	setWindowTitle("Quadris");
+	this->setTitle(title);
+	this->setSize(width, height);
 }
 
-void Window::closeEvent(QCloseEvent* event)
+Window::~Window()
 {
-	if (this->confirmClose())
-		event->accept();
-	else
-		event->ignore();
+	std::cerr << "~Window()...\n";
 }
 
-bool Window::confirmClose(void)
+bool Window::event(QEvent* event)
 {
-	int res = QMessageBox::warning(this, windowTitle(), "Quit Game?",
-	                               QMessageBox::Yes | QMessageBox::No);
-	if(res == QMessageBox::No)
-		return false;
-	return true;
+	switch (event->type()) {
+		case QEvent::Close:
+			this->_open = false;
+			return true;
+		default:
+			// do not intercept these events
+			return QMainWindow::event(event);
+	}
 }
 
-void Window::poll_input(void)
+void Window::open(void)
 {
-
+	this->setVisible(true);
+	this->_open = true;
 }
 
-void Window::close(void)
+void Window::setTitle(const std::string& title)
 {
-
+	this->_title = title;
+	this->setWindowTitle(title.c_str());
 }
 
-bool Window::is_open(void) const
+void Window::setSize(int width, int height)
 {
-
+	this->_width = width;
+	this->_height = height;
+	this->resize(width, height);
 }
 
-void Window::set_size(int width, int height)
+bool Window::isOpen(void) const
 {
-
-}
-
-void Window::set_title(const std::string& title)
-{
-
-}
-
-void Window::set_background(unsigned long colour)
-{
-
+	return _open;
 }

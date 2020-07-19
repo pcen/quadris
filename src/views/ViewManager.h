@@ -14,7 +14,7 @@ public:
 	void push(View* view);
 	void pop(View* view);
 
-	void poll_events(void);
+	void poll_input(void);
 
 private:
 	std::set<View*> _views;

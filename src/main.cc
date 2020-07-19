@@ -9,24 +9,22 @@
 
 int main(int argc, char* argv[])
 {
-	// Game game;
-	// CommandInterpreter controller(&game);
-	// ViewManager views;
+	Game game;
+	CommandInterpreter cmdint(&game);
+	ViewManager views;
 
-	// ConsoleView cv(&game, &controller, std::cin);
-	// GraphicsView gv("Quardis", &game, &controller, argc, argv);
+	ConsoleView cv(&game, &cmdint, std::cin);
+	// TODO: spoof argc/argv with special GraphicsView members
+	// qt[argc/argv] since argc and argv should not need to
+	// be passed to a GraphicsView constructor
+	GraphicsView gv("Quadris", &game, &cmdint, argc, argv);
 
-	// views.push(&cv);
-	// views.push(&gv);
+	views.push(&cv);
+	views.push(&gv);
 
-	// while (game.is_running()) {
-	// 	controller.send_commands();
-	// 	views.poll_events();
-	// }
-	// return 0;
-
-	QApplication a(argc, argv);
-	QMainWindow w;
-	w.setVisible(true);
-	return a.exec();
+	while (game.is_running()) {
+		cmdint.send_commands();
+		views.poll_input();
+	}
+	return 0;
 }
