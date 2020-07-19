@@ -5,7 +5,7 @@
 #include "../window/Window.h"
 
 #include <string>
-#include <future>
+#include <QApplication>
 
 class GraphicsView : public View
 {
@@ -16,6 +16,7 @@ public:
 	void notify(void) const override;
 
 private:
+	QApplication _app;
 	Window _window;
 };
 

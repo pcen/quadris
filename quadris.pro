@@ -1,9 +1,14 @@
 TEMPLATE = app
+
 TARGET = quadris
+
 INCLUDEPATH += .
+
 OBJECTS_DIR = ./bin
 
-QT += gui widgets core
+CONFIG += c++11
+
+QT += core gui widgets
 
 # Warn deprecated Qt features
 DEFINES += QT_DEPRECATED_WARNINGS

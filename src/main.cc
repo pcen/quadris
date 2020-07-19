@@ -9,19 +9,23 @@
 
 int main(int argc, char* argv[])
 {
-	Game game;
-	CommandInterpreter controller(&game);
-	ViewManager views;
+	// Game game;
+	// CommandInterpreter controller(&game);
+	// ViewManager views;
 
-	ConsoleView cv(&game, &controller, std::cin);
-	GraphicsView gv("Quardis", &game, &controller, argc, argv);
+	// ConsoleView cv(&game, &controller, std::cin);
+	// GraphicsView gv("Quardis", &game, &controller, argc, argv);
 
-	views.push(&cv);
-	views.push(&gv);
+	// views.push(&cv);
+	// views.push(&gv);
 
-	while (game.is_running()) {
-		controller.send_commands();
-		views.poll_events();
-	}
-	return 0;
+	// while (game.is_running()) {
+	// 	controller.send_commands();
+	// 	views.poll_events();
+	// }
+	// return 0;
+
+	QApplication a(argc, argv);
+	Window w;
+	return a.exec();
 }

@@ -3,9 +3,9 @@
 #include <iostream>
 
 GraphicsView::GraphicsView(const std::string& name, Game* game, CommandInterpreter* interpreter, int argc, char** argv)
-	: View{ game, interpreter }, _window{ name, argc, argv }
+	: View{ game, interpreter }, _app(argc, argv), _window{ }
 {
-
+	_window.show();
 }
 
 void GraphicsView::notify(void) const
@@ -19,5 +19,5 @@ void GraphicsView::notify(void) const
 
 void GraphicsView::poll_input(void)
 {
-	_window.poll_input();
+	_app.processEvents();
 }

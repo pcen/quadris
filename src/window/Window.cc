@@ -3,43 +3,49 @@
 #include <stdexcept>
 #include <iostream>
 
-Window::Window(std::string title, int argc, char* argv[], int width, int height)
-	: _app(argc, argv),
-	 _label("<center>Quadris</center>"),
-	_width{ width }, _height{ height }, _open{ false }
+#include <QtGui/QtGui>
+#include <QMessageBox>
+
+Window::Window(QWidget* parent)
+	: QMainWindow(parent)
 {
-	_label.setWindowTitle("My First Qt Program");
-	_label.resize(_width, _height);
-	_label.show();
+	setWindowTitle("Quadris");
 }
 
-Window::~Window()
+void Window::closeEvent(QCloseEvent* event)
 {
+	if (this->confirmClose())
+		event->accept();
+	else
+		event->ignore();
+}
 
+bool Window::confirmClose(void)
+{
+	int res = QMessageBox::warning(this, windowTitle(), "Quit Game?",
+	                               QMessageBox::Yes | QMessageBox::No);
+	if(res == QMessageBox::No)
+		return false;
+	return true;
 }
 
 void Window::poll_input(void)
 {
-	_app.processEvents();
+
 }
 
 void Window::close(void)
 {
-	if (is_open()) {
 
-		_open = false;
-	}
 }
 
 bool Window::is_open(void) const
 {
-	return _open;
+
 }
 
 void Window::set_size(int width, int height)
 {
-	_width = width;
-	_height = height;
 
 }
 

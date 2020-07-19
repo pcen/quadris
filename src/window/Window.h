@@ -4,15 +4,18 @@
 #include <memory>
 #include <string>
 
-#include <QApplication>
+#include <QMainWindow>
 #include <QLabel>
 #include <QWidget>
+#include <QCloseEvent>
 
-class Window
+class Window: public QMainWindow
 {
+	Q_OBJECT
+
 public:
-	Window(std::string title, int argc, char* argv[], int width=640, int height=480);
-	~Window();
+	explicit Window(QWidget* parent = 0);
+	virtual ~Window() override {}
 
 	void close(void);
 
@@ -23,13 +26,11 @@ public:
 
 	bool is_open(void) const;
 
-private:
-	QApplication _app;
-	QLabel _label;
+protected:
+	void closeEvent(QCloseEvent *event);
+	// void contextMenuEvent(QContextMenuEvent* event);
 
-	int _width, _height;
-	std::string _title;
-	bool _open;
+	bool confirmClose(void);
 
 };
 
