@@ -25,5 +25,6 @@ int main(int argc, char* argv[])
 		cmdint.send_commands();
 		views.poll_input();
 	}
+
 	return 0;
 }
