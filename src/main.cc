@@ -11,13 +11,11 @@ int main(int argc, char* argv[])
 	Game game;
 	CommandInterpreter controller(&game);
 
-	std::cerr << "main thread id: " << std::this_thread::get_id() << "\n";
-
-	auto thread1 = ConsoleView::create(&game, &controller);
-	// auto thread2 = GraphicsView::create("Quadris", &game, &controller);
+	ConsoleView cv(&game, &controller, std::cin);
 
 	while (game.is_running()) {
 		if (!controller.empty())
 			controller.flush_commands();
 	}
+	return 0;
 }

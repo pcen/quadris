@@ -11,10 +11,8 @@ class View: public Observer
 public:
 	View(Game* _game, CommandInterpreter* interpreter);
 	virtual ~View();
-	virtual void start(void) = 0;
-	void notify(void) const override;
 
-	std::string get_thread_id(void) const;
+	virtual void poll_input(void) = 0;
 
 protected:
 	Game* _game;

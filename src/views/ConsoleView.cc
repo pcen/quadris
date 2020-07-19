@@ -1,16 +1,25 @@
 #include "ConsoleView.h"
 
-ConsoleView::ConsoleView(Game* game, CommandInterpreter* interpreter)
-	: View{ game, interpreter }
+ConsoleView::ConsoleView(Game* game, CommandInterpreter* interpreter, std::istream& in)
+	: View{ game, interpreter }, _in{ in }
 {
-
+	// spin thread to read _in stream
+	this->_in_thread = std::thread(&ConsoleView::read_in_stream, this);
 }
 
-void ConsoleView::start(void)
+ConsoleView::~ConsoleView()
 {
+	// join the _in_thread before application exits
+	if (this->_in_thread.joinable())
+		this->_in_thread.join();
+}
+
+void ConsoleView::read_in_stream(void)
+{
+	std::cerr << "in stream thread start\n";
 	std::string command;
 	while (_game->is_running()) {
-		std::cin >> command;
+		_in >> command;
 
 		// Since the game may terminate while waiting for input, check if the
 		// game is still running before  sending the command
@@ -25,23 +34,19 @@ void ConsoleView::start(void)
 			}
 		}
 	}
+	std::cerr << "in stream thread end\n";
+}
+
+void ConsoleView::poll_input(void)
+{
+	// input stream must be polled from separate thread
 }
 
 void ConsoleView::notify(void) const
 {
-	std::cerr << "ConsoleView notified on " << get_thread_id() << "\n";
+	std::cerr << "ConsoleView::notify\n";
 	if (!_game->is_running()) {
 		std::cerr << "ConsoleView updated from game that's not running\n";
 		// TODO: somehow kill waiting for in >> command
 	}
-}
-
-std::future<void> ConsoleView::create(Game* game, CommandInterpreter* interpreter)
-{
-	return std::async(std::launch::async, [game, interpreter](){
-		ConsoleView cv(game, interpreter);
-		std::cerr << "console view thread: " << cv.get_thread_id() << "\n";
-		cv.start();
-		std::cerr << "console view thread returning\n";
-	});
 }

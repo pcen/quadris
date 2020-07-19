@@ -2,37 +2,27 @@
 
 #include <iostream>
 
-GraphicsView::GraphicsView(const std::string& name, Game* game, CommandInterpreter* interpreter)
-	: View{ game, interpreter }
+GraphicsView::GraphicsView(const std::string& name, Game* game, CommandInterpreter* interpreter, int argc, char** argv)
+	: View{ game, interpreter }, _window{ name, argc, argv }
 {
-	// _window = std::make_unique<X11Window>(name);
+
 }
 
 void GraphicsView::notify(void) const
 {
-	std::cerr << "GraphicsView notified on " << get_thread_id() << "\n";
+	std::cerr << "GraphicsView::notify\n";
 	if (!_game->is_running()) {
 		// _window->close();
 		return;
 	}
 }
 
-void GraphicsView::start(void)
+void GraphicsView::poll_input(void)
 {
-	// _window->start();
-
-	// if the window is closed while the game is still being
-	// played, unsubscribe from the game
-	_game->unsubscribe(this);
-	_subscribed = false;
+	std::cerr << "GraphicsView::poll_event\n";
 }
 
-std::future<void> GraphicsView::create(const std::string& name, Game* game, CommandInterpreter* interpreter)
+void GraphicsView::start(void)
 {
-	return std::async(std::launch::async, [name, game, interpreter](){
-		GraphicsView gv(name, game, interpreter);
-		std::cerr << "graphics view thread: " << gv.get_thread_id() << "\n";
-		gv.start();
-		std::cerr << "graphics view thread returning\n";
-	});
+	_window.start();
 }
