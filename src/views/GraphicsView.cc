@@ -5,19 +5,22 @@
 GraphicsView::GraphicsView(const std::string& name, Game* game, CommandInterpreter* interpreter)
 	: View{ game, interpreter }
 {
-	_window = std::make_unique<X11Window>(name);
+	// _window = std::make_unique<X11Window>(name);
 }
 
 void GraphicsView::notify(void) const
 {
 	std::cerr << "GraphicsView notified on " << get_thread_id() << "\n";
-	if (!_game->is_running())
-		_window->close();
+	if (!_game->is_running()) {
+		// _window->close();
+		return;
+	}
 }
 
 void GraphicsView::start(void)
 {
-	_window->start();
+	// _window->start();
+
 	// if the window is closed while the game is still being
 	// played, unsubscribe from the game
 	_game->unsubscribe(this);

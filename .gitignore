@@ -7,6 +7,9 @@ quadris
 # Text Files
 *.txt
 
+# Qmake
+.qmake.*
+
 # VS Code
 .vscode
 *.code-workspace

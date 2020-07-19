@@ -2,7 +2,7 @@
 #define GRAPHICSVIEW_H
 
 #include "View.h"
-#include "../window/X11Window.h"
+// #include "../window/X11Window.h"
 
 #include <string>
 #include <memory>
@@ -18,7 +18,7 @@ public:
 	static std::future<void> create(const std::string&, Game*, CommandInterpreter*);
 
 private:
-	std::unique_ptr<X11Window> _window;
+	// std::unique_ptr<X11Window> _window;
 
 };
 
