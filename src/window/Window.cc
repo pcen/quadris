@@ -3,27 +3,6 @@
 #include <stdexcept>
 #include <iostream>
 
-#include <QThread>
-
-// class Producer : public QThread
-// {
-// public:
-// 	Producer(QObject *parent = NULL) : QThread(parent)
-// 	{
-
-// 	}
-
-// 	void run() override
-// 	{
-// 	while (true) {
-// 		std::cerr << "qt thread run\n";
-// 	}
-
-// 	}
-
-// };
-
-
 Window::Window(std::string title, int argc, char* argv[], int width, int height)
 	: _app(argc, argv),
 	 _label("<center>Quadris</center>"),
@@ -36,22 +15,19 @@ Window::Window(std::string title, int argc, char* argv[], int width, int height)
 
 Window::~Window()
 {
-	if (is_open())
-		this->_cleanup_resources();
+
 }
 
-void Window::start(void)
+void Window::poll_input(void)
 {
-	// Producer prod;
-	// prod.start();
-	// prod.wait();
-	std::cerr << "done\n";
+	_app.processEvents();
 }
 
 void Window::close(void)
 {
 	if (is_open()) {
 
+		_open = false;
 	}
 }
 
@@ -75,24 +51,4 @@ void Window::set_title(const std::string& title)
 void Window::set_background(unsigned long colour)
 {
 
-}
-
-void Window::bring_to_front(void)
-{
-
-}
-
-void Window::_handle_events(void)
-{
-
-}
-
-void Window::_register_callbacks(void)
-{
-
-}
-
-void Window::_cleanup_resources(void)
-{
-	_open = false;
 }

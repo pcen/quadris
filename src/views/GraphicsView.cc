@@ -19,10 +19,5 @@ void GraphicsView::notify(void) const
 
 void GraphicsView::poll_input(void)
 {
-	std::cerr << "GraphicsView::poll_event\n";
-}
-
-void GraphicsView::start(void)
-{
-	_window.start();
+	_window.poll_input();
 }
