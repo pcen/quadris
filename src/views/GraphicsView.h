@@ -2,24 +2,29 @@
 #define GRAPHICSVIEW_H
 
 #include "View.h"
-#include "../window/X11Window.h"
+#include "../window/Window.h"
 
 #include <string>
-#include <memory>
-#include <future>
+#include <QApplication>
 
 class GraphicsView : public View
 {
 public:
-	GraphicsView(const std::string& name, Game* game, CommandInterpreter* interpreter);
-	void start() override;
+	GraphicsView(const std::string& name, Game* game, CommandInterpreter* interpreter, int argc, char** argv);
+	void poll_input(void) override;
+
 	void notify(void) const override;
 
-	static std::future<void> create(const std::string&, Game*, CommandInterpreter*);
+	bool isOpen(void) const override;
 
 private:
-	std::unique_ptr<X11Window> _window;
 
+	void _shutdown(void);
+
+	bool _open;
+	std::string _name;
+	QApplication _app;
+	Window _window;
 };
 
 #endif // GRAPHICSVIEW_H

@@ -2,34 +2,50 @@
 
 #include <iostream>
 
-GraphicsView::GraphicsView(const std::string& name, Game* game, CommandInterpreter* interpreter)
-	: View{ game, interpreter }
+#include "../controller/Command.h"
+
+GraphicsView::GraphicsView(const std::string& name, Game* game, CommandInterpreter* interpreter, int argc, char** argv)
+	: View{ game, interpreter }, _open{ false }, _name{ name },
+	_app(argc, argv), _window{ name }
 {
-	_window = std::make_unique<X11Window>(name);
+	_window.open();
+	this->_open = true;
 }
 
 void GraphicsView::notify(void) const
 {
-	std::cerr << "GraphicsView notified on " << get_thread_id() << "\n";
-	if (!_game->is_running())
-		_window->close();
+	std::cerr << "GraphicsView::notify\n";
+	if (this->_game != nullptr || !this->_game->is_running()) {
+		// TODO: GraphicsView should shut down here, but notify is const
+		// this->_shutdown();
+	}
 }
 
-void GraphicsView::start(void)
+void GraphicsView::poll_input(void)
 {
-	_window->start();
-	// if the window is closed while the game is still being
-	// played, unsubscribe from the game
-	_game->unsubscribe(this);
-	_subscribed = false;
+	_app.processEvents();
+
+	// user closed graphics view
+	if (!_window.isOpen()) {
+		this->_shutdown();
+
+		// quit game
+		_interpreter->push(Command(CMD::QUIT));
+	}
 }
 
-std::future<void> GraphicsView::create(const std::string& name, Game* game, CommandInterpreter* interpreter)
+void GraphicsView::_shutdown(void)
 {
-	return std::async(std::launch::async, [name, game, interpreter](){
-		GraphicsView gv(name, game, interpreter);
-		std::cerr << "graphics view thread: " << gv.get_thread_id() << "\n";
-		gv.start();
-		std::cerr << "graphics view thread returning\n";
-	});
+	// unsubscribing stops game from notifying view
+	if (this->_game)
+		this->_game->unsubscribe(this);
+	this->_subscribed = false;
+
+	// closing stops view manager letting view respond to input
+	this->_open = false;
+}
+
+bool GraphicsView::isOpen(void) const
+{
+	return _open;
 }

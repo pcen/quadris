@@ -12,11 +12,9 @@ class CommandInterpreter
 public:
 	CommandInterpreter(Game* game);
 
-	bool empty(void);
-
 	void push(Command command);
 	void push(const std::string& command);
-	void flush_commands(void);
+	void send_commands(void);
 
 private:
 	std::mutex _lock;

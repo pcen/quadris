@@ -16,16 +16,3 @@ View::~View()
 	if (_game != nullptr && _subscribed)
 		_game->unsubscribe(this);
 }
-
-void View::notify(void) const
-{
-	std::cerr << "!!! View::notify\n";
-}
-
-std::string View::get_thread_id(void) const
-{
-	std::stringstream ss;
-	ss << std::this_thread::get_id();
-	std::string thread_id = ss.str();
-	return thread_id;
-}

@@ -6,16 +6,23 @@
 #include "../game/Game.h"
 
 #include <iostream>
-#include <future>
+#include <thread>
 
 class ConsoleView : public View
 {
 public:
-	ConsoleView(Game* game, CommandInterpreter* interpreter);
-	void start(void) override;
+	ConsoleView(Game* game, CommandInterpreter* interpreter, std::istream& in);
+	~ConsoleView();
+
+	void poll_input(void) override;
+	void read_in_stream(void);
+	bool isOpen(void) const override;
+
 	void notify(void) const override;
 
-	static std::future<void> create(Game*, CommandInterpreter*);
+public:
+	std::istream& _in;
+	std::thread _in_thread;
 };
 
 #endif // CONSOLEVIEW_H
