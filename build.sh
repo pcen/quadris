@@ -1,0 +1,2 @@
+qmake quadris.pro;
+make;
