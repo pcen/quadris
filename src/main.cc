@@ -26,6 +26,7 @@ int main(int argc, char* argv[])
 	// return 0;
 
 	QApplication a(argc, argv);
-	Window w;
+	QMainWindow w;
+	w.setVisible(true);
 	return a.exec();
 }
