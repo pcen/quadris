@@ -1,5 +1,5 @@
-#ifndef COMMANDINTERPRETER_H
-#define COMMANDINTERPRETER_H
+#ifndef CONTROLLER_H
+#define CONTROLLER_H
 
 #include <queue>
 #include <string>
@@ -7,10 +7,10 @@
 #include "../game/Game.h"
 #include "Command.h"
 
-class CommandInterpreter
+class Controller
 {
 public:
-	CommandInterpreter(Game* game);
+	Controller(Game& game);
 
 	void push(Command command);
 	void push(const std::string& command);
@@ -18,9 +18,9 @@ public:
 
 private:
 	std::mutex _lock;
-	Game* _game;
+	Game& _game;
 	std::queue<Command> _command_queue;
 
 };
 
-#endif // COMMANDINTERPRETER_H
+#endif // CONTROLLER_H

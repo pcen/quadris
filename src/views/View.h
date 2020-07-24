@@ -2,22 +2,22 @@
 #define VIEW_H
 
 #include "../game/Game.h"
-#include "../controller/CommandInterpreter.h"
+#include "../controller/Controller.h"
 
 #include <string>
 
 class View: public Observer
 {
 public:
-	View(Game* _game, CommandInterpreter* interpreter);
+	View(Game* _game, Controller* controller);
 	virtual ~View();
 
-	virtual void poll_input(void) = 0;
+	virtual void pollInput(void) = 0;
 	virtual bool isOpen(void) const = 0;
 
 protected:
 	Game* _game;
-	CommandInterpreter* _interpreter;
+	Controller* _controller;
 	bool _subscribed;
 };
 

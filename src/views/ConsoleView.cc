@@ -1,10 +1,10 @@
 #include "ConsoleView.h"
 
-ConsoleView::ConsoleView(Game* game, CommandInterpreter* interpreter, std::istream& in)
-	: View{ game, interpreter }, _in{ in }
+ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in)
+	: View{ game, controller }, _in{ in }
 {
 	// spin thread to read _in stream
-	this->_in_thread = std::thread(&ConsoleView::read_in_stream, this);
+	this->_in_thread = std::thread(&ConsoleView::readInStream, this);
 }
 
 ConsoleView::~ConsoleView()
@@ -16,10 +16,10 @@ ConsoleView::~ConsoleView()
 
 // read_in_stream runs in separate thread for the lifetime
 // of a ConsoleView instance. This method may attempt to
-// call methods of CommandInterpreter, and Subject::unsubscribe,
+// call methods of Controller, and Subject::unsubscribe,
 // so these classes / methods should ensure that data members are
 // thread safe in instances where read_in_stream may call them
-void ConsoleView::read_in_stream(void)
+void ConsoleView::readInStream(void)
 {
 	std::cerr << "read_in_stream thread start\n";
 	std::string command;
@@ -29,13 +29,13 @@ void ConsoleView::read_in_stream(void)
 		// Since the game may terminate while waiting for input, check if the
 		// game is still running before  sending the command
 		if (_game != nullptr && _game->is_running()) {
-			_interpreter->push(command);
+			this->_controller->push(command);
 
 			// when quitting, kill thread immediately
 			if (command == "quit") {
 				if (this->_game != nullptr) // TODO make shutdown a View method?
-					_game->unsubscribe(this);
-				_subscribed = false;
+					this->_game->unsubscribe(this);
+				this->_subscribed = false;
 				return;
 			}
 		}
@@ -43,7 +43,7 @@ void ConsoleView::read_in_stream(void)
 	std::cerr << "read_in_stream thread end\n";
 }
 
-void ConsoleView::poll_input(void)
+void ConsoleView::pollInput(void)
 {
 	// input stream must be polled from separate thread
 	// TODO: maybe here if game is not running the input stream thread
@@ -53,7 +53,7 @@ void ConsoleView::poll_input(void)
 void ConsoleView::notify(void) const
 {
 	std::cerr << "ConsoleView::notify\n";
-	if (!_game->is_running()) {
+	if (!this->_game->is_running()) {
 		std::cerr << "ConsoleView updated from game that's not running\n";
 		// TODO: somehow kill waiting for in >> command
 	}

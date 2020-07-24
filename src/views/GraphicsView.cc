@@ -4,8 +4,8 @@
 
 #include "../controller/Command.h"
 
-GraphicsView::GraphicsView(const std::string& name, Game* game, CommandInterpreter* interpreter, int argc, char** argv)
-	: View{ game, interpreter }, _open{ false }, _name{ name },
+GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* controller, int argc, char** argv)
+	: View{ game, controller }, _open{ false }, _name{ name },
 	_app(argc, argv), _window{ name }
 {
 	_window.open();
@@ -21,16 +21,16 @@ void GraphicsView::notify(void) const
 	}
 }
 
-void GraphicsView::poll_input(void)
+void GraphicsView::pollInput(void)
 {
-	_app.processEvents();
+	this->_app.processEvents();
 
 	// user closed graphics view
-	if (!_window.isOpen()) {
+	if (!this->_window.isOpen()) {
 		this->_shutdown();
 
 		// quit game
-		_interpreter->push(Command(CMD::QUIT));
+		this->_controller->push(Command(CMD::QUIT));
 	}
 }
 
@@ -47,5 +47,5 @@ void GraphicsView::_shutdown(void)
 
 bool GraphicsView::isOpen(void) const
 {
-	return _open;
+	return this->_open;
 }

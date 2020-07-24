@@ -4,15 +4,15 @@
 #include <sstream>
 #include <thread>
 
-View::View(Game* game, CommandInterpreter* interpreter)
-	: _game{ game }, _interpreter{ interpreter }
+View::View(Game* game, Controller* controller)
+	: _game{ game }, _controller{ controller }
 {
-	_game->subscribe(this);
-	_subscribed = true;
+	this->_game->subscribe(this);
+	this->_subscribed = true;
 }
 
 View::~View()
 {
-	if (_game != nullptr && _subscribed)
-		_game->unsubscribe(this);
+	if (this->_game != nullptr && _subscribed)
+		this->_game->unsubscribe(this);
 }

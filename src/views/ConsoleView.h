@@ -11,11 +11,11 @@
 class ConsoleView : public View
 {
 public:
-	ConsoleView(Game* game, CommandInterpreter* interpreter, std::istream& in);
+	ConsoleView(Game* game, Controller* controller, std::istream& in);
 	~ConsoleView();
 
-	void poll_input(void) override;
-	void read_in_stream(void);
+	void pollInput(void) override;
+	void readInStream(void);
 	bool isOpen(void) const override;
 
 	void notify(void) const override;
