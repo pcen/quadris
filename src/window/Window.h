@@ -1,7 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "../graphics/Sprite2D.h"
+#include "../game/Board.h"
 
 #include <memory>
 #include <string>
@@ -36,6 +36,7 @@ private:
 	int _width, _height;
 	std::string _title;
 	Sprite2D _card;
+	Board _board;
 };
 
 #endif // WINDOW_H

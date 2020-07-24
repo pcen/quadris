@@ -4,7 +4,8 @@ TARGET = quadris
 
 QT += core gui widgets
 
-INCLUDEPATH += .
+INCLUDEPATH += ./
+INCLUDEPATH += ./src/
 
 # Source Files
 SOURCES = $$files(*.cc, true)

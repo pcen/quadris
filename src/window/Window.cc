@@ -11,6 +11,14 @@ Window::Window(const std::string& title, QWidget* parent, int width, int height)
 	this->setTitle(title);
 	this->setSize(width, height);
 	this->_card.loadAsset("./assets/card.png");
+	this->_board._board.push_back({});
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			this->_board._board.back().push_back(this->_card);
+		}
+		this->_board._board.push_back({});
+	}
+	std::cerr << "done\n";
 }
 
 Window::~Window() {}
@@ -25,9 +33,10 @@ void Window::paintEvent(QPaintEvent* event)
 {
 	QPainter painter(this);
 	for (int i = 0; i < 10; i++) {
-		int x = (this->_width / 15) * i;
-		int y = (this->_height / 15) * i;
-		painter.drawPixmap(x, y, this->_card.getData());
+		for (int j = 0; j < 10; j++) {
+			QPixmap pm = this->_board._board.at(i).at(j).getData();
+			painter.drawPixmap(j*20, i*20, pm);
+		}
 	}
 }
 
