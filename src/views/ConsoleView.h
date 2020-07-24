@@ -20,7 +20,9 @@ public:
 
 	void notify(void) const override;
 
-public:
+private:
+	void _clearConsole(void);
+
 	std::istream& _in;
 	std::thread _in_thread;
 };

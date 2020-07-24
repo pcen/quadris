@@ -1,5 +1,7 @@
 #include "ConsoleView.h"
 
+#include <stdlib.h>
+
 ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in)
 	: View{ game, controller }, _in{ in }
 {
@@ -38,9 +40,32 @@ void ConsoleView::readInStream(void)
 				this->_subscribed = false;
 				return;
 			}
+			if (command == "clear") {
+				this->_clearConsole();
+			}
+
 		}
 	}
 	std::cerr << "read_in_stream thread end\n";
+}
+
+void ConsoleView::_clearConsole(void)
+{
+	if (&this->_in != &std::cin) {
+		std::cerr << "ERROR: clearing this console is not supported\n";
+		return;
+	}
+	if (system(nullptr) == 0) {
+		std::cerr << "ERROR: system not available\n";
+		return;
+	}
+	if (system("clear") == 0) {
+		return;
+	}
+	if (system("cls") == 0) {
+		return;
+	}
+	std::cerr << "ERROR: failed to clear console\n";
 }
 
 void ConsoleView::pollInput(void)
