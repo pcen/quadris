@@ -2,8 +2,15 @@
 
 #include <stdlib.h>
 
-ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in)
-	: View{ game, controller }, _in{ in }
+// generated with: http://patorjk.com/software/taag/#p=display&f=Small&t=Quadris
+static const char* quadrisTitle =
+"   ___               _     _    \n"
+"  / _ \\ _  _ __ _ __| |_ _(_)___\n"
+" | (_) | || / _` / _` | '_| (_-<\n"
+"  \\__\\_\\\\_,_\\__,_\\__,_|_| |_/__/\n";
+
+ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in, std::ostream& out)
+	: View{ game, controller }, _in{ in }, _out{ out }
 {
 	// spin thread to read _in stream
 	this->_in_thread = std::thread(&ConsoleView::readInStream, this);
@@ -43,6 +50,9 @@ void ConsoleView::readInStream(void)
 			if (command == "clear") {
 				this->_clearConsole();
 			}
+			if (command == "title") {
+				this->_writeTitle();
+			}
 
 		}
 	}
@@ -51,7 +61,7 @@ void ConsoleView::readInStream(void)
 
 void ConsoleView::_clearConsole(void)
 {
-	if (&this->_in != &std::cin) {
+	if (&this->_out != &std::cout) {
 		std::cerr << "ERROR: clearing this console is not supported\n";
 		return;
 	}
@@ -66,6 +76,11 @@ void ConsoleView::_clearConsole(void)
 		return;
 	}
 	std::cerr << "ERROR: failed to clear console\n";
+}
+
+void ConsoleView::_writeTitle(void)
+{
+	this->_out << quadrisTitle;
 }
 
 void ConsoleView::pollInput(void)

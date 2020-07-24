@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
 	Controller ctrl(game);
 	ViewManager views;
 
-	ConsoleView cv(&game, &ctrl, std::cin);
+	ConsoleView cv(&game, &ctrl, std::cin, std::cout);
 	// TODO: spoof argc/argv with special GraphicsView members
 	// qt[argc/argv] since argc and argv should not need to
 	// be passed to a GraphicsView constructor

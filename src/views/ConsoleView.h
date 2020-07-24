@@ -11,7 +11,7 @@
 class ConsoleView : public View
 {
 public:
-	ConsoleView(Game* game, Controller* controller, std::istream& in);
+	ConsoleView(Game* game, Controller* controller, std::istream& in, std::ostream& out);
 	~ConsoleView();
 
 	void pollInput(void) override;
@@ -22,8 +22,10 @@ public:
 
 private:
 	void _clearConsole(void);
+	void _writeTitle(void);
 
 	std::istream& _in;
+	std::ostream& _out;
 	std::thread _in_thread;
 };
 
