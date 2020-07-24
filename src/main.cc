@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 	views.push(&cv);
 	views.push(&gv);
 
-	while (game.is_running()) {
+	while (game.isRunning()) {
 		ctrl.send_commands();
 		views.pollInput();
 	}

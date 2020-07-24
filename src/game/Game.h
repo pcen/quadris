@@ -12,7 +12,7 @@ public:
 	Game();
 	~Game();
 	void update(const Command& command);
-	bool is_running(void) const;
+	bool isRunning(void) const;
 
 private:
 	bool _running;

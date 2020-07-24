@@ -26,7 +26,7 @@ void Game::update(const Command& command)
 	this->_notify();
 }
 
-bool Game::is_running(void) const
+bool Game::isRunning(void) const
 {
 	return this->_running;
 }

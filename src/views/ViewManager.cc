@@ -21,7 +21,7 @@ void ViewManager::pollInput(void)
 {
 	for (auto& view: this->_views) {
 		// only poll for events in open views
-		if (view->isOpen())
+		if (view != nullptr && view->isOpen())
 			view->pollInput();
 	}
 }

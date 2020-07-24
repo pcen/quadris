@@ -23,12 +23,12 @@ void ConsoleView::readInStream(void)
 {
 	std::cerr << "read_in_stream thread start\n";
 	std::string command;
-	while (_game->is_running()) {
+	while (this->_game->isRunning()) {
 		_in >> command;
 
 		// Since the game may terminate while waiting for input, check if the
 		// game is still running before  sending the command
-		if (_game != nullptr && _game->is_running()) {
+		if (this->_game != nullptr && this->_game->isRunning()) {
 			this->_controller->push(command);
 
 			// when quitting, kill thread immediately
@@ -53,7 +53,7 @@ void ConsoleView::pollInput(void)
 void ConsoleView::notify(void) const
 {
 	std::cerr << "ConsoleView::notify\n";
-	if (!this->_game->is_running()) {
+	if (!this->_game->isRunning()) {
 		std::cerr << "ConsoleView updated from game that's not running\n";
 		// TODO: somehow kill waiting for in >> command
 	}
