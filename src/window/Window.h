@@ -1,13 +1,13 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include "../graphics/Sprite2D.h"
+
 #include <memory>
 #include <string>
 
 #include <QMainWindow>
-#include <QLabel>
 #include <QWidget>
-#include <QCloseEvent>
 
 class Window: public QMainWindow
 {
@@ -22,15 +22,20 @@ public:
 	void setTitle(const std::string& title);
 	void setSize(int height, int width);
 
+	void render(void);
+
 protected:
 	// override to catch and handle Qt events
 	bool event(QEvent* event) override;
 	bool confirmClose(void);
 
+	void paintEvent(QPaintEvent*) override;
+
 private:
 	bool _open;
 	int _width, _height;
 	std::string _title;
+	Sprite2D _card;
 };
 
 #endif // WINDOW_H

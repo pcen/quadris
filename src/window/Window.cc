@@ -2,24 +2,47 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <QEvent>
+#include <QPainter>
 
 Window::Window(const std::string& title, QWidget* parent, int width, int height)
 	: QMainWindow(parent), _open{ false }
 {
 	this->setTitle(title);
 	this->setSize(width, height);
+	this->_card.loadAsset("./assets/card.png");
 }
 
-Window::~Window()
+Window::~Window() {}
+
+void Window::render(void)
 {
-	std::cerr << "~Window()...\n";
+	// trigger paintEvent by updating widget
+	// QWidget::update();
 }
 
+void Window::paintEvent(QPaintEvent* event)
+{
+	QPainter painter(this);
+	for (int i = 0; i < 10; i++) {
+		int x = (this->_width / 15) * i;
+		int y = (this->_height / 15) * i;
+		std::cerr << "x: " << x << ", y: " << y << "\n";
+		painter.drawPixmap(x, y, this->_card.getData());
+	}
+}
+
+// TODO: move into separate callbacks
 bool Window::event(QEvent* event)
 {
 	switch (event->type()) {
 		case QEvent::Close:
 			this->_open = false;
+			return true;
+		case QEvent::Resize:
+			// store window size in API agnostic implementation
+			this->_width = this->width();
+			this->_height = this->height();
 			return true;
 		default:
 			// do not intercept these events

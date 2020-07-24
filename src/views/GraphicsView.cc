@@ -8,7 +8,7 @@ GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* cont
 	: View{ game, controller }, _open{ false }, _name{ name },
 	_app(argc, argv), _window{ name }
 {
-	_window.open();
+	this->_window.open();
 	this->_open = true;
 }
 
@@ -32,6 +32,8 @@ void GraphicsView::pollInput(void)
 		// quit game
 		this->_controller->push(Command(CMD::QUIT));
 	}
+
+	this->_window.render();
 }
 
 void GraphicsView::_shutdown(void)
