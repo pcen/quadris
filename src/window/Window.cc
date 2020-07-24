@@ -27,7 +27,6 @@ void Window::paintEvent(QPaintEvent* event)
 	for (int i = 0; i < 10; i++) {
 		int x = (this->_width / 15) * i;
 		int y = (this->_height / 15) * i;
-		std::cerr << "x: " << x << ", y: " << y << "\n";
 		painter.drawPixmap(x, y, this->_card.getData());
 	}
 }
