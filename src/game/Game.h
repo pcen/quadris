@@ -5,10 +5,11 @@
 #include <memory>
 
 #include "../generic/Subject.h"
-#include "../blocks/Board.h"
+#include "Board.h"
 #include "../controller/Command.h"
-#include "Level.h"
-#include "StandardLevels.h"
+#include "../levels/Level.h"
+#include "../levels/StandardLevels.h"
+
 
 class Game: public Subject
 {
