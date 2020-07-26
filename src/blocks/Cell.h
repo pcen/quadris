@@ -2,9 +2,10 @@
 #define CELL_H
 
 #include "../graphics/Sprite2D.h"
-#include "Block.h"
 
 #include <string>
+
+class Block;
 
 struct Coord
 {
