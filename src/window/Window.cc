@@ -25,12 +25,26 @@ void Window::render(void)
 void Window::paintEvent(QPaintEvent* event)
 {
 	QPainter painter(this);
-	for (auto i = _board.begin(); i != _board.end(); ++i) {
+	this->_draw_board(painter);
+}
+
+void Window::_draw_board(QPainter& painter)
+{
+	float cell_size = this->_board.get_cell_size();
+	for (auto i = this->_board.begin(); i != this->_board.end(); ++i) {
 		std::shared_ptr<Cell> currCell = *i;
 		if (currCell != nullptr)
 		{
+			std::cerr << currCell->get_x() << ", " << currCell->get_y() << "\n";
+
+			float x = currCell->get_x() * cell_size;
+			float y = currCell->get_y() * cell_size;
+
+			QRectF target = QRectF(x, y, cell_size, cell_size);
 			QPixmap pm = currCell->getSprite().getData();
-			painter.drawPixmap(currCell->get_x()*20, currCell->get_y()*20, pm);
+			QRectF source = pm.rect();
+
+			painter.drawPixmap(target, pm, source);
 		}
 	}
 }

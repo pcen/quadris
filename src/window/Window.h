@@ -29,7 +29,9 @@ protected:
 	bool event(QEvent* event) override;
 	bool confirmClose(void);
 
+	// draw methods
 	void paintEvent(QPaintEvent*) override;
+	void _draw_board(QPainter& painter);
 
 private:
 	bool _open;

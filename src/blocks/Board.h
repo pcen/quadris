@@ -14,11 +14,14 @@ class Board
 {
 	friend class Window;
 public:
-	Board();
-	Board(std::string);
+	Board(float cell_size = 30.0f);
+	Board(std::string, float cell_size = 30.0f);
 
-	// std::vector<std::vector<Sprite2D>> _board;
+	float get_cell_size(void) const;
+
 private:
+
+	float _cell_size;
 
 	std::vector<std::vector<std::shared_ptr<Cell>>> _board;
 	std::vector<std::shared_ptr<Block>> _blocks;
