@@ -7,7 +7,12 @@ class Cell
 {
 public:
 	Cell();
-	Sprite2D getSprite(void);
+	Cell(Sprite2D png) {
+		_sprite = png;
+	};
+	Sprite2D getSprite(void) {
+		return _sprite;
+	};
 private:
 	Sprite2D _sprite;
 };
