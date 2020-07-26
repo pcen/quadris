@@ -14,7 +14,6 @@ GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* cont
 
 void GraphicsView::notify(void) const
 {
-	std::cerr << "GraphicsView::notify\n";
 	if (this->_game != nullptr || !this->_game->isRunning()) {
 		// TODO: GraphicsView should shut down here, but notify is const
 		// this->_shutdown();

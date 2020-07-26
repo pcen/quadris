@@ -72,7 +72,6 @@ std::vector<Command> ConsoleView::_processCommand(const std::string& s) const
 // thread safe in instances where read_in_stream may call them
 void ConsoleView::readInStream(void)
 {
-	std::cerr << "read_in_stream thread start\n";
 	std::string command;
 	while (this->_game->isRunning()) {
 		_in >> command;
@@ -98,7 +97,6 @@ void ConsoleView::readInStream(void)
 
 		}
 	}
-	std::cerr << "read_in_stream thread end\n";
 }
 
 void ConsoleView::_clearConsole(void)
@@ -134,7 +132,6 @@ void ConsoleView::pollInput(void)
 
 void ConsoleView::notify(void) const
 {
-	std::cerr << "ConsoleView::notify\n";
 	if (!this->_game->isRunning()) {
 		std::cerr << "ConsoleView updated from game that's not running\n";
 		// TODO: somehow kill waiting for in >> command
