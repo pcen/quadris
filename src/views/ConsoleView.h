@@ -2,7 +2,6 @@
 #define CONSOLEVIEW_H
 
 #include "View.h"
-#include "../generic/Trie.h"
 #include "../game/Game.h"
 
 #include <iostream>
