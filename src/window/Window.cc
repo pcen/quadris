@@ -10,8 +10,7 @@ Window::Window(const std::string& title, QWidget* parent, int width, int height)
 {
 	this->setTitle(title);
 	this->setSize(width, height);
-	this->_card.loadAsset("./assets/a.png");
-	this->_board = Board(_card);
+	this->_board = Board("./assets/a.png");
 	std::cerr << "done\n";
 }
 
@@ -26,20 +25,12 @@ void Window::render(void)
 void Window::paintEvent(QPaintEvent* event)
 {
 	QPainter painter(this);
-	int y = 0;
-	int x = 0;
 	for (auto i = _board.begin(); i != _board.end(); ++i) {
 		std::shared_ptr<Cell> currCell = *i;
 		if (currCell != nullptr)
 		{
 			QPixmap pm = currCell->getSprite().getData();
-			painter.drawPixmap(x*20, y*20, pm);
-		}
-		++x;
-		if (x == 11)
-		{
-			++y;
-			x = 0;
+			painter.drawPixmap(currCell->get_x()*20, currCell->get_y()*20, pm);
 		}
 	}
 }

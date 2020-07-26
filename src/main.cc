@@ -4,7 +4,7 @@
 #include "views/GraphicsView.h"
 #include "views/ViewManager.h"
 #include "game/Game.h"
-#include "controller/Controller.h"
+#include "game/Controller.h"
 
 int main(int argc, char* argv[])
 {

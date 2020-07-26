@@ -3,7 +3,7 @@
 
 #include "BoardIterator.h"
 #include "Cell.h"
-#include "../blocks/Block.h"
+#include "Block.h"
 #include "../graphics/Sprite2D.h"
 
 #include <vector>
@@ -15,7 +15,7 @@ class Board
 	friend class Window;
 public:
 	Board();
-	Board(Sprite2D);
+	Board(std::string);
 
 	// std::vector<std::vector<Sprite2D>> _board;
 private:

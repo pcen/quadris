@@ -12,12 +12,12 @@ Board::Board()
 }
 
 
-Board::Board(Sprite2D png)
+Board::Board(string png)
 {
 	for (int j = 0; j < 11; ++j) {
 		vector<shared_ptr<Cell>> images;
 		for(int i = 0; i < 18; ++i){
-			shared_ptr<Cell> newCell = make_shared<Cell>(png);
+			shared_ptr<Cell> newCell = make_shared<Cell>(j,i,nullptr,png,false);
 			images.push_back(newCell);
 		}
 		_board.push_back(images);

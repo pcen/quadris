@@ -1,7 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "../game/Board.h"
+#include "../blocks/Board.h"
 
 #include <memory>
 #include <string>
