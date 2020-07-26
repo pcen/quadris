@@ -8,14 +8,16 @@
 
 #include <vector>
 
+float constexpr default_cell_size = 25.0f;
+
 class Window;
 
 class Board
 {
 	friend class Window;
 public:
-	Board(float cell_size = 30.0f);
-	Board(std::string, float cell_size = 30.0f);
+	Board(float cell_size = default_cell_size);
+	Board(std::string, float cell_size = default_cell_size);
 
 	float get_cell_size(void) const;
 
