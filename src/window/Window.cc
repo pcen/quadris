@@ -11,7 +11,6 @@ Window::Window(const std::string& title, QWidget* parent, int width, int height)
 	this->setTitle(title);
 	this->setSize(width, height);
 	this->_board = Board("./assets/a.png");
-	std::cerr << "done\n";
 }
 
 Window::~Window() {}
@@ -24,8 +23,10 @@ void Window::render(void)
 
 void Window::paintEvent(QPaintEvent* event)
 {
-	QPainter painter(this);
-	this->_draw_board(painter);
+	if (event != nullptr) {
+		QPainter painter(this);
+		this->_draw_board(painter);
+	}
 }
 
 void Window::_draw_board(QPainter& painter)
@@ -33,10 +34,7 @@ void Window::_draw_board(QPainter& painter)
 	float cell_size = this->_board.get_cell_size();
 	for (auto i = this->_board.begin(); i != this->_board.end(); ++i) {
 		std::shared_ptr<Cell> currCell = *i;
-		if (currCell != nullptr)
-		{
-			std::cerr << currCell->get_x() << ", " << currCell->get_y() << "\n";
-
+		if (currCell != nullptr) {
 			float x = currCell->get_x() * cell_size;
 			float y = currCell->get_y() * cell_size;
 
