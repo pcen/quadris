@@ -3,7 +3,7 @@
 using namespace std;
 
 
-Cell* BoardIterator::operator*()
+shared_ptr<Cell> BoardIterator::operator*()
 {
 	return this->_cells[_x][_y];
 }

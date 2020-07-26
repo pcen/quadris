@@ -29,7 +29,7 @@ void Window::paintEvent(QPaintEvent* event)
 	int y = 0;
 	int x = 0;
 	for (auto i = _board.begin(); i != _board.end(); ++i) {
-		Cell* currCell = *i;
+		std::shared_ptr<Cell> currCell = *i;
 		if (currCell != nullptr)
 		{
 			QPixmap pm = currCell->getSprite().getData();

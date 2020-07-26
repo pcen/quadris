@@ -2,12 +2,9 @@
 
 using namespace std;
 
+
 Board::Board()
 {
-	vector< Cell* > nulled(18, nullptr);
-	vector<vector< Cell* >> vec(11, nulled);
-	_board = vec;
-
 	vector<int> zero(11, 0);
 	_topOfColumns = zero;
 
@@ -18,9 +15,9 @@ Board::Board()
 Board::Board(Sprite2D png)
 {
 	for (int j = 0; j < 11; ++j) {
-		vector< Cell* > images;
+		vector<shared_ptr<Cell>> images;
 		for(int i = 0; i < 18; ++i){
-			Cell* newCell = new Cell(png);
+			shared_ptr<Cell> newCell = make_shared<Cell>(png);
 			images.push_back(newCell);
 		}
 		_board.push_back(images);

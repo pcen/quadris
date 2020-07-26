@@ -20,9 +20,9 @@ public:
 	// std::vector<std::vector<Sprite2D>> _board;
 private:
 
-	std::vector<std::vector< Cell* >> _board;
-	std::vector< Block* > _blocks;
-	Block* _currentBlock;
+	std::vector<std::vector<std::shared_ptr<Cell>>> _board;
+	std::vector<std::shared_ptr<Block>> _blocks;
+	std::shared_ptr<Block> _currentBlock;
 	std::vector<int> _topOfColumns;
 	int _numBlockSinceClear;
 
