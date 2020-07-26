@@ -17,9 +17,9 @@ Board::Board()
 
 Board::Board(Sprite2D png)
 {
-	for (int j; j < 11; ++j) {
+	for (int j = 0; j < 11; ++j) {
 		vector< Cell* > images;
-		for(int i; i < 18; ++i){
+		for(int i = 0; i < 18; ++i){
 			Cell* newCell = new Cell(png);
 			images.push_back(newCell);
 		}
@@ -36,5 +36,5 @@ BoardIterator Board::begin()
 
 BoardIterator Board::end()
 {
-	return BoardIterator(this->_board[0].size(), this->_board.size(), this->_board[0].size(), this->_board.size(), this->_board);
+	return BoardIterator(this->_board.size(), this->_board[0].size(), this->_board.size(), this->_board[0].size(), this->_board);
 }
