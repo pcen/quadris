@@ -2,21 +2,30 @@
 
 #include <stdlib.h>
 #include <fstream>
+#include <sstream>
 
 // generated with: http://patorjk.com/software/taag/#p=display&f=Small&t=Quadris
+// modifications to source material:
+//    - added escaped characters to escape '\'
+//    - added '\n' characters
 static const char* quadrisTitle =
 "   ___               _     _    \n"
 "  / _ \\ _  _ __ _ __| |_ _(_)___\n"
 " | (_) | || / _` / _` | '_| (_-<\n"
-"  \\__\\_\\\\_,_\\__,_\\__,_|_| |_/__/\n";
+"  \\__\\_\\\\_,_\\__,_\\__,_|_| |_/__/\n\n";
 
 ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in, std::ostream& out)
 	: View{ game, controller }, _in{ in }, _out{ out }
 {
 	// spin thread to read _in stream
 	this->_in_thread = std::thread(&ConsoleView::readInStream, this);
+
+	// construct trie
 	this->_trie = std::make_shared<Trie>();
 	this->_buildTrie();
+
+	_board = Board("./assets/a.png");
+	_clearConsole();
 }
 
 ConsoleView::~ConsoleView()
@@ -83,9 +92,30 @@ void ConsoleView::readInStream(void)
 
 			// when quitting, kill thread immediately
 			if (command == "quit") {
-				if (this->_game != nullptr) // TODO make shutdown a View method?
+				if (this->_game != nullptr) {
+					// TODO make shutdown a View method?
+
+					// Here, this view closes itself in a separate thread, and
+					// its base class may still exist when game begins notifying
+					// observers it has recieved a "quit" command. To ensure
+					// that game does not try to call notify on the virtual View
+					// base class from which ConsoleView is described, unsubscribe
+					// here. Unsubscribing ensures one of the following outcomes:
+					// 1 - If game begins notifying observers before this line of
+					//     code is reached, game's mutex will be locked (since
+					//     Subject::_notify is a threadsafe method), so this line
+					//     hangs until game calls notify on this class. This hang
+					//     ensures that the ConsoleView instance still exists when
+					//     game calls notify on this object
+					// 2 - If this line executes before game begins notifying
+					//     observers, game will hang upon calling _notify until
+					//     this ConsoleView has finished unsubscribing, since
+					//     unsubscribe is also a threadsafe method and will lock
+					//     game's mutex, ensuring that game will not attempt to
+					//     notify this console view while this has begun destructing
 					this->_game->unsubscribe(this);
-				this->_subscribed = false;
+					this->_subscribed = false;
+				}
 				return;
 			}
 			if (command == "clear") {
@@ -94,9 +124,18 @@ void ConsoleView::readInStream(void)
 			if (command == "title") {
 				this->_writeTitle();
 			}
-
+			if (command == "render") {
+				this->_displayGame();
+			}
 		}
 	}
+}
+
+void ConsoleView::_displayGame(void)
+{
+	this->_clearConsole();
+	this->_writeTitle();
+	this->_drawBoard();
 }
 
 void ConsoleView::_clearConsole(void)
@@ -109,10 +148,7 @@ void ConsoleView::_clearConsole(void)
 		std::cerr << "ERROR: system not available\n";
 		return;
 	}
-	if (system("clear") == 0) {
-		return;
-	}
-	if (system("cls") == 0) {
+	if (system("clear") == 0 || system("cls") == 0) {
 		return;
 	}
 	std::cerr << "ERROR: failed to clear console\n";
@@ -121,6 +157,57 @@ void ConsoleView::_clearConsole(void)
 void ConsoleView::_writeTitle(void)
 {
 	this->_out << quadrisTitle;
+}
+
+void ConsoleView::_drawBoard(void)
+{
+	int row = 1;
+	std::string row_string = "   1      ";
+	for (auto i = this->_board.begin(); i != this->_board.end(); ++i) {
+		std::shared_ptr<Cell> c = *i;
+
+		if (c->get_y() + 1 > row) {
+			row = c->get_y() + 1;
+
+			// add text to the right of the quadris board (if applicable)
+			this->_addInfo(row - 1, row_string);
+			this->_out << row_string << "\n";
+
+			row_string.clear();
+			row_string.append("   " + std::to_string(row)); // add row number
+			row_string.append(std::string(6 - row / 10, ' ')); // pad to board
+		}
+
+		row_string.append(std::string(1, c->getToken())); // add cell's token
+		row_string.append(" "); // add space between cells
+	}
+	this->_out << row_string << "\n";
+}
+
+void ConsoleView::_addInfo(int row, std::string& line)
+{
+	// left hand side of info text box
+	if (1 <= row && row <= 3)
+		line.append("   || ");
+
+	switch (row) {
+	case 1:
+		line.append("level:      69");
+		break;
+	case 2:
+		line.append("score:      420");
+		break;
+	case 3:
+		line.append("high score: 42069");
+		break;
+	default:
+		return;
+	}
+	// right hand side of info text box
+	// if (1 <= row && row <= 3) {
+	// 	line.append(std::string(56 - line.length(), ' '));
+	// }
+
 }
 
 void ConsoleView::pollInput(void)

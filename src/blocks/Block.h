@@ -6,14 +6,15 @@
 #include <vector>
 #include <memory>
 
-enum class BlockType{
+enum class BlockType : char {
 	I = 'I',
 	J = 'J',
 	L = 'L',
 	O = 'O',
 	S = 'S',
 	Z = 'Z',
-	T = 'T'
+	T = 'T',
+	EMPTY = '.'
 };
 
 class Block

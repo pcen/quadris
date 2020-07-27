@@ -2,7 +2,6 @@
 #define BOARD_H
 
 #include "BoardIterator.h"
-#include "Cell.h"
 #include "Block.h"
 #include "../graphics/Sprite2D.h"
 
@@ -11,10 +10,13 @@
 float constexpr default_cell_size = 25.0f;
 
 class Window;
+class ConsoleView;
 
 class Board
 {
 	friend class Window;
+	friend class ConsoleView;
+
 public:
 	Board(float cell_size = default_cell_size);
 	Board(std::string, float cell_size = default_cell_size);

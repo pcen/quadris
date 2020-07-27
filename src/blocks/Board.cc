@@ -23,7 +23,7 @@ Board::Board(string png, float cell_size)
 	for (int j = 0; j < 11; ++j) {
 		vector<shared_ptr<Cell>> images;
 		for(int i = 0; i < 18; ++i){
-			shared_ptr<Cell> newCell = make_shared<Cell>(j,i,nullptr,png,false);
+			shared_ptr<Cell> newCell = make_shared<Cell>(j, i, nullptr, png, false, (char)BlockType::EMPTY);
 			images.push_back(newCell);
 		}
 		this->_board.push_back(images);
