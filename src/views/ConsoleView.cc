@@ -187,26 +187,37 @@ void ConsoleView::_drawBoard(void)
 void ConsoleView::_addInfo(int row, std::string& line)
 {
 	// left hand side of info text box
-	if (1 <= row && row <= 3)
-		line.append("   || ");
+	if (2 <= row && row <= 4)
+		line.append("    ║ ");
 
 	switch (row) {
-	case 1:
-		line.append("level:      69");
-		break;
 	case 2:
-		line.append("score:      420");
+		line.append("level: 69");
 		break;
 	case 3:
+		line.append("score: 420");
+		break;
+	case 4:
 		line.append("high score: 42069");
+		break;
+	case 1:
+		line.append("    ╔");
+		line.append("════════════════════");
+		line.append("╗");
+		break;
+	case 5:
+		line.append("    ╚");
+		line.append("════════════════════");
+		line.append("╝");
 		break;
 	default:
 		return;
 	}
 	// right hand side of info text box
-	// if (1 <= row && row <= 3) {
-	// 	line.append(std::string(56 - line.length(), ' '));
-	// }
+	if (2 <= row && row <= 4) {
+		line.append(std::string(59 - line.length(), ' '));
+		line.append("║");
+	}
 
 }
 
@@ -219,10 +230,7 @@ void ConsoleView::pollInput(void)
 
 void ConsoleView::notify(void) const
 {
-	if (!this->_game->isRunning()) {
-		std::cerr << "ConsoleView updated from game that's not running\n";
-		// TODO: somehow kill waiting for in >> command
-	}
+
 }
 
 // A normal ConsoleView tied to the program's execution and thus is

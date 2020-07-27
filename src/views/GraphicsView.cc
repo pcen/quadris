@@ -25,12 +25,8 @@ void GraphicsView::pollInput(void)
 	this->_app.processEvents();
 
 	// user closed graphics view
-	if (!this->_window.isOpen()) {
+	if (!this->_window.isOpen())
 		this->_shutdown();
-
-		// quit game
-		this->_controller->push(Command(CMD::QUIT));
-	}
 
 	this->_window.render();
 }
