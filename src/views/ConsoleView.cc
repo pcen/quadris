@@ -188,7 +188,7 @@ void ConsoleView::_addInfo(int row, std::string& line)
 {
 	// left hand side of info text box
 	if (2 <= row && row <= 4)
-		line.append("    ║ ");
+		line.append("    │ ");
 
 	switch (row) {
 	case 2:
@@ -201,14 +201,14 @@ void ConsoleView::_addInfo(int row, std::string& line)
 		line.append("high score: 42069");
 		break;
 	case 1:
-		line.append("    ╔");
-		line.append("════════════════════");
-		line.append("╗");
+		line.append("    ┌");
+		line.append("────────────────────");
+		line.append("┐");
 		break;
 	case 5:
-		line.append("    ╚");
-		line.append("════════════════════");
-		line.append("╝");
+		line.append("    └");
+		line.append("────────────────────");
+		line.append("┘");
 		break;
 	default:
 		return;
@@ -216,7 +216,7 @@ void ConsoleView::_addInfo(int row, std::string& line)
 	// right hand side of info text box
 	if (2 <= row && row <= 4) {
 		line.append(std::string(59 - line.length(), ' '));
-		line.append("║");
+		line.append("│");
 	}
 
 }
