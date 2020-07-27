@@ -4,7 +4,7 @@
 #include "views/GraphicsView.h"
 #include "views/ViewManager.h"
 #include "game/Game.h"
-#include "game/Controller.h"
+#include "controller/Controller.h"
 
 #include <unordered_set>
 #include <string>

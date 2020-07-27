@@ -6,7 +6,7 @@
 
 #include "../generic/Subject.h"
 #include "../blocks/Board.h"
-#include "Command.h"
+#include "../controller/Command.h"
 #include "Level.h"
 #include "StandardLevels.h"
 

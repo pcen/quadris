@@ -3,8 +3,8 @@
 using namespace std;
 
 
-Board::Board(float cell_size)
-	: _cell_size{ cell_size }
+Board::Board()
+	: _cell_size{ default_cell_size }
 {
 	vector<int> zero(11, 0);
 	this->_topOfColumns = zero;

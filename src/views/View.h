@@ -2,7 +2,7 @@
 #define VIEW_H
 
 #include "../game/Game.h"
-#include "../game/Controller.h"
+#include "../controller/Controller.h"
 
 #include <string>
 

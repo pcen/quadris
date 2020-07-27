@@ -6,7 +6,7 @@
 #include <string>
 #include <mutex>
 
-#include "Game.h"
+#include "../game/Game.h"
 #include "Command.h"
 
 class Controller

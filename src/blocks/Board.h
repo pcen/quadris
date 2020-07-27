@@ -18,8 +18,8 @@ class Board
 	friend class ConsoleView;
 
 public:
-	Board(float cell_size = default_cell_size);
-	Board(std::string, float cell_size = default_cell_size);
+	Board();
+	Board(std::string png, float cell_size = default_cell_size);
 
 	float get_cell_size(void) const;
 

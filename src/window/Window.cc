@@ -10,7 +10,7 @@ Window::Window(const std::string& title, QWidget* parent, int width, int height)
 {
 	this->setTitle(title);
 	this->setSize(width, height);
-	this->_board = Board("./assets/a.png");
+	this->_board = Board("./assets/_.png");
 }
 
 Window::~Window() {}

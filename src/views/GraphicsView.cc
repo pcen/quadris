@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "../game/Command.h"
+#include "../controller/Command.h"
 
 GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* controller, int argc, char** argv)
 	: View{ game, controller }, _open{ false }, _name{ name },
