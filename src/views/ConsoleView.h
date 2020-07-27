@@ -27,6 +27,7 @@ private:
 	void _writeTitle(void);
 	void _drawBoard(void);
 	void _addInfo(int row, std::string& line);
+	void _drawInputPrompt(void);
 
 	// Trie methods
 	void _buildTrie(void);

@@ -136,6 +136,7 @@ void ConsoleView::_displayGame(void)
 	this->_clearConsole();
 	this->_writeTitle();
 	this->_drawBoard();
+	this->_drawInputPrompt();
 }
 
 void ConsoleView::_clearConsole(void)
@@ -218,7 +219,14 @@ void ConsoleView::_addInfo(int row, std::string& line)
 		line.append(std::string(59 - line.length(), ' '));
 		line.append("│");
 	}
+}
 
+void ConsoleView::_drawInputPrompt(void)
+{
+	this->_out << "┌────────────────────────────────────────────────────────┐\n";
+	this->_out << "│ >                                                      │\n";
+	this->_out << "└────────────────────────────────────────────────────────┘";
+	this->_out << "\x1b[A" << "\r│ > ";
 }
 
 void ConsoleView::pollInput(void)
