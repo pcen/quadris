@@ -7,10 +7,10 @@
 #include <string>
 #include <unordered_map>
 
-#include <QMainWindow>
-#include <QWidget>
-#include <QPushButton>
 #include <QMap>
+#include <QWidget>
+#include <QMainWindow>
+#include <QPushButton>
 #include <QSharedPointer>
 
 typedef QSharedPointer<QPushButton> QButtonPtr;
@@ -26,7 +26,7 @@ public:
 	void open(void);
 	bool isOpen(void) const;
 	void setTitle(const std::string& title);
-	void setSize(int height, int width);
+	void setSize(int height, int width, bool fixed=true);
 
 	void render(void);
 

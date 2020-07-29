@@ -103,11 +103,14 @@ void Window::setTitle(const std::string& title)
 	this->setWindowTitle(title.c_str());
 }
 
-void Window::setSize(int width, int height)
+void Window::setSize(int width, int height, bool fixed)
 {
 	this->_width = width;
 	this->_height = height;
-	this->resize(width, height);
+	if (fixed)
+		this->setFixedSize(width, height);
+	else
+		this->setSize(width, height);
 }
 
 bool Window::isOpen(void) const
