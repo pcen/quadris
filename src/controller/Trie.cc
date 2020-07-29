@@ -52,12 +52,14 @@ void Trie::push(const std::string& value, CommandType command)
 		node->add_child(value.at(i), command);
 		node = node->at(value.at(i));
 	}
+
+	node->is_end_of_word = true;
 }
 
 CommandType Trie::findShortestPrefix(const std::string& value) {
 	TrieNodeRef node = this->_root;
-	int i = 0;
-
+	
+	unsigned int i = 0;
 	while (i < value.size() && node->is_child(value.at(i))) {
 		node = node->at(value.at(i++));
 
@@ -67,6 +69,20 @@ CommandType Trie::findShortestPrefix(const std::string& value) {
 	}
 
 	return CommandType::UNDEFINED_COMMAND;
+}
+
+bool Trie::search(const std::string& value) {
+	TrieNodeRef node = this->_root;
+	
+	unsigned int i = 0;
+	while (i < value.size()) {
+		if (!node->is_child(value.at(i))) {
+			return false;
+		}
+		node = node->at(value.at(i++));
+	}
+
+	return node->is_end_of_word;
 }
 
 void Trie::print(void)

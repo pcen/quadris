@@ -16,6 +16,7 @@ private:
 	char value;
 	CommandType command;
 	int frequency;
+	bool is_end_of_word;
 
 	std::shared_ptr<TrieNode> at(char child);
 	void add_child(char child, CommandType command);
@@ -34,6 +35,7 @@ public:
 
 	void push(const std::string& value, CommandType command);
 	CommandType findShortestPrefix(const std::string& value);
+	bool search(const std::string& value);
 	void print(void);
 
 private:

@@ -6,6 +6,7 @@
 #include <mutex>
 #include "../game/Game.h"
 #include "Command.h"
+#include "Trie.h"
 
 class Controller
 {
@@ -17,10 +18,12 @@ public:
 	void send_commands(void);
 
 private:
+	void _buildTrie();
+	std::vector<Command> _processCommand(const std::string& command) const;
 	std::mutex _lock;
 	Game& _game;
 	std::queue<Command> _command_queue;
-
+	Trie* _trie;
 };
 
 #endif // CONTROLLER_H

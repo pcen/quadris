@@ -20,7 +20,6 @@ enum class CommandType
 	SEQUENCE_FILE,
 	RESTART,
 	HINT,
-	NOT_A_GAME_MOVE,
 
 	// test commands
 	I,
@@ -43,6 +42,7 @@ struct Command
 {
 	Command();
 	Command(CommandType);
+	Command(std::string, CommandType);
 	CommandType type;
 	// for some commands, a message string may be desired
 	std::string message;
