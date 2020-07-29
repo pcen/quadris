@@ -5,9 +5,15 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 
 #include <QMainWindow>
 #include <QWidget>
+#include <QPushButton>
+#include <QMap>
+#include <QSharedPointer>
+
+typedef QSharedPointer<QPushButton> QButtonPtr;
 
 class Window: public QMainWindow
 {
@@ -39,6 +45,11 @@ private:
 	std::string _title;
 	Sprite2D _card;
 	Board _board;
+
+	// GUI controls
+	void _initializeButtons(void);
+	QWidget _buttonPane;
+	QMap<std::string, QButtonPtr> _buttons;
 };
 
 #endif // WINDOW_H

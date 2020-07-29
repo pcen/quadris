@@ -5,15 +5,41 @@
 #include <QEvent>
 #include <QPainter>
 
+#define BUTTON_COUNT 10
+
+static const char* buttonLabels[BUTTON_COUNT] = {
+	"left", "right", "down", "drop", "clockwise", "counter clockwise",
+	"level up", "level down", "restart", "hint"
+};
+
 Window::Window(const std::string& title, QWidget* parent, int width, int height)
-	: QMainWindow(parent), _open{ false }
+	: QMainWindow(parent), _open{ false }, _buttonPane{ this }
 {
 	this->setTitle(title);
 	this->setSize(width, height);
 	this->_board = Board("./assets/_.png");
+	this->_initializeButtons();
 }
 
-Window::~Window() {}
+Window::~Window()
+{
+
+}
+
+// precondition: _board must be initialized
+void Window::_initializeButtons(void)
+{
+	// set button pane position
+	int btnOffset = this->_board.get_cell_size() * 12;
+	this->_buttonPane.move({btnOffset, 0});
+
+	// populate the button pane
+	for (auto & label : buttonLabels) {
+		QButtonPtr button(new QPushButton(label, &this->_buttonPane));
+		this->_buttons.insert(label, button);
+	}
+
+}
 
 void Window::render(void)
 {
