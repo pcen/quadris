@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-TrieNode::TrieNode(char value, CommandType command)
-	: value{value}, command{command}, frequency{1}
+TrieNode::TrieNode(char value, CommandType type, std::string command)
+	: value{value}, type{type}, command{command}, frequency{1}
 {
 
 }
@@ -16,10 +16,10 @@ TrieNodeRef TrieNode::at(char child)
 		return nullptr;
 }
 
-void TrieNode::add_child(char child, CommandType command)
+void TrieNode::add_child(char child, CommandType type, std::string command)
 {
 	if (!this->is_child(child))
-		this->children[child] = std::make_shared<TrieNode>(child, command);
+		this->children[child] = std::make_shared<TrieNode>(child, type, command);
 }
 
 bool TrieNode::is_child(char child)
@@ -30,7 +30,7 @@ bool TrieNode::is_child(char child)
 // Trie Implementation
 
 Trie::Trie()
-	: _root{ std::make_unique<TrieNode>('\0', CommandType::UNDEFINED_COMMAND) }
+	: _root{ std::make_unique<TrieNode>('\0', CommandType::UNDEFINED_COMMAND, "") }
 {
 
 }
@@ -49,26 +49,34 @@ void Trie::push(const std::string& value, CommandType command)
 			node->frequency++;
 		}
 
-		node->add_child(value.at(i), command);
+		node->add_child(value.at(i), command, value);
 		node = node->at(value.at(i));
 	}
 
 	node->is_end_of_word = true;
 }
 
-CommandType Trie::findShortestPrefix(const std::string& value) {
+Command Trie::findShortestPrefix(const std::string& value) {
 	TrieNodeRef node = this->_root;
 	
 	unsigned int i = 0;
+
+	Command matched;	
+
 	while (i < value.size() && node->is_child(value.at(i))) {
 		node = node->at(value.at(i++));
 
 		if (node->frequency == 1) { // found unique path
-			return node->command;
+			matched = Command(node->command, node->type);
 		}
 	}
+	
+	// check to see if the rest of the command is valid
+	if (matched.type != CommandType::UNDEFINED_COMMAND && matched.message.rfind(value, 0) == 0) {
+		return matched;
+	}
 
-	return CommandType::UNDEFINED_COMMAND;
+	return Command(); //default command
 }
 
 bool Trie::search(const std::string& value) {

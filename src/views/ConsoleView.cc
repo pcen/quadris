@@ -1,6 +1,7 @@
 #include "ConsoleView.h"
 
 #include <stdlib.h>
+#include <fstream>
 
 // generated with: http://patorjk.com/software/taag/#p=display&f=Small&t=Quadris
 static const char* quadrisTitle =
@@ -14,6 +15,8 @@ ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in, s
 {
 	// spin thread to read _in stream
 	this->_in_thread = std::thread(&ConsoleView::readInStream, this);
+	this->_trie = std::make_shared<Trie>();
+	this->_buildTrie();
 }
 
 ConsoleView::~ConsoleView()
@@ -21,6 +24,45 @@ ConsoleView::~ConsoleView()
 	// join the _in_thread before application exits
 	if (this->_in_thread.joinable())
 		this->_in_thread.join();
+}
+
+void ConsoleView::_buildTrie()
+{
+	std::ifstream infile("./src/controller/commands.txt");
+
+	std::string command;
+	int id;
+	while (infile >> command >> id)
+	{
+		_trie->push(command, (CommandType) id);
+	}
+}
+
+std::vector<Command> ConsoleView::_processCommand(const std::string& s) const
+{
+	std::vector<Command> commands;
+
+	unsigned int split = 0;
+
+	for (; split < s.length(); split++) {
+		char c = s[split];
+		if (c > '9' || c < '0')
+			break;
+	}
+
+	std::string multiplierString = s.substr(0, split);
+	int multiplier = multiplierString.length() ? std::stoi(multiplierString) : 1;
+  	std::string command = s.substr(split);
+
+	Command matchingCommand = _trie->findShortestPrefix(command);
+
+	if (matchingCommand.type != CommandType::UNDEFINED_COMMAND) {
+		for (int i = 0; i < multiplier; i++) {
+			commands.push_back(matchingCommand);
+		}
+	}
+
+	return commands;
 }
 
 // read_in_stream runs in separate thread for the lifetime
@@ -38,7 +80,7 @@ void ConsoleView::readInStream(void)
 		// Since the game may terminate while waiting for input, check if the
 		// game is still running before  sending the command
 		if (this->_game != nullptr && this->_game->isRunning()) {
-			this->_controller->push(command);
+			this->_controller->push(this->_processCommand(command));
 
 			// when quitting, kill thread immediately
 			if (command == "quit") {

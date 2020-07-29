@@ -1,11 +1,12 @@
 #ifndef CONSOLEVIEW_H
 #define CONSOLEVIEW_H
 
-#include "View.h"
-#include "../game/Game.h"
-
 #include <iostream>
 #include <thread>
+
+#include "View.h"
+#include "../game/Game.h"
+#include "../generic/Trie.h"
 
 class ConsoleView : public View
 {
@@ -22,7 +23,10 @@ public:
 private:
 	void _clearConsole(void);
 	void _writeTitle(void);
+	void _buildTrie(void);
+	std::vector<Command> _processCommand(const std::string&) const;
 
+	std::shared_ptr<Trie> _trie;
 	std::istream& _in;
 	std::ostream& _out;
 	std::thread _in_thread;
