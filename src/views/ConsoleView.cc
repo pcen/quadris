@@ -24,14 +24,14 @@ ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in, s
 	this->_trie = std::make_shared<Trie>();
 	this->_buildTrie();
 
-	_board = Board("./assets/a.png");
-	_clearConsole();
+	this->_board = Board("./assets/_.png");
+	this->_clearConsole();
 }
 
 ConsoleView::~ConsoleView()
 {
 	// clean up console otherwise input box artifacts remain
-	_clearConsole();
+	this->_clearConsole();
 	// join the _in_thread before application exits
 	if (this->_in_thread.joinable())
 		this->_in_thread.join();
@@ -85,7 +85,7 @@ void ConsoleView::readInStream(void)
 {
 	std::string command;
 	while (this->_game->isRunning()) {
-		_in >> command;
+		this->_in >> command;
 
 		// Since the game may terminate while waiting for input, check if the
 		// game is still running before  sending the command
@@ -204,14 +204,10 @@ void ConsoleView::_addInfo(int row, std::string& line)
 		line.append("high score: 42069");
 		break;
 	case 1:
-		line.append("    ┌");
-		line.append("────────────────────");
-		line.append("┐");
+		line.append("    ┌────────────────────┐");
 		break;
 	case 5:
-		line.append("    └");
-		line.append("────────────────────");
-		line.append("┘");
+		line.append("    └────────────────────┘");
 		break;
 	default:
 		return;
@@ -228,7 +224,7 @@ void ConsoleView::_drawInputPrompt(void)
 	this->_out << "┌────────────────────────────────────────────────────────┐\n";
 	this->_out << "│ >                                                      │\n";
 	this->_out << "└────────────────────────────────────────────────────────┘";
-	this->_out << "\x1b[A" << "\r│ > ";
+	this->_out << "\x1b[A\r│ > ";
 }
 
 void ConsoleView::pollInput(void)
