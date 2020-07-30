@@ -30,10 +30,10 @@ int main(int argc, char* argv[])
 	Controller ctrl(game);
 	ViewManager views;
 
-	GraphicsView gv("Quadris", &game, &ctrl);
+	// GraphicsView gv("Quadris", &game, &ctrl);
 	ConsoleView cv(&game, &ctrl, std::cin, std::cout);
 
-	views.push(&gv);
+	// views.push(&gv);
 	views.push(&cv);
 
 	while (game.isRunning()) {

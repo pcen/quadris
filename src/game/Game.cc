@@ -1,19 +1,17 @@
 #include "Game.h"
 
 #include <iostream>
-
-using namespace std;
+#include <string>
 
 Game::Game()
-	: _running{true}, _level{make_unique<Level0>()}, _difficulty{0},
-	_board("./assets/_.png"), _score{0}, _highScore{0}, _random{false}
+	: _running{true}, _difficulty{0}, _board("./assets/_.png"), _score{0}, _highScore{0}, _random{false}
 {
-
+	_level = std::make_unique<Level0>(std::string("././src/game/sequence.txt"), this, true);
 }
 
 Game::~Game()
 {
-
+	_level->_game = nullptr;
 }
 
 const Board& Game::getBoard(void) const

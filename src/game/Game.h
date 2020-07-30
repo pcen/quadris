@@ -11,6 +11,8 @@
 #include "Level.h"
 #include "StandardLevels.h"
 
+class Level;
+
 class Game: public Subject
 {
 public:
