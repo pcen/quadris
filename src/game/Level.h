@@ -10,7 +10,7 @@ class Game;
 class Level
 {
 	friend class Game;
-	
+
 public:
 	virtual ~Level() {};
 

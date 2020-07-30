@@ -1,13 +1,12 @@
 #include <iostream>
+#include <unordered_set>
+#include <string>
 
 #include "views/ConsoleView.h"
 #include "views/GraphicsView.h"
 #include "views/ViewManager.h"
 #include "game/Game.h"
 #include "controller/Controller.h"
-
-#include <unordered_set>
-#include <string>
 
 class Arguments
 {
