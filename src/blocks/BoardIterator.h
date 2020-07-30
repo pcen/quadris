@@ -16,13 +16,13 @@ public:
 	BoardIterator(int x, int y, int row, int col, std::vector<std::vector<std::shared_ptr<Cell>>> board) :
 		_y(y), _x(x), _rows(row), _cols(col), _cells(board) {};
 
-		// No other SMFs need to be implemented as they will be defaulted by the compiler
-		// We do not have any true pointer members allocated with memory for the iterator, only simple data members
-		// constructor or assignment operators as we only really want shallow copy of data members
+	// No other SMFs need to be implemented as they will be defaulted by the compiler
+	// We do not have any true pointer members allocated with memory for the iterator, only simple data members
+	// constructor or assignment operators as we only really want shallow copy of data members
 
-		std::shared_ptr<Cell> operator*();
-		BoardIterator& operator++();
-		bool operator!=(const BoardIterator& other);
+	std::shared_ptr<Cell> operator*();
+	BoardIterator& operator++();
+	bool operator!=(const BoardIterator& other);
 
 private:
 	int _y;     // current row index of iterator in board

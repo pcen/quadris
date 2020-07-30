@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <memory>
+
 #include "../controller/Command.h"
 
 class TrieNode
@@ -17,7 +18,7 @@ private:
 	char value;
 	CommandType type;
 	std::string command;
-	
+
 	int frequency;
 	bool is_end_of_word;
 

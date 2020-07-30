@@ -19,6 +19,9 @@ std::unordered_set<std::string> parse_argv(int argc, char* argv[])
 	return arguments;
 }
 
+std::map<std::string, std::unique_ptr<BlockFactory>> BlockFactory::_factories;
+BlockFactoryInitializer BlockFactoryInitializer::si;
+
 int main(int argc, char* argv[])
 {
 	auto arguments = parse_argv(argc, argv);

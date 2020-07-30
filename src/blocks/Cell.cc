@@ -1,8 +1,21 @@
 #include "Cell.h"
 
-using namespace std;
+Coord operator+(Coord a, Coord b)
+{
+	return Coord(a._x+b._x, a._y+b._y);
+}
 
-Cell::Cell(int x, int y, std::shared_ptr<Block> parent, string png, bool isDeleted, char token)
+Coord operator-(Coord a, Coord b)
+{
+	return Coord(a._x-b._x, a._y-b._y);
+}
+
+Coord Coord::invert(void)
+{
+	return Coord(this->_y, this->_x);
+}
+
+Cell::Cell(int x, int y, std::shared_ptr<Block> parent, std::string png, bool isDeleted, char token)
 	: _coords{x, y}, _parent{parent}, _sprite{Sprite2D(png)}, _isDeleted{isDeleted}, _token{ token }
 {
 
