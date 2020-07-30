@@ -5,13 +5,13 @@ ViewManager::ViewManager()
 
 }
 
-void ViewManager::push(View* view)
+void ViewManager::push(view_ptr view)
 {
 	if (view != nullptr)
 		this->_views.emplace(view);
 }
 
-void ViewManager::pop(View* view)
+void ViewManager::pop(view_ptr view)
 {
 	if (view != nullptr)
 		this->_views.erase(view);

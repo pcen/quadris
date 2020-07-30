@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include "../graphics/Sprite2D.h"
+
 #include <QEvent>
 #include <QPainter>
 #include <QAction>

@@ -12,13 +12,11 @@ BlockFactoryInitializer::BlockFactoryInitializer()
 	BlockFactory::_factories["T"] = std::make_unique<TBlock::Factory>();
 }
 
-
 std::shared_ptr<Block> BlockFactory::createBlock(const std::string& id, int level)
 {
 	if( _factories.find(id) != _factories.end() )
-		return _factories[id] -> create(level);
+		return _factories[id]->create(level);
 }
-
 
 IBlock::IBlock(int level)
 {
@@ -34,7 +32,6 @@ IBlock::IBlock(int level)
 	_isHeavy = (_levelGenerated >= 3);
 }
 
-
 JBlock::JBlock(int level)
 {
 	_type = BlockType::J;
@@ -48,7 +45,6 @@ JBlock::JBlock(int level)
 	_levelGenerated = level;
 	_isHeavy = (_levelGenerated >= 3);
 }
-
 
 LBlock::LBlock(int level)
 {
@@ -64,7 +60,6 @@ LBlock::LBlock(int level)
 	_isHeavy = (_levelGenerated >= 3);
 }
 
-
 OBlock::OBlock(int level)
 {
 	_type = BlockType::O;
@@ -78,7 +73,6 @@ OBlock::OBlock(int level)
 	_levelGenerated = level;
 	_isHeavy = (_levelGenerated >= 3);
 }
-
 
 SBlock::SBlock(int level)
 {
@@ -94,7 +88,6 @@ SBlock::SBlock(int level)
 	_isHeavy = (_levelGenerated >= 3);
 }
 
-
 ZBlock::ZBlock(int level)
 {
 	_type = BlockType::Z;
@@ -109,7 +102,6 @@ ZBlock::ZBlock(int level)
 	_isHeavy = (_levelGenerated >= 3);
 }
 
-
 TBlock::TBlock(int level)
 {
 	_type = BlockType::T;
@@ -123,7 +115,6 @@ TBlock::TBlock(int level)
 	_levelGenerated = level;
 	_isHeavy = (_levelGenerated >= 3);
 }
-
 
 BlockType Block::getType(void)
 {

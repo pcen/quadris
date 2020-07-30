@@ -3,7 +3,6 @@
 
 #include "BoardIterator.h"
 #include "Block.h"
-#include "../graphics/Sprite2D.h"
 
 #include <vector>
 

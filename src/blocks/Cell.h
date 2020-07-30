@@ -1,9 +1,8 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include "../graphics/Sprite2D.h"
-
 #include <string>
+#include <memory>
 
 class Block;
 

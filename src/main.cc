@@ -9,32 +9,43 @@
 #include <unordered_set>
 #include <string>
 
-std::unordered_set<std::string> parse_argv(int argc, char* argv[])
+class Arguments
 {
-	std::unordered_set<std::string> arguments;
-	for (int i = 1; i < argc; i++) {
-		std::string arg = argv[i];
-		arguments.emplace(arg);
+public:
+	Arguments(int argc, char* argv[])
+	{
+		for (int i = 1; i < argc; i++) {
+			std::string arg = argv[i];
+			_arguments.emplace(arg);
+		}
 	}
-	return arguments;
-}
+	bool has(const std::string& arg)
+	{
+		return this->_arguments.find(arg) != this->_arguments.end();
+	}
+
+private:
+	std::unordered_set<std::string> _arguments;
+};
 
 std::map<std::string, std::unique_ptr<BlockFactory>> BlockFactory::_factories;
 BlockFactoryInitializer BlockFactoryInitializer::si;
 
 int main(int argc, char* argv[])
 {
-	auto arguments = parse_argv(argc, argv);
+	auto args = Arguments(argc, argv);
 
 	Game game;
 	Controller ctrl(game);
 	ViewManager views;
 
-	// GraphicsView gv("Quadris", &game, &ctrl);
-	ConsoleView cv(&game, &ctrl, std::cin, std::cout);
+	auto cv = std::make_shared<ConsoleView>(&game, &ctrl, std::cin, std::cout);
+	views.push(cv);
 
-	// views.push(&gv);
-	views.push(&cv);
+	if (!args.has("-text")) {
+		auto gv = std::make_shared<GraphicsView>("Quadris", &game, &ctrl);
+		views.push(gv);
+	}
 
 	while (game.isRunning()) {
 		ctrl.send_commands();

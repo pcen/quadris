@@ -6,18 +6,20 @@
 
 #include "View.h"
 
+typedef std::shared_ptr<View> view_ptr;
+
 class ViewManager
 {
 public:
 	ViewManager();
 
-	void push(View* view);
-	void pop(View* view);
+	void push(view_ptr view);
+	void pop(view_ptr view);
 
 	void pollInput(void);
 
 private:
-	std::set<View*> _views;
+	std::set<view_ptr> _views;
 
 };
 
