@@ -10,23 +10,26 @@ Controller::Controller(Game& game)
 
 // lock mutex to prevent writing to queue while another thread
 // is adding accessing or modifying the queue
-void Controller::push(Command command)
-{
-	thread_lock lk(_lock);
-	_command_queue.push(command);
-}
-
-void Controller::push(const std::string& command)
+void Controller::push(Command c)
 {
 	thread_lock lk(_lock);
 
-	Command c;
-
-	// TODO: interpret text command using Trie
-	if (command == "quit")
-		c.type = CMD::QUIT;
+	if (c.type == CommandType::UNDEFINED_COMMAND) 
+		return //TODO: throw exception?
 
 	_command_queue.push(c);
+}
+
+void Controller::push(std::vector<Command> cs) 
+{
+	thread_lock lk(_lock);
+
+	for (auto c : cs) {
+		if (c.type == CommandType::UNDEFINED_COMMAND)
+			continue;
+
+		_command_queue.push(c);
+	}
 }
 
 // lock mutex to prevent the queue from being accessed while
