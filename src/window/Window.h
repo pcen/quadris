@@ -11,6 +11,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QSharedPointer>
+#include <QKeyEvent>
 
 typedef QSharedPointer<QPushButton> QButtonPtr;
 
@@ -27,11 +28,13 @@ public:
 	void setTitle(const std::string& title);
 	void setSize(int height, int width, bool fixed=true);
 	std::vector<std::string> getButtonInput(void);
+	std::vector<int> getKeyboardInput(void);
 
 	void render(void);
 
 protected:
 	// override to catch and handle Qt events
+	void keyPressEvent(QKeyEvent* event) override;
 	bool event(QEvent* event) override;
 	bool confirmClose(void);
 
@@ -45,6 +48,9 @@ private:
 	std::string _title;
 	Sprite2D _card;
 	Board _board;
+
+	// Keyboard input
+	std::vector<int> _keyPressed;
 
 	// GUI controls
 	void _initializeButtons(void);

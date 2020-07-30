@@ -1,7 +1,5 @@
 #include "Window.h"
 
-#include <iostream>
-
 #include <QEvent>
 #include <QPainter>
 #include <QAction>
@@ -50,6 +48,8 @@ void Window::_initializeButtons(void)
 		QButtonPtr b(new QPushButton(buttonText, &this->_buttonPane));
 		this->_btns.insert(label, b);
 		b->setStyleSheet(buttonStyle);
+		// disable selecting buttons with keyboard
+		b->setFocusPolicy(Qt::NoFocus);
 
 		// register button callback
 		// raw pointer context needed for Qt to manage receiver lifespan
@@ -94,6 +94,13 @@ std::vector<std::string> Window::getButtonInput(void)
 	return buttonInput;
 }
 
+std::vector<int> Window::getKeyboardInput(void)
+{
+	std::vector<int> keyboardInput = this->_keyPressed;
+	this->_keyPressed.clear();
+	return keyboardInput;
+}
+
 void Window::render(void)
 {
 	// trigger paintEvent by updating widget
@@ -124,7 +131,7 @@ void Window::_draw_board(QPainter& painter)
 	}
 }
 
-// TODO: move into separate callbacks
+// handle Qt events
 bool Window::event(QEvent* event)
 {
 	switch (event->type()) {
@@ -139,6 +146,11 @@ bool Window::event(QEvent* event)
 			// do not intercept these events
 			return QMainWindow::event(event);
 	}
+}
+
+void Window::keyPressEvent(QKeyEvent* event)
+{
+	this->_keyPressed.push_back(event->key());
 }
 
 void Window::open(void)
