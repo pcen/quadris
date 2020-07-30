@@ -1,5 +1,7 @@
 #include "Controller.h"
 
+#include <iostream>
+
 typedef std::lock_guard<std::mutex> thread_lock;
 
 Controller::Controller(Game& game)
@@ -14,13 +16,13 @@ void Controller::push(Command c)
 {
 	thread_lock lk(_lock);
 
-	if (c.type == CommandType::UNDEFINED_COMMAND) 
-		return //TODO: throw exception?
+	if (c.type == CommandType::UNDEFINED_COMMAND)
+		return; //TODO: throw exception?
 
 	_command_queue.push(c);
 }
 
-void Controller::push(std::vector<Command> cs) 
+void Controller::push(std::vector<Command> cs)
 {
 	thread_lock lk(_lock);
 

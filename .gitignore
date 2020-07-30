@@ -4,9 +4,6 @@ quadris
 *.out
 *.exe
 
-# Text Files
-*.txt
-
 # Qmake
 .qmake.*
 

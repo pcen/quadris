@@ -10,7 +10,7 @@
 class GraphicsView : public View
 {
 public:
-	GraphicsView(const std::string& name, Game* game, Controller* controller, int argc, char** argv);
+	GraphicsView(const std::string& name, Game* game, Controller* controller);
 	void pollInput(void) override;
 
 	void notify(void) const override;
@@ -18,8 +18,10 @@ public:
 	bool isOpen(void) const override;
 
 private:
-
 	void _shutdown(void);
+
+	int _qtArgCount;
+	char** _qtArgs;
 
 	bool _open;
 	std::string _name;

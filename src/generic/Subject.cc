@@ -28,11 +28,7 @@ void Subject::unsubscribe(Observer* observer)
 // subscribe or unsubscribe
 void Subject::_notify(void)
 {
-	std::cerr << "locking _notify mutex...\n";
 	thread_lock lk(_lock);
-	std::cerr << "_notify mutex locked...\n";
-	for (auto& observer: _observers) {
+	for (auto& observer: _observers)
 		observer->notify();
-		std::cerr << "notified an observer.\n";
-	}
 }

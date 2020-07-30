@@ -21,8 +21,15 @@ public:
 	void notify(void) const override;
 
 private:
+	// Display methods
+	void _displayGame(void);
 	void _clearConsole(void);
 	void _writeTitle(void);
+	void _drawBoard(void);
+	void _addInfo(int row, std::string& line);
+	void _drawInputPrompt(void);
+
+	// Trie methods
 	void _buildTrie(void);
 	std::vector<Command> _processCommand(const std::string&) const;
 
@@ -30,6 +37,8 @@ private:
 	std::istream& _in;
 	std::ostream& _out;
 	std::thread _in_thread;
+
+	Board _board;
 };
 
 #endif // CONSOLEVIEW_H
