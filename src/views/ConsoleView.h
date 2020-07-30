@@ -18,16 +18,16 @@ public:
 	void readInStream(void);
 	bool isOpen(void) const override;
 
-	void notify(void) const override;
+	void update(void) override;
 
 private:
 	// Display methods
-	void _displayGame(const Board& board) const;
-	void _clearConsole(void) const;
-	void _writeTitle(void) const;
-	void _drawBoard(const Board& board) const;
-	void _addInfo(int row, std::string& line) const;
-	void _drawInputPrompt(void) const;
+	void _displayGame(const Board& board);
+	void _clearConsole(void);
+	void _writeTitle(void);
+	void _drawBoard(const Board& board);
+	void _addInfo(int row, std::string& line);
+	void _drawInputPrompt(void);
 
 	// Trie methods
 	void _buildTrie(void);

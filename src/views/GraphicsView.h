@@ -13,7 +13,7 @@ public:
 	GraphicsView(const std::string& name, Game* game, Controller* controller);
 	void pollInput(void) override;
 
-	void notify(void) const override;
+	void update(void) override;
 
 	bool isOpen(void) const override;
 

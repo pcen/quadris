@@ -1,5 +1,7 @@
 #include "Board.h"
 
+#include <iostream>
+
 Board::Board()
 	: _cell_size{ default_cell_size }
 {
@@ -15,13 +17,22 @@ Board::Board(std::string png, float cell_size)
 		std::vector<std::shared_ptr<Cell>> images;
 		for(int i = 0; i < 18; ++i){
 			std::shared_ptr<Cell> newCell = std::make_shared<Cell>(j, i, nullptr, png, false, (char)BlockType::EMPTY);
+			this->_boardChanges.push_back(Coord(j, i));
 			images.push_back(newCell);
 		}
 		this->_board.push_back(images);
 	}
 }
 
-float Board::get_cell_size(void) const
+Cell Board::at(Coord& coord) const
+{
+	if (coord._x > 10 || coord._y > 17)
+		std::cerr << "invalid coordinates to acces board\n";
+
+	return *this->_board[coord._x][coord._y];
+}
+
+float Board::getCellSize(void) const
 {
 	return this->_cell_size;
 }

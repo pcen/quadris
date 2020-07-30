@@ -3,6 +3,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 #include "../generic/Subject.h"
 #include "../blocks/Board.h"
@@ -19,7 +20,9 @@ public:
 	bool isRunning(void) const;
 
 	const Board& getBoard(void) const;
+	const std::vector<Coord> getBoardChanges(void);
 
+	// gameplay methods
 	void launch();
 	void restart();
 	void quit();

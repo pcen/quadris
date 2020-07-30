@@ -30,5 +30,5 @@ void Subject::_notify(void)
 {
 	thread_lock lk(_lock);
 	for (auto& observer: _observers)
-		observer->notify();
+		observer->update();
 }

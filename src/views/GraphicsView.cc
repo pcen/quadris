@@ -29,18 +29,20 @@ static const std::unordered_map<int, CommandType> keyCommandMap = {
 GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* controller)
 	: View{ game, controller }, _qtArgCount{ 0 }, _qtArgs{ nullptr },
 	_open{ false }, _name{ name },
-	_app(_qtArgCount, _qtArgs), _window{ name }
+	_app(_qtArgCount, _qtArgs), _window{ name, game }
 {
 	this->_window.open();
 	this->_open = true;
 }
 
-void GraphicsView::notify(void) const
+void GraphicsView::update(void)
 {
 	if (this->_game != nullptr || !this->_game->isRunning()) {
 		// TODO: GraphicsView should shut down here, but notify is const
 		// this->_shutdown();
 	}
+
+	this->_window.render();
 }
 
 void GraphicsView::pollInput(void)
@@ -67,8 +69,6 @@ void GraphicsView::pollInput(void)
 	// user closed graphics view
 	if (!this->_window.isOpen())
 		this->_shutdown();
-
-	this->_window.render();
 }
 
 void GraphicsView::_shutdown(void)

@@ -20,8 +20,8 @@ static const char* buttonStyle =
 "padding-right: 5px;"
 "padding-left: 5px;";
 
-Window::Window(const std::string& title, QWidget* parent, int width, int height)
-	: QMainWindow(parent), _open{ false }, _buttonPane{ this }
+Window::Window(const std::string& title, Game* game, QWidget* parent, int width, int height)
+	: QMainWindow(parent), _open{ false }, _game{ game }, _buttonPane{ this }
 {
 	this->setTitle(title);
 	this->setSize(width, height);
@@ -37,8 +37,7 @@ Window::~Window()
 void Window::_initializeButtons(void)
 {
 	// set button pane position
-	int btnOffset = 20;
-	// int btnOffset = this->_board.get_cell_size() * 12;
+	int btnOffset = this->_game->getBoard().getCellSize() * 12;
 
 	this->_buttonPane.move(btnOffset, 0);
 	this->_buttonPane.resize(this->_width - btnOffset, this->_height);
@@ -105,31 +104,31 @@ std::vector<int> Window::getKeyboardInput(void)
 void Window::render(void)
 {
 	// trigger paintEvent by updating widget
-	// QWidget::update();
+	QWidget::update();
 }
 
 void Window::paintEvent(QPaintEvent* event)
 {
 	if (event != nullptr) {
 		QPainter painter(this);
-		this->_draw_board(painter);
+		this->_drawBoard(painter);
 	}
 }
 
-void Window::_draw_board(QPainter& painter)
+void Window::_drawBoard(QPainter& painter)
 {
-	// float cell_size = this->_board.get_cell_size();
-	// for (auto i = this->_board.begin(); i != this->_board.end(); ++i) {
-	// 	std::shared_ptr<Cell> currCell = *i;
-	// 	if (currCell != nullptr) {
-	// 		float x = currCell->get_x() * cell_size;
-	// 		float y = currCell->get_y() * cell_size;
+	const Board& board = this->_game->getBoard();
+	float cell_size = board.getCellSize();
+	for (auto i = board.begin(); i != board.end(); ++i) {
+		Cell c = *i;
+		float x = c.get_x() * cell_size;
+		float y = c.get_y() * cell_size;
 
-	// 		QRectF target = QRectF(x, y, cell_size, cell_size);
-	// 		QPixmap pm = currCell->getSprite().getData();
-	// 		painter.drawPixmap(target, pm, pm.rect());
-	// 	}
-	// }
+		QRectF target = QRectF(x, y, cell_size, cell_size);
+		Sprite2D sprite(c.getSprite());
+		QPixmap pm = sprite.getData();
+		painter.drawPixmap(target, pm, pm.rect());
+	}
 }
 
 // handle Qt events

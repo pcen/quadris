@@ -91,8 +91,6 @@ void ConsoleView::readInStream(void)
 			// when quitting, kill thread immediately
 			if (command == "quit") {
 				if (this->_game != nullptr) {
-					// TODO make shutdown a View method?
-
 					// Here, this view closes itself in a separate thread, and
 					// its base class may still exist when game begins notifying
 					// observers it has recieved a "quit" command. To ensure
@@ -129,15 +127,15 @@ void ConsoleView::readInStream(void)
 	}
 }
 
-void ConsoleView::_displayGame(const Board& board) const
+void ConsoleView::_displayGame(const Board& board)
 {
 	this->_clearConsole();
 	this->_writeTitle();
 	this->_drawBoard(board);
-	this->_drawInputPrompt();
+	// this->_drawInputPrompt();
 }
 
-void ConsoleView::_clearConsole(void) const
+void ConsoleView::_clearConsole(void)
 {
 	if (&this->_out != &std::cout) {
 		std::cerr << "ERROR: clearing this console is not supported\n";
@@ -153,12 +151,12 @@ void ConsoleView::_clearConsole(void) const
 	std::cerr << "ERROR: failed to clear console\n";
 }
 
-void ConsoleView::_writeTitle(void) const
+void ConsoleView::_writeTitle(void)
 {
 	this->_out << quadrisTitle;
 }
 
-void ConsoleView::_drawBoard(const Board& board) const
+void ConsoleView::_drawBoard(const Board& board)
 {
 	int row = 1;
 	std::string row_string = "   1      ";
@@ -180,9 +178,10 @@ void ConsoleView::_drawBoard(const Board& board) const
 		row_string.append(" "); // add space between cells
 	}
 	this->_out << row_string << "\n";
+	this->_out << "  > ";
 }
 
-void ConsoleView::_addInfo(int row, std::string& line) const
+void ConsoleView::_addInfo(int row, std::string& line)
 {
 	// left hand side of info text box
 	if (2 <= row && row <= 4)
@@ -214,12 +213,13 @@ void ConsoleView::_addInfo(int row, std::string& line) const
 	}
 }
 
-void ConsoleView::_drawInputPrompt(void) const
+void ConsoleView::_drawInputPrompt(void)
 {
-	this->_out << "┌────────────────────────────────────────────────────────┐\n";
-	this->_out << "│ >                                                      │\n";
-	this->_out << "└────────────────────────────────────────────────────────┘";
-	this->_out << "\x1b[A\r│ > ";
+	this->_out << "\n  > ";
+	// this->_out << "┌────────────────────────────────────────────────────────┐\n";
+	// this->_out << "│ >                                                      │\n";
+	// this->_out << "└────────────────────────────────────────────────────────┘";
+	// this->_out << "\x1b[A" << "\r│ > ";
 }
 
 void ConsoleView::pollInput(void)
@@ -229,7 +229,7 @@ void ConsoleView::pollInput(void)
 	//       can somehow be killed so the user in not requred to type "quit"
 }
 
-void ConsoleView::notify(void) const
+void ConsoleView::update(void)
 {
 	const Board& board = this->_game->getBoard();
 	this->_displayGame(board);

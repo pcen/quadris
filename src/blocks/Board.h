@@ -14,14 +14,18 @@ class ConsoleView;
 
 class Board
 {
-	friend class Window;
-	friend class ConsoleView;
+	friend class Game;
 
 public:
 	Board();
 	Board(std::string png, float cell_size = default_cell_size);
 
-	float get_cell_size(void) const;
+	Cell at(Coord& coord) const;
+
+	float getCellSize(void) const;
+
+	BoardIterator begin() const;
+	BoardIterator end() const;
 
 private:
 
@@ -33,9 +37,7 @@ private:
 	std::vector<int> _topOfColumns;
 	int _numBlockSinceClear;
 
-	BoardIterator begin() const;
-	BoardIterator end() const;
-
+	std::vector<Coord> _boardChanges;
 };
 
 #endif // BOARD_H

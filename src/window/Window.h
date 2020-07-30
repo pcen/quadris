@@ -1,6 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include "../game/Game.h"
 #include "../blocks/Board.h"
 
 #include <string>
@@ -20,7 +21,7 @@ class Window: public QMainWindow
 	Q_OBJECT
 
 public:
-	explicit Window(const std::string& title, QWidget* parent = 0, int width=640, int height=480);
+	explicit Window(const std::string& title, Game* game, QWidget* parent = 0, int width=640, int height=480);
 	~Window();
 
 	void open(void);
@@ -40,13 +41,14 @@ protected:
 
 	// draw methods
 	void paintEvent(QPaintEvent*) override;
-	void _draw_board(QPainter& painter);
+	void _drawBoard(QPainter& painter);
 
 private:
 	bool _open;
 	int _width, _height;
 	std::string _title;
-	Sprite2D _card;
+
+	Game* _game;
 
 	// Keyboard input
 	std::vector<int> _keyPressed;

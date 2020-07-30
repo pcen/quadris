@@ -21,6 +21,11 @@ const Board& Game::getBoard(void) const
 	return this->_board;
 }
 
+const std::vector<Coord> Game::getBoardChanges(void)
+{
+	return this->_board._boardChanges;
+}
+
 void Game::update(const Command& command)
 {
 	switch(command.type) {
@@ -32,6 +37,9 @@ void Game::update(const Command& command)
 	}
 
 	this->_notify();
+
+	// all observers have had the chance to see board changes
+	this->_board._boardChanges.clear();
 }
 
 bool Game::isRunning(void) const
