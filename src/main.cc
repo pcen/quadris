@@ -35,14 +35,15 @@ int main(int argc, char* argv[])
 	Controller ctrl(game);
 	ViewManager views;
 
-	auto cv = std::make_shared<ConsoleView>(&game, &ctrl, std::cin, std::cout);
-	views.push(cv);
-
 	if (!args.has("-text")) {
 		auto gv = std::make_shared<GraphicsView>("Quadris", &game, &ctrl);
 		views.push(gv);
 	}
 
+	auto cv = std::make_shared<ConsoleView>(&game, &ctrl, std::cin, std::cout);
+	views.push(cv);
+
+	game.launch();
 	while (game.isRunning()) {
 		ctrl.send_commands();
 		views.pollInput();

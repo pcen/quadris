@@ -21,6 +21,10 @@ public:
 
 	float getCellSize(void) const;
 
+	bool moveY(bool isDrop);
+
+	void setCurrentBlock(std::shared_ptr<Block> currentBlock);
+
 	BoardIterator begin() const;
 	BoardIterator end() const;
 
@@ -34,6 +38,7 @@ private:
 	std::shared_ptr<Block> _currentBlock;
 	std::vector<int> _topOfColumns;
 	int _numBlockSinceClear;
+
 };
 
 #endif // BOARD_H

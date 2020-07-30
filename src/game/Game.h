@@ -32,7 +32,6 @@ public:
 	void score();
 
 private:
-
 	Board _board;
 	std::unique_ptr<Level> _level;
 	bool _running;

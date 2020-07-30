@@ -45,3 +45,16 @@ BoardIterator Board::end() const
 {
 	return BoardIterator(this->_board.size(), -1, this->_board.size(), this->_board[0].size(), this->_board);
 }
+
+// gameplay methods
+
+bool Board::moveY(bool isDrop)
+{
+	std::cerr << "moveY()\n";
+	return false;
+}
+
+void Board::setCurrentBlock(std::shared_ptr<Block> currentBlock)
+{
+	std::cerr << "current block set: " << (char)currentBlock->getType() << "\n";
+}

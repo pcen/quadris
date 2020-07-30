@@ -13,6 +13,8 @@ public:
 	virtual ~Level() {};
 	virtual std::shared_ptr<Block> getNextBlock(void) const = 0;
 
+	int getLevel(void) const { return this->_level; }
+
 protected:
 	friend class Game;
 
