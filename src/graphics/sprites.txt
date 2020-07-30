@@ -1,0 +1,9 @@
+./assets/_.png
+./assets/b.png
+./assets/g.png
+./assets/n.png
+./assets/o.png
+./assets/p.png
+./assets/r.png
+./assets/t.png
+./assets/y.png

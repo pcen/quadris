@@ -25,6 +25,7 @@ public:
 	virtual ~Block() {};
 
 	BlockType getType(void);
+	std::vector<std::shared_ptr<Cell>>& getCells(void);
 
 protected:
 	BlockType _type;
@@ -33,7 +34,6 @@ protected:
 
 	int _levelGenerated;
 	bool _isHeavy;
-
 };
 
 class BlockFactoryInitializer

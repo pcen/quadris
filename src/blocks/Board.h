@@ -17,13 +17,13 @@ public:
 	Board();
 	Board(std::string png, float cell_size = default_cell_size);
 
-	Cell at(Coord& coord) const;
+	Cell at(Coord coord) const;
 
 	float getCellSize(void) const;
 
 	bool moveY(bool isDrop);
 
-	void setCurrentBlock(std::shared_ptr<Block> currentBlock);
+	bool setCurrentBlock(std::shared_ptr<Block> currentBlock);
 
 	BoardIterator begin() const;
 	BoardIterator end() const;
@@ -32,6 +32,7 @@ private:
 	friend class Game;
 
 	float _cell_size;
+	bool _insertBlock(std::shared_ptr<Block> block);
 
 	std::vector<std::vector<std::shared_ptr<Cell>>> _board;
 	std::vector<std::shared_ptr<Block>> _blocks;

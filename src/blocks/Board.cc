@@ -23,7 +23,7 @@ Board::Board(std::string png, float cell_size)
 	}
 }
 
-Cell Board::at(Coord& coord) const
+Cell Board::at(Coord coord) const
 {
 	if (coord._x > 10 || coord._y > 17)
 		std::cerr << "invalid coordinates to acces board\n";
@@ -48,13 +48,32 @@ BoardIterator Board::end() const
 
 // gameplay methods
 
+bool Board::_insertBlock(std::shared_ptr<Block> block)
+{
+	auto cells = block->getCells();
+	for (auto& c : cells) {
+		if (this->at(c->getCoord()).getToken() != '.')
+			return false;
+	}
+	for (auto& c : cells)
+		this->_board[c->get_x()][c->get_y()] = c;
+	return true;
+}
+
 bool Board::moveY(bool isDrop)
 {
 	std::cerr << "moveY()\n";
 	return false;
 }
 
-void Board::setCurrentBlock(std::shared_ptr<Block> currentBlock)
+bool Board::setCurrentBlock(std::shared_ptr<Block> currentBlock)
 {
-	std::cerr << "current block set: " << (char)currentBlock->getType() << "\n";
+	if (this->_insertBlock(currentBlock)) {
+		std::cerr << "current block set: " << (char)currentBlock->getType() << "\n";
+		return true;
+	}
+	else {
+		std::cerr << "current block could not be inserted: " << (char)currentBlock->getType() << "\n";
+		return false;
+	}
 }

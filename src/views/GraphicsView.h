@@ -1,11 +1,11 @@
 #ifndef GRAPHICSVIEW_H
 #define GRAPHICSVIEW_H
 
-#include "View.h"
-#include "../window/Window.h"
-
 #include <string>
 #include <QApplication>
+
+#include "View.h"
+#include "../window/Window.h"
 
 class GraphicsView : public View
 {

@@ -27,9 +27,11 @@ public:
 	Cell(int x, int y, Block* parent, std::string png, bool isDeleted, char token);
 
 	std::string getSprite(void);
+	Coord getCoord(void) const;
 	int get_x(void);
 	int get_y(void);
 	char getToken(void) const;
+	const Block* getParent(void) const;
 
 private:
 	friend class Board;

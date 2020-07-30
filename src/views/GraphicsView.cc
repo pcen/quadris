@@ -55,6 +55,8 @@ GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* cont
 	_app(_qtArgCount, _qtArgs), _window{ name, game }
 {
 	qInstallMessageHandler(messageHandler);
+	// load quadris cell sprites
+	this->_window.loadSprites("./src/graphics/sprites.txt");
 	this->_window.open();
 	this->_open = true;
 }
@@ -62,14 +64,20 @@ GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* cont
 void GraphicsView::update(void)
 {
 	if (this->_game == nullptr || !this->_game->isRunning()) {
-		this->_shutdown();
+		return;
 	}
-
-	this->_window.render();
+	else {
+		this->_window.render();
+	}
 }
 
+// Interpret user keyboard and GUI input as Commands and push
+// commands to the Controller
 void GraphicsView::pollInput(void)
 {
+	if (this->_controller == nullptr)
+		return;
+
 	// process Qt events
 	this->_app.processEvents();
 
@@ -94,6 +102,9 @@ void GraphicsView::pollInput(void)
 		this->_shutdown();
 }
 
+// Unsubscribe from game here so that parent view cannot be subject to an
+// attempted update. Set _open member to false so that if this view is
+// in a ViewManager, the ViewManager will not poll this view for input
 void GraphicsView::_shutdown(void)
 {
 	// unsubscribing stops game from notifying view

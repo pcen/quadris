@@ -2,12 +2,12 @@
 
 Coord operator+(Coord a, Coord b)
 {
-	return Coord(a._x+b._x, a._y+b._y);
+	return Coord(a._x + b._x, a._y + b._y);
 }
 
 Coord operator-(Coord a, Coord b)
 {
-	return Coord(a._x-b._x, a._y-b._y);
+	return Coord(a._x - b._x, a._y - b._y);
 }
 
 Coord Coord::invert(void)
@@ -26,6 +26,11 @@ std::string Cell::getSprite(void)
 	return _sprite;
 }
 
+Coord Cell::getCoord(void) const
+{
+	return this->_coords;
+}
+
 int Cell::get_x(void)
 {
 	return this->_coords._x;
@@ -39,4 +44,9 @@ int Cell::get_y(void)
 char Cell::getToken(void) const
 {
 	return this->_token;
+}
+
+const Block* Cell::getParent(void) const
+{
+	return this->_parent;
 }
