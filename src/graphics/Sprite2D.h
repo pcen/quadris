@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <string>
-
 #include <QPixmap>
 
 class Sprite2D

@@ -33,8 +33,8 @@ private:
 	std::vector<int> _topOfColumns;
 	int _numBlockSinceClear;
 
-	BoardIterator begin();
-	BoardIterator end();
+	BoardIterator begin() const;
+	BoardIterator end() const;
 
 };
 

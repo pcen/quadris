@@ -26,7 +26,7 @@ class Cell
 public:
 	Cell(int x, int y, std::shared_ptr<Block> parent, std::string png, bool isDeleted, char token);
 
-	Sprite2D getSprite(void);
+	std::string getSprite(void);
 	int get_x(void);
 	int get_y(void);
 	char getToken(void) const;
@@ -34,7 +34,7 @@ public:
 private:
 	Coord _coords;
 	std::shared_ptr<Block> _parent;
-	Sprite2D _sprite;
+	std::string _sprite;
 	bool _isDeleted;
 	char _token;
 };

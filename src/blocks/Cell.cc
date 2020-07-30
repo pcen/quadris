@@ -16,12 +16,12 @@ Coord Coord::invert(void)
 }
 
 Cell::Cell(int x, int y, std::shared_ptr<Block> parent, std::string png, bool isDeleted, char token)
-	: _coords{x, y}, _parent{parent}, _sprite{Sprite2D(png)}, _isDeleted{isDeleted}, _token{ token }
+	: _coords{x, y}, _parent{parent}, _sprite{png}, _isDeleted{isDeleted}, _token{ token }
 {
 
 }
 
-Sprite2D Cell::getSprite(void)
+std::string Cell::getSprite(void)
 {
 	return _sprite;
 }

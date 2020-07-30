@@ -47,7 +47,6 @@ private:
 	int _width, _height;
 	std::string _title;
 	Sprite2D _card;
-	Board _board;
 
 	// Keyboard input
 	std::vector<int> _keyPressed;

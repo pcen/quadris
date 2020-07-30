@@ -1,10 +1,11 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include "Cell.h"
-
 #include <vector>
 #include <memory>
+
+#include "Cell.h"
+class Cell;
 
 enum class BlockType : char {
 	I = 'I',

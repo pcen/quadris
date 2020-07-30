@@ -24,7 +24,6 @@ ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in, s
 	this->_trie = std::make_shared<Trie>();
 	this->_buildTrie();
 
-	this->_board = Board("./assets/_.png");
 	this->_clearConsole();
 }
 
@@ -123,22 +122,22 @@ void ConsoleView::readInStream(void)
 			if (command == "title") {
 				this->_writeTitle();
 			}
-			if (command == "render") {
-				this->_displayGame();
-			}
+			// if (command == "render") {
+			// 	this->_displayGame();
+			// }
 		}
 	}
 }
 
-void ConsoleView::_displayGame(void)
+void ConsoleView::_displayGame(const Board& board) const
 {
 	this->_clearConsole();
 	this->_writeTitle();
-	this->_drawBoard();
+	this->_drawBoard(board);
 	this->_drawInputPrompt();
 }
 
-void ConsoleView::_clearConsole(void)
+void ConsoleView::_clearConsole(void) const
 {
 	if (&this->_out != &std::cout) {
 		std::cerr << "ERROR: clearing this console is not supported\n";
@@ -154,37 +153,36 @@ void ConsoleView::_clearConsole(void)
 	std::cerr << "ERROR: failed to clear console\n";
 }
 
-void ConsoleView::_writeTitle(void)
+void ConsoleView::_writeTitle(void) const
 {
 	this->_out << quadrisTitle;
 }
 
-void ConsoleView::_drawBoard(void)
+void ConsoleView::_drawBoard(const Board& board) const
 {
 	int row = 1;
 	std::string row_string = "   1      ";
-	for (auto i = this->_board.begin(); i != this->_board.end(); ++i) {
-		std::shared_ptr<Cell> c = *i;
+	for (auto i = board.begin(); i != board.end(); ++i) {
+		Cell c = *i;
 
-		if (c->get_y() + 1 > row) {
-			row = c->get_y() + 1;
-
+		if (17 - c.get_y() >= row) {
 			// add text to the right of the quadris board (if applicable)
-			this->_addInfo(row - 1, row_string);
+			this->_addInfo(row, row_string);
 			this->_out << row_string << "\n";
 
+			row++;
 			row_string.clear();
 			row_string.append("   " + std::to_string(row)); // add row number
-			row_string.append(std::string(6 - row / 10, ' ')); // pad to board
+			row_string.append(std::string(6 - (row / 10), ' ')); // pad to board
 		}
 
-		row_string.append(std::string(1, c->getToken())); // add cell's token
+		row_string.append(std::string(1, c.getToken())); // add cell token
 		row_string.append(" "); // add space between cells
 	}
 	this->_out << row_string << "\n";
 }
 
-void ConsoleView::_addInfo(int row, std::string& line)
+void ConsoleView::_addInfo(int row, std::string& line) const
 {
 	// left hand side of info text box
 	if (2 <= row && row <= 4)
@@ -216,7 +214,7 @@ void ConsoleView::_addInfo(int row, std::string& line)
 	}
 }
 
-void ConsoleView::_drawInputPrompt(void)
+void ConsoleView::_drawInputPrompt(void) const
 {
 	this->_out << "┌────────────────────────────────────────────────────────┐\n";
 	this->_out << "│ >                                                      │\n";
@@ -233,7 +231,8 @@ void ConsoleView::pollInput(void)
 
 void ConsoleView::notify(void) const
 {
-
+	const Board& board = this->_game->getBoard();
+	this->_displayGame(board);
 }
 
 // A normal ConsoleView tied to the program's execution and thus is

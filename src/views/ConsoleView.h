@@ -22,12 +22,12 @@ public:
 
 private:
 	// Display methods
-	void _displayGame(void);
-	void _clearConsole(void);
-	void _writeTitle(void);
-	void _drawBoard(void);
-	void _addInfo(int row, std::string& line);
-	void _drawInputPrompt(void);
+	void _displayGame(const Board& board) const;
+	void _clearConsole(void) const;
+	void _writeTitle(void) const;
+	void _drawBoard(const Board& board) const;
+	void _addInfo(int row, std::string& line) const;
+	void _drawInputPrompt(void) const;
 
 	// Trie methods
 	void _buildTrie(void);
@@ -37,8 +37,6 @@ private:
 	std::istream& _in;
 	std::ostream& _out;
 	std::thread _in_thread;
-
-	Board _board;
 };
 
 #endif // CONSOLEVIEW_H

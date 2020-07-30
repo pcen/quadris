@@ -25,7 +25,6 @@ Window::Window(const std::string& title, QWidget* parent, int width, int height)
 {
 	this->setTitle(title);
 	this->setSize(width, height);
-	this->_board = Board("./assets/_.png");
 	this->_initializeButtons();
 }
 
@@ -38,7 +37,9 @@ Window::~Window()
 void Window::_initializeButtons(void)
 {
 	// set button pane position
-	int btnOffset = this->_board.get_cell_size() * 12;
+	int btnOffset = 20;
+	// int btnOffset = this->_board.get_cell_size() * 12;
+
 	this->_buttonPane.move(btnOffset, 0);
 	this->_buttonPane.resize(this->_width - btnOffset, this->_height);
 
@@ -117,18 +118,18 @@ void Window::paintEvent(QPaintEvent* event)
 
 void Window::_draw_board(QPainter& painter)
 {
-	float cell_size = this->_board.get_cell_size();
-	for (auto i = this->_board.begin(); i != this->_board.end(); ++i) {
-		std::shared_ptr<Cell> currCell = *i;
-		if (currCell != nullptr) {
-			float x = currCell->get_x() * cell_size;
-			float y = currCell->get_y() * cell_size;
+	// float cell_size = this->_board.get_cell_size();
+	// for (auto i = this->_board.begin(); i != this->_board.end(); ++i) {
+	// 	std::shared_ptr<Cell> currCell = *i;
+	// 	if (currCell != nullptr) {
+	// 		float x = currCell->get_x() * cell_size;
+	// 		float y = currCell->get_y() * cell_size;
 
-			QRectF target = QRectF(x, y, cell_size, cell_size);
-			QPixmap pm = currCell->getSprite().getData();
-			painter.drawPixmap(target, pm, pm.rect());
-		}
-	}
+	// 		QRectF target = QRectF(x, y, cell_size, cell_size);
+	// 		QPixmap pm = currCell->getSprite().getData();
+	// 		painter.drawPixmap(target, pm, pm.rect());
+	// 	}
+	// }
 }
 
 // handle Qt events

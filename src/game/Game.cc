@@ -6,7 +6,7 @@ using namespace std;
 
 Game::Game()
 	: _running{true}, _level{make_unique<Level0>()}, _difficulty{0},
-	_score{0}, _highScore{0}, _random{false}
+	_board("./assets/_.png"), _score{0}, _highScore{0}, _random{false}
 {
 
 }
@@ -14,6 +14,11 @@ Game::Game()
 Game::~Game()
 {
 
+}
+
+const Board& Game::getBoard(void) const
+{
+	return this->_board;
 }
 
 void Game::update(const Command& command)

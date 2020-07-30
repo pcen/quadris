@@ -13,11 +13,12 @@
 class Game: public Subject
 {
 public:
-
 	Game();
 	~Game();
 	void update(const Command& command);
 	bool isRunning(void) const;
+
+	const Board& getBoard(void) const;
 
 	void launch();
 	void restart();
