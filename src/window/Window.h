@@ -3,9 +3,8 @@
 
 #include "../blocks/Board.h"
 
-#include <memory>
 #include <string>
-#include <unordered_map>
+#include <vector>
 
 #include <QMap>
 #include <QWidget>
@@ -27,6 +26,7 @@ public:
 	bool isOpen(void) const;
 	void setTitle(const std::string& title);
 	void setSize(int height, int width, bool fixed=true);
+	std::vector<std::string> getButtonInput(void);
 
 	void render(void);
 
@@ -48,8 +48,11 @@ private:
 
 	// GUI controls
 	void _initializeButtons(void);
+	void _positionButtons(void);
+	void _onButtonPress(std::string command);
 	QWidget _buttonPane;
-	QMap<std::string, QButtonPtr> _buttons;
+	QMap<std::string, QButtonPtr> _btns;
+	std::vector<std::string> _btnPressed;
 };
 
 #endif // WINDOW_H

@@ -1,8 +1,18 @@
 #include "GraphicsView.h"
 
-#include <iostream>
-
 #include "../controller/Command.h"
+
+#include <iostream>
+#include <unordered_map>
+
+static const std::unordered_map<std::string, CommandType> commandMap =
+{
+	{"left", CMD::LEFT}, {"right", CMD::RIGHT}, {"drop", CMD::DROP},
+	{"down", CMD::DOWN}, {"clockwise", CMD::CLOCKWISE},
+	{"counter clockwise", CMD::COUNTERCLOCKWISE},
+	{"level up", CMD::LEVELUP}, {"level down", CMD::LEVELDOWN},
+	{"restart", CMD::RESTART}, {"hint", CMD::HINT}
+};
 
 GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* controller, int argc, char** argv)
 	: View{ game, controller }, _open{ false }, _name{ name },
@@ -22,7 +32,16 @@ void GraphicsView::notify(void) const
 
 void GraphicsView::pollInput(void)
 {
+	// process Qt events
 	this->_app.processEvents();
+
+	// process window button input
+	std::vector<std::string> buttonInput = this->_window.getButtonInput();
+	for (auto& input : buttonInput) {
+		// if the button input is a valid command, send it to the controller
+		if (commandMap.find(input) != commandMap.end())
+			this->_controller->push(Command(commandMap.at(input)));
+	}
 
 	// user closed graphics view
 	if (!this->_window.isOpen())

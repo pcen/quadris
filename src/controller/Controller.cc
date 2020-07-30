@@ -1,5 +1,7 @@
 #include "Controller.h"
 
+#include <iostream>
+
 typedef std::lock_guard<std::mutex> thread_lock;
 
 Controller::Controller(Game& game)

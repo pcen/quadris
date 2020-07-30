@@ -31,7 +31,7 @@ ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in, s
 ConsoleView::~ConsoleView()
 {
 	// clean up console otherwise input box artifacts remain
-	this->_clearConsole();
+	// this->_clearConsole();
 	// join the _in_thread before application exits
 	if (this->_in_thread.joinable())
 		this->_in_thread.join();
