@@ -24,10 +24,8 @@ private:
 	// Display methods
 	void _displayGame(const Board& board);
 	void _clearConsole(void);
-	void _writeTitle(void);
-	void _drawBoard(const Board& board);
-	void _addInfo(int row, std::string& line);
-	void _drawInputPrompt(void);
+	void _prepareDisplay(std::string& display, const Board& board);
+	void _addInfo(int row, std::string& display);
 
 	// Trie methods
 	void _buildTrie(void);

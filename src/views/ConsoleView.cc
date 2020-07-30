@@ -31,6 +31,7 @@ ConsoleView::~ConsoleView()
 {
 	// clean up console otherwise input box artifacts remain
 	// this->_clearConsole();
+
 	// join the _in_thread before application exits
 	if (this->_in_thread.joinable())
 		this->_in_thread.join();
@@ -39,7 +40,6 @@ ConsoleView::~ConsoleView()
 void ConsoleView::_buildTrie()
 {
 	std::ifstream infile("./src/controller/commands.txt");
-
 	std::string command;
 	int id;
 	while (infile >> command >> id)
@@ -49,9 +49,7 @@ void ConsoleView::_buildTrie()
 std::vector<Command> ConsoleView::_processCommand(const std::string& s) const
 {
 	std::vector<Command> commands;
-
 	unsigned int split = 0;
-
 	for (; split < s.length(); split++) {
 		char c = s[split];
 		if (c > '9' || c < '0')
@@ -61,14 +59,11 @@ std::vector<Command> ConsoleView::_processCommand(const std::string& s) const
 	std::string multiplierString = s.substr(0, split);
 	int multiplier = multiplierString.length() ? std::stoi(multiplierString) : 1;
 	std::string command = s.substr(split);
-
 	Command matchingCommand = _trie->findShortestPrefix(command);
-
 	if (matchingCommand.type != CommandType::UNDEFINED_COMMAND) {
 		for (int i = 0; i < multiplier; i++)
 			commands.push_back(matchingCommand);
 	}
-
 	return commands;
 }
 
@@ -81,6 +76,7 @@ void ConsoleView::readInStream(void)
 {
 	std::string command;
 	while (this->_game->isRunning()) {
+		// EOF should terminate
 		this->_in >> command;
 
 		// Since the game may terminate while waiting for input, check if the
@@ -117,116 +113,92 @@ void ConsoleView::readInStream(void)
 			if (command == "clear") {
 				this->_clearConsole();
 			}
-			if (command == "title") {
-				this->_writeTitle();
-			}
-			// if (command == "render") {
-			// 	this->_displayGame();
-			// }
 		}
 	}
 }
 
 void ConsoleView::_displayGame(const Board& board)
 {
+	std::string display; // next console frame
+	this->_prepareDisplay(display, board);
 	this->_clearConsole();
-	this->_writeTitle();
-	this->_drawBoard(board);
-	// this->_drawInputPrompt();
+	this->_out << display;
+	this->_out.flush();
 }
 
 void ConsoleView::_clearConsole(void)
 {
-	if (&this->_out != &std::cout) {
-		std::cerr << "ERROR: clearing this console is not supported\n";
-		return;
+	if (&this->_out != &std::cout || system(nullptr) == 0) {
+		std::cerr << "ERROR: cannot clear this console\n";
+	} else if (!(system("clear") == 0 || system("cls") == 0)) {
+		std::cerr << "ERROR: failed to clear console\n";
 	}
-	if (system(nullptr) == 0) {
-		std::cerr << "ERROR: system not available\n";
-		return;
-	}
-	if (system("clear") == 0 || system("cls") == 0) {
-		return;
-	}
-	std::cerr << "ERROR: failed to clear console\n";
 }
 
-void ConsoleView::_writeTitle(void)
+void ConsoleView::_prepareDisplay(std::string& display, const Board& board)
 {
-	this->_out << quadrisTitle;
-}
-
-void ConsoleView::_drawBoard(const Board& board)
-{
+	display.append(quadrisTitle);
 	int row = 1;
-	std::string row_string = "   1      ";
+	std::string board_string = "   1      ";
 	for (auto i = board.begin(); i != board.end(); ++i) {
 		Cell c = *i;
 
 		if (17 - c.get_y() >= row) {
 			// add text to the right of the quadris board (if applicable)
-			this->_addInfo(row, row_string);
-			this->_out << row_string << "\n";
+			this->_addInfo(row, board_string);
 
 			row++;
-			row_string.clear();
-			row_string.append("   " + std::to_string(row)); // add row number
-			row_string.append(std::string(6 - (row / 10), ' ')); // pad to board
+			board_string.append("\n   " + std::to_string(row)); // add row number
+			board_string.append(std::string(6 - (row / 10), ' ')); // pad to board
 		}
 
-		row_string.append(std::string(1, c.getToken())); // add cell token
-		row_string.append(" "); // add space between cells
+		board_string.append(std::string(1, c.getToken())); // add cell token
+		board_string.append(" "); // add space between cells
 	}
-	this->_out << row_string << "\n";
-	this->_out << "  > ";
+	display.append(board_string);
+	display.append("\n┌────────────────────────────────────────────────────────┐\n");
+	display.append("│ >                                                      │\n");
+	display.append("└────────────────────────────────────────────────────────┘");
+	display.append("\x1b[A");
+	display.append("\r│ > ");
 }
 
-void ConsoleView::_addInfo(int row, std::string& line)
+void ConsoleView::_addInfo(int row, std::string& display)
 {
-	// left hand side of info text box
+	std::string info;
 	if (2 <= row && row <= 4)
-		line.append("    │ ");
+		info.append("    │ ");
 
 	switch (row) {
 	case 2:
-		line.append("level: 69");
+		info.append("level: 69");
 		break;
 	case 3:
-		line.append("score: 420");
+		info.append("score: 420");
 		break;
 	case 4:
-		line.append("high score: 42069");
+		info.append("high score: 42069");
 		break;
 	case 1:
-		line.append("    ┌────────────────────┐");
+		info.append("    ┌────────────────────┐");
 		break;
 	case 5:
-		line.append("    └────────────────────┘");
+		info.append("    └────────────────────┘");
 		break;
 	default:
 		return;
 	}
 	// right hand side of info text box
 	if (2 <= row && row <= 4) {
-		line.append(std::string(59 - line.length(), ' '));
-		line.append("│");
+		info.append(std::string(27 - info.length(), ' '));
+		info.append("│");
 	}
-}
-
-void ConsoleView::_drawInputPrompt(void)
-{
-	this->_out << "\n  > ";
-	// this->_out << "┌────────────────────────────────────────────────────────┐\n";
-	// this->_out << "│ >                                                      │\n";
-	// this->_out << "└────────────────────────────────────────────────────────┘";
-	// this->_out << "\x1b[A" << "\r│ > ";
+	display.append(info);
 }
 
 void ConsoleView::pollInput(void)
 {
-	// input stream must be polled from separate thread
-	// TODO: maybe here if game is not running the input stream thread
-	//       can somehow be killed so the user in not requred to type "quit"
+	// input stream must be polled from separate thread and not here
 }
 
 void ConsoleView::update(void)
