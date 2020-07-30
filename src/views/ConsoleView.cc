@@ -44,9 +44,7 @@ void ConsoleView::_buildTrie()
 	std::string command;
 	int id;
 	while (infile >> command >> id)
-	{
 		_trie->push(command, (CommandType) id);
-	}
 }
 
 std::vector<Command> ConsoleView::_processCommand(const std::string& s) const
@@ -63,14 +61,13 @@ std::vector<Command> ConsoleView::_processCommand(const std::string& s) const
 
 	std::string multiplierString = s.substr(0, split);
 	int multiplier = multiplierString.length() ? std::stoi(multiplierString) : 1;
-  	std::string command = s.substr(split);
+	std::string command = s.substr(split);
 
 	Command matchingCommand = _trie->findShortestPrefix(command);
 
 	if (matchingCommand.type != CommandType::UNDEFINED_COMMAND) {
-		for (int i = 0; i < multiplier; i++) {
+		for (int i = 0; i < multiplier; i++)
 			commands.push_back(matchingCommand);
-		}
 	}
 
 	return commands;
