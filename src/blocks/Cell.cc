@@ -15,7 +15,7 @@ Coord Coord::invert(void)
 	return Coord(this->_y, this->_x);
 }
 
-Cell::Cell(int x, int y, std::shared_ptr<Block> parent, std::string png, bool isDeleted, char token)
+Cell::Cell(int x, int y, Block* parent, std::string png, bool isDeleted, char token)
 	: _coords{x, y}, _parent{parent}, _sprite{png}, _isDeleted{isDeleted}, _token{ token }
 {
 

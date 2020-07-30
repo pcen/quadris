@@ -5,16 +5,17 @@
 #include <memory>
 
 class Block;
+class Board;
 
 struct Coord
 {
 	int _x;
 	int _y;
 
-	Coord invert(void);
-
 	Coord() {};
 	Coord(uint x, uint y) : _x(x), _y(y) {};
+
+	Coord invert(void);
 };
 
 Coord operator+(Coord a, Coord b);
@@ -23,7 +24,7 @@ Coord operator-(Coord a, Coord b);
 class Cell
 {
 public:
-	Cell(int x, int y, std::shared_ptr<Block> parent, std::string png, bool isDeleted, char token);
+	Cell(int x, int y, Block* parent, std::string png, bool isDeleted, char token);
 
 	std::string getSprite(void);
 	int get_x(void);
@@ -31,8 +32,10 @@ public:
 	char getToken(void) const;
 
 private:
+	friend class Board;
+
 	Coord _coords;
-	std::shared_ptr<Block> _parent;
+	Block* _parent;
 	std::string _sprite;
 	bool _isDeleted;
 	char _token;

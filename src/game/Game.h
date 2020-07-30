@@ -22,7 +22,6 @@ public:
 	bool isRunning(void) const;
 
 	const Board& getBoard(void) const;
-	const std::vector<Coord> getBoardChanges(void);
 
 	// gameplay methods
 	void launch();
@@ -35,12 +34,10 @@ public:
 private:
 
 	Board _board;
-	bool _running;
 	std::unique_ptr<Level> _level;
-	int _difficulty;
+	bool _running;
 	uint _score;
 	uint _highScore;
-	bool _random;
 
 };
 

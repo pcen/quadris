@@ -19,7 +19,7 @@ enum class BlockType : char {
 	EMPTY = '.'
 };
 
-class Block : public std::enable_shared_from_this<Block>
+class Block
 {
 public:
 	virtual ~Block() {};

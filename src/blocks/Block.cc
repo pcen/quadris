@@ -27,13 +27,13 @@ IBlock::IBlock(int level)
 	_type = BlockType::I;
 	_bottomLeft = Coord(0,14);
 
-	_cells.emplace_back(std::make_shared<Cell>(0,14,shared_from_this(),"./assets/i.png",false,(char)BlockType::I));
-	_cells.emplace_back(std::make_shared<Cell>(1,14,shared_from_this(),"./assets/i.png",false,(char)BlockType::I));
-	_cells.emplace_back(std::make_shared<Cell>(2,14,shared_from_this(),"./assets/i.png",false,(char)BlockType::I));
-	_cells.emplace_back(std::make_shared<Cell>(3,14,shared_from_this(),"./assets/i.png",false,(char)BlockType::I));
+	_cells.emplace_back(std::make_shared<Cell>(0,14,this,"./assets/i.png",false,(char)BlockType::I));
+	_cells.emplace_back(std::make_shared<Cell>(1,14,this,"./assets/i.png",false,(char)BlockType::I));
+	_cells.emplace_back(std::make_shared<Cell>(2,14,this,"./assets/i.png",false,(char)BlockType::I));
+	_cells.emplace_back(std::make_shared<Cell>(3,14,this,"./assets/i.png",false,(char)BlockType::I));
 
 	_levelGenerated = level;
-	_isHeavy = (_levelGenerated >= 3);
+	_isHeavy = (level >= 3);
 }
 
 JBlock::JBlock(int level)
@@ -41,13 +41,13 @@ JBlock::JBlock(int level)
 	_type = BlockType::J;
 	_bottomLeft = Coord(0,13);
 
-	_cells.emplace_back(std::make_shared<Cell>(0,14,shared_from_this(),"./assets/j.png",false,(char)BlockType::J));
-	_cells.emplace_back(std::make_shared<Cell>(0,13,shared_from_this(),"./assets/j.png",false,(char)BlockType::J));
-	_cells.emplace_back(std::make_shared<Cell>(1,13,shared_from_this(),"./assets/j.png",false,(char)BlockType::J));
-	_cells.emplace_back(std::make_shared<Cell>(2,13,shared_from_this(),"./assets/j.png",false,(char)BlockType::J));
+	_cells.emplace_back(std::make_shared<Cell>(0,14,this,"./assets/j.png",false,(char)BlockType::J));
+	_cells.emplace_back(std::make_shared<Cell>(0,13,this,"./assets/j.png",false,(char)BlockType::J));
+	_cells.emplace_back(std::make_shared<Cell>(1,13,this,"./assets/j.png",false,(char)BlockType::J));
+	_cells.emplace_back(std::make_shared<Cell>(2,13,this,"./assets/j.png",false,(char)BlockType::J));
 
 	_levelGenerated = level;
-	_isHeavy = (_levelGenerated >= 3);
+	_isHeavy = (level >= 3);
 }
 
 LBlock::LBlock(int level)
@@ -55,13 +55,13 @@ LBlock::LBlock(int level)
 	_type = BlockType::L;
 	_bottomLeft = Coord(0,13);
 
-	_cells.emplace_back(std::make_shared<Cell>(0,13,shared_from_this(),"./assets/l.png",false,(char)BlockType::L));
-	_cells.emplace_back(std::make_shared<Cell>(1,13,shared_from_this(),"./assets/l.png",false,(char)BlockType::L));
-	_cells.emplace_back(std::make_shared<Cell>(2,13,shared_from_this(),"./assets/l.png",false,(char)BlockType::L));
-	_cells.emplace_back(std::make_shared<Cell>(2,14,shared_from_this(),"./assets/l.png",false,(char)BlockType::L));
+	_cells.emplace_back(std::make_shared<Cell>(0,13,this,"./assets/l.png",false,(char)BlockType::L));
+	_cells.emplace_back(std::make_shared<Cell>(1,13,this,"./assets/l.png",false,(char)BlockType::L));
+	_cells.emplace_back(std::make_shared<Cell>(2,13,this,"./assets/l.png",false,(char)BlockType::L));
+	_cells.emplace_back(std::make_shared<Cell>(2,14,this,"./assets/l.png",false,(char)BlockType::L));
 
 	_levelGenerated = level;
-	_isHeavy = (_levelGenerated >= 3);
+	_isHeavy = (level >= 3);
 }
 
 OBlock::OBlock(int level)
@@ -69,13 +69,13 @@ OBlock::OBlock(int level)
 	_type = BlockType::O;
 	_bottomLeft = Coord(0,13);
 
-	_cells.emplace_back(std::make_shared<Cell>(0,13,shared_from_this(),"./assets/o.png",false,(char)BlockType::O));
-	_cells.emplace_back(std::make_shared<Cell>(0,14,shared_from_this(),"./assets/o.png",false,(char)BlockType::O));
-	_cells.emplace_back(std::make_shared<Cell>(1,13,shared_from_this(),"./assets/o.png",false,(char)BlockType::O));
-	_cells.emplace_back(std::make_shared<Cell>(1,14,shared_from_this(),"./assets/o.png",false,(char)BlockType::O));
+	_cells.emplace_back(std::make_shared<Cell>(0,13,this,"./assets/o.png",false,(char)BlockType::O));
+	_cells.emplace_back(std::make_shared<Cell>(0,14,this,"./assets/o.png",false,(char)BlockType::O));
+	_cells.emplace_back(std::make_shared<Cell>(1,13,this,"./assets/o.png",false,(char)BlockType::O));
+	_cells.emplace_back(std::make_shared<Cell>(1,14,this,"./assets/o.png",false,(char)BlockType::O));
 
 	_levelGenerated = level;
-	_isHeavy = (_levelGenerated >= 3);
+	_isHeavy = (level >= 3);
 }
 
 SBlock::SBlock(int level)
@@ -83,13 +83,13 @@ SBlock::SBlock(int level)
 	_type = BlockType::S;
 	_bottomLeft = Coord(0,13);
 
-	_cells.emplace_back(std::make_shared<Cell>(0,13,shared_from_this(),"./assets/s.png",false,(char)BlockType::S));
-	_cells.emplace_back(std::make_shared<Cell>(1,13,shared_from_this(),"./assets/s.png",false,(char)BlockType::S));
-	_cells.emplace_back(std::make_shared<Cell>(1,14,shared_from_this(),"./assets/s.png",false,(char)BlockType::S));
-	_cells.emplace_back(std::make_shared<Cell>(2,14,shared_from_this(),"./assets/s.png",false,(char)BlockType::S));
+	_cells.emplace_back(std::make_shared<Cell>(0,13,this,"./assets/s.png",false,(char)BlockType::S));
+	_cells.emplace_back(std::make_shared<Cell>(1,13,this,"./assets/s.png",false,(char)BlockType::S));
+	_cells.emplace_back(std::make_shared<Cell>(1,14,this,"./assets/s.png",false,(char)BlockType::S));
+	_cells.emplace_back(std::make_shared<Cell>(2,14,this,"./assets/s.png",false,(char)BlockType::S));
 
 	_levelGenerated = level;
-	_isHeavy = (_levelGenerated >= 3);
+	_isHeavy = (level >= 3);
 }
 
 ZBlock::ZBlock(int level)
@@ -97,13 +97,13 @@ ZBlock::ZBlock(int level)
 	_type = BlockType::Z;
 	_bottomLeft = Coord(0,13);
 
-	_cells.emplace_back(std::make_shared<Cell>(0,14,shared_from_this(),"./assets/z.png",false,(char)BlockType::Z));
-	_cells.emplace_back(std::make_shared<Cell>(1,14,shared_from_this(),"./assets/z.png",false,(char)BlockType::Z));
-	_cells.emplace_back(std::make_shared<Cell>(1,13,shared_from_this(),"./assets/z.png",false,(char)BlockType::Z));
-	_cells.emplace_back(std::make_shared<Cell>(2,13,shared_from_this(),"./assets/z.png",false,(char)BlockType::Z));
+	_cells.emplace_back(std::make_shared<Cell>(0,14,this,"./assets/z.png",false,(char)BlockType::Z));
+	_cells.emplace_back(std::make_shared<Cell>(1,14,this,"./assets/z.png",false,(char)BlockType::Z));
+	_cells.emplace_back(std::make_shared<Cell>(1,13,this,"./assets/z.png",false,(char)BlockType::Z));
+	_cells.emplace_back(std::make_shared<Cell>(2,13,this,"./assets/z.png",false,(char)BlockType::Z));
 
 	_levelGenerated = level;
-	_isHeavy = (_levelGenerated >= 3);
+	_isHeavy = (level >= 3);
 }
 
 TBlock::TBlock(int level)
@@ -111,13 +111,13 @@ TBlock::TBlock(int level)
 	_type = BlockType::T;
 	_bottomLeft = Coord(0,13);
 
-	_cells.emplace_back(std::make_shared<Cell>(0,14,shared_from_this(),"./assets/t.png",false,(char)BlockType::T));
-	_cells.emplace_back(std::make_shared<Cell>(1,14,shared_from_this(),"./assets/t.png",false,(char)BlockType::T));
-	_cells.emplace_back(std::make_shared<Cell>(1,13,shared_from_this(),"./assets/t.png",false,(char)BlockType::T));
-	_cells.emplace_back(std::make_shared<Cell>(2,14,shared_from_this(),"./assets/t.png",false,(char)BlockType::T));
+	_cells.emplace_back(std::make_shared<Cell>(0,14,this,"./assets/t.png",false,(char)BlockType::T));
+	_cells.emplace_back(std::make_shared<Cell>(1,14,this,"./assets/t.png",false,(char)BlockType::T));
+	_cells.emplace_back(std::make_shared<Cell>(1,13,this,"./assets/t.png",false,(char)BlockType::T));
+	_cells.emplace_back(std::make_shared<Cell>(2,14,this,"./assets/t.png",false,(char)BlockType::T));
 
 	_levelGenerated = level;
-	_isHeavy = (_levelGenerated >= 3);
+	_isHeavy = (level >= 3);
 }
 
 BlockType Block::getType(void)

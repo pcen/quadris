@@ -9,16 +9,13 @@ class Game;
 
 class Level
 {
-	friend class Game;
-
 public:
 	virtual ~Level() {};
-
 	virtual std::shared_ptr<Block> getNextBlock(void) const = 0;
 
-	int getLevel() const {return _level;};
-
 protected:
+	friend class Game;
+
 	int _level;
 	bool _random;
 	std::string _filePath;

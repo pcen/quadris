@@ -15,11 +15,11 @@ private:
 
 	class Factory : public BlockFactory
 	{
+			friend class BlockFactoryInitializer;
 		public:
 			std::shared_ptr<Block> create(int level) {
 				return std::make_shared<IBlock>(level);
 			};
-			friend class BlockFactoryInitializer;
 	};
 };
 
@@ -35,11 +35,11 @@ private:
 
 	class Factory : public BlockFactory
 	{
+			friend class BlockFactoryInitializer;
 		public:
 			std::shared_ptr<Block> create(int level) {
 				return std::make_shared<JBlock>(level);
 			};
-			friend class BlockFactoryInitializer;
 	};
 };
 
@@ -55,11 +55,11 @@ private:
 
 	class Factory : public BlockFactory
 	{
+			friend class BlockFactoryInitializer;
 		public:
 			std::shared_ptr<Block> create(int level) {
 				return std::make_shared<LBlock>(level);
 			};
-			friend class BlockFactoryInitializer;
 	};
 };
 
@@ -75,11 +75,11 @@ private:
 
 	class Factory : public BlockFactory
 	{
+			friend class BlockFactoryInitializer;
 		public:
 			std::shared_ptr<Block> create(int level) {
 				return std::make_shared<OBlock>(level);
 			};
-			friend class BlockFactoryInitializer;
 	};
 };
 
@@ -95,11 +95,11 @@ private:
 
 	class Factory : public BlockFactory
 	{
+			friend class BlockFactoryInitializer;
 		public:
 			std::shared_ptr<Block> create(int level) {
 				return std::make_shared<SBlock>(level);
 			};
-			friend class BlockFactoryInitializer;
 	};
 };
 
@@ -115,11 +115,11 @@ private:
 
 	class Factory : public BlockFactory
 	{
+			friend class BlockFactoryInitializer;
 		public:
 			std::shared_ptr<Block> create(int level) {
 				return std::make_shared<ZBlock>(level);
 			};
-			friend class BlockFactoryInitializer;
 	};
 };
 
@@ -135,11 +135,11 @@ private:
 
 	class Factory : public BlockFactory
 	{
+			friend class BlockFactoryInitializer;
 		public:
 			std::shared_ptr<Block> create(int level) {
 				return std::make_shared<TBlock>(level);
 			};
-			friend class BlockFactoryInitializer;
 	};
 };
 

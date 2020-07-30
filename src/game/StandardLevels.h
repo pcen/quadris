@@ -9,6 +9,7 @@
 class Level0 : public Level
 {
 public:
+	~Level0();
 	Level0(std::string, Game*, bool);
 	std::shared_ptr<Block> getNextBlock(void) const override;
 };
@@ -33,6 +34,7 @@ public:
 class Level3 : public Level
 {
 public:
+	~Level3();
 	Level3(std::string, Game*, bool);
 	virtual std::shared_ptr<Block> getNextBlock(void) const override;
 };
@@ -41,6 +43,7 @@ public:
 class Level4 : public Level3
 {
 public:
+	~Level4();
 	Level4(std::string, Game*, bool, std::shared_ptr<Level3>);
 	std::shared_ptr<Block> getNextBlock(void) const override;
 private:

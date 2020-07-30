@@ -17,7 +17,6 @@ Board::Board(std::string png, float cell_size)
 		std::vector<std::shared_ptr<Cell>> images;
 		for(int i = 0; i < 18; ++i){
 			std::shared_ptr<Cell> newCell = std::make_shared<Cell>(j, i, nullptr, png, false, (char)BlockType::EMPTY);
-			this->_boardChanges.push_back(Coord(j, i));
 			images.push_back(newCell);
 		}
 		this->_board.push_back(images);

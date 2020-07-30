@@ -13,8 +13,6 @@ class ConsoleView;
 
 class Board
 {
-	friend class Game;
-
 public:
 	Board();
 	Board(std::string png, float cell_size = default_cell_size);
@@ -27,6 +25,7 @@ public:
 	BoardIterator end() const;
 
 private:
+	friend class Game;
 
 	float _cell_size;
 
@@ -35,8 +34,6 @@ private:
 	std::shared_ptr<Block> _currentBlock;
 	std::vector<int> _topOfColumns;
 	int _numBlockSinceClear;
-
-	std::vector<Coord> _boardChanges;
 };
 
 #endif // BOARD_H
