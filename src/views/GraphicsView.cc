@@ -26,9 +26,10 @@ static const std::unordered_map<int, CommandType> keyCommandMap = {
 	{32, CMD::DROP}
 };
 
-GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* controller, int argc, char** argv)
-	: View{ game, controller }, _open{ false }, _name{ name },
-	_app(argc, argv), _window{ name }
+GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* controller)
+	: View{ game, controller }, _qtArgCount{ 0 }, _qtArgs{ nullptr },
+	_open{ false }, _name{ name },
+	_app(_qtArgCount, _qtArgs), _window{ name }
 {
 	this->_window.open();
 	this->_open = true;
