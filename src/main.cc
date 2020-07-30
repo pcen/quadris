@@ -28,9 +28,6 @@ private:
 	std::unordered_set<std::string> _arguments;
 };
 
-std::map<std::string, std::unique_ptr<BlockFactory>> BlockFactory::_factories;
-BlockFactoryInitializer BlockFactoryInitializer::si;
-
 int main(int argc, char* argv[])
 {
 	auto args = Arguments(argc, argv);

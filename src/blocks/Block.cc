@@ -1,6 +1,10 @@
 #include "Block.h"
 #include "StandardBlocks.h"
 
+// define static instances
+std::map<std::string, std::unique_ptr<BlockFactory>> BlockFactory::_factories;
+BlockFactoryInitializer BlockFactoryInitializer::si;
+
 BlockFactoryInitializer::BlockFactoryInitializer()
 {
 	BlockFactory::_factories["I"] = std::make_unique<IBlock::Factory>();
