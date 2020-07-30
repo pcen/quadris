@@ -12,9 +12,14 @@ struct Coord
 	int _x;
 	int _y;
 
+	Coord invert(void);
+
 	Coord() {};
 	Coord(uint x, uint y) : _x(x), _y(y) {};
 };
+
+Coord operator+(Coord a, Coord b);
+Coord operator-(Coord a, Coord b);
 
 class Cell
 {
@@ -25,8 +30,8 @@ public:
 	int get_x(void);
 	int get_y(void);
 	char getToken(void) const;
-private:
 
+private:
 	Coord _coords;
 	std::shared_ptr<Block> _parent;
 	Sprite2D _sprite;

@@ -17,19 +17,6 @@ enum class BlockType : char {
 	EMPTY = '.'
 };
 
-#include <vector>
-#include <memory>
-
-enum class BlockType{
-	I = 'I',
-	J = 'J',
-	L = 'L',
-	O = 'O',
-	S = 'S',
-	Z = 'Z',
-	T = 'T'
-};
-
 class Block : public std::enable_shared_from_this<Block>
 {
 public:
@@ -38,7 +25,6 @@ public:
 	BlockType getType(void);
 
 protected:
-
 	BlockType _type;
 	Coord _bottomLeft;
 	std::vector<std::shared_ptr<Cell>> _cells;
@@ -50,7 +36,6 @@ protected:
 
 
 class BlockFactoryInitializer;
-
 
 class BlockFactory
 {
@@ -66,7 +51,6 @@ private:
 };
 
 
-
 class BlockFactoryInitializer
 {
 private:
@@ -75,7 +59,5 @@ private:
 	BlockFactoryInitializer();
 	~BlockFactoryInitializer() {};
 };
-
-
 
 #endif // BLOCK_H
