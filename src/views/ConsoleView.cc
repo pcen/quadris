@@ -76,7 +76,7 @@ void ConsoleView::readInStream(void)
 {
 	std::string command;
 	while (this->_game->isRunning()) {
-		// EOF should terminate
+		// TODO: EOF should terminate
 		this->_in >> command;
 
 		// Since the game may terminate while waiting for input, check if the
@@ -109,9 +109,6 @@ void ConsoleView::readInStream(void)
 					this->_subscribed = false;
 				}
 				return;
-			}
-			if (command == "clear") {
-				this->_clearConsole();
 			}
 		}
 	}

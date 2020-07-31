@@ -43,14 +43,8 @@ void Game::update(const Command& command)
 			dropped = true;
 			break;
 		case CMD::RESTART:
-			{
-				this->_board.reset();
-				auto nextBlock = std::make_shared<IBlock>(this->_level->getLevel()); // this->_level->getNextBlock();
-				if (this->_board.setCurrentBlock(nextBlock) == false) {
-					std::cerr << "could not add next block\n";
-				}
-				break;
-			}
+			this->restart();
+			break;
 		default:
 			break;
 	}
@@ -78,7 +72,11 @@ void Game::launch(void)
 
 void Game::restart(void)
 {
-
+	this->_board.reset();
+	auto nextBlock = std::make_shared<IBlock>(this->_level->getLevel()); // this->_level->getNextBlock();
+	if (this->_board.setCurrentBlock(nextBlock) == false) {
+		std::cerr << "could not add next block\n";
+	}
 }
 
 bool Game::isRunning(void) const

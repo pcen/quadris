@@ -121,7 +121,6 @@ bool Board::_validTranslation(Direction direction)
 			return false;
 		}
 	}
-	std::cerr << "true!\n";
 	return true;
 }
 
