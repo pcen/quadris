@@ -6,9 +6,6 @@
 #include <QPainter>
 #include <QAction>
 
-#include "../graphics/Sprite2D.h"
-
-
 #define BUTTON_COUNT 10
 static const std::string buttonLabels[BUTTON_COUNT] = {
 	"left", "right", "down", "drop", "clockwise", "counter clockwise",
@@ -127,10 +124,9 @@ void Window::paintEvent(QPaintEvent* event)
 
 void Window::_drawBoard(QPainter& painter)
 {
-	const Board& board = this->_game->getBoard();
-	auto currentBlock = board.getCurrentBlock();
-	float cell_size = board.getCellSize();
 	// render board
+	const Board& board = this->_game->getBoard();
+	float cell_size = board.getCellSize();
 	for (auto i = board.begin(); i != board.end(); ++i) {
 		Cell c = *i;
 		float x = c.get_x() * cell_size;
@@ -142,7 +138,9 @@ void Window::_drawBoard(QPainter& painter)
 		QPixmap pm = sprite->getData();
 		painter.drawPixmap(target, pm, pm.rect());
 	}
+
 	// render current block
+	auto currentBlock = board.getCurrentBlock();
 	if (currentBlock != nullptr) {
 		for (auto& c : currentBlock->getCells()) {
 			float x = c->get_x() * cell_size;

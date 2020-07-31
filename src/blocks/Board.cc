@@ -94,13 +94,13 @@ bool Board::_validTranslation(Direction direction)
 		Coord newPos(c->get_x() + delta._x, c->get_y() + delta._y);
 		// if the new position is out of bounds, return false
 		if (!this->_inBounds(newPos)) {
-			std::cerr << "not in bounds\n";
+			// std::cerr << "not in bounds\n";
 			return false;
 		}
 
 		// if the new position is not empty cells, return false
 		if (this->at(newPos).getType() != BlockType::EMPTY) {
-			std::cerr << "not empty block\n";
+			// std::cerr << "not empty block\n";
 			return false;
 		}
 	}
@@ -118,26 +118,61 @@ void Board::_doTranslation(Direction direction)
 	}
 }
 
+// insert the given block's cells into the board
+// this method does not check if the board is currently occupied
+// at the blocks position
 void Board::_insertBlock(std::shared_ptr<Block> block)
 {
-	// auto cells = block->getCells();
-	// for (auto& c : cells)
-	// 	this->_board[c->get_x()][c->get_y()] = c;
+	auto cells = block->getCells();
+	for (auto& c : cells)
+		this->_board[c->get_x()][c->get_y()] = c;
 }
 
-// gameplay methods
-
-bool Board::moveY(bool isDrop)
+// translate the currently active block in the given direction
+// translates by 1 cell in the direction specified
+bool Board::translate(Direction direction)
 {
-	if (this->_validTranslation(Direction::DOWN)) {
-		this->_doTranslation(Direction::DOWN);
+	if (this->_validTranslation(direction)) {
+		this->_doTranslation(direction);
 		return true;
 	}
 	return false;
 }
 
+// translate the current block down until it is no longer a valid translation
+bool Board::drop(void)
+{
+	bool dropped = false;
+	while (this->_validTranslation(Direction::DOWN)) {
+		dropped = true;
+		this->_doTranslation(Direction::DOWN);
+	}
+	return dropped;
+}
+
+// insert the cells of the currently active block into the board
+bool Board::insertCurrentBlock(void)
+{
+	if (this->_validTranslation(Direction::NONE)) {
+		// insert the current block's cells into the board
+		this->_insertBlock(this->_currentBlock);
+		// put the current block into the vector of blocks,
+		// since a new block should become current
+		this->_blocks.push_back(this->_currentBlock);
+		return true;
+	}
+	else {
+		std::cerr << "ERROR: cannot insert current block since it is"
+		          << " at an invalid board position.\n";
+		return false;
+	}
+}
+
 bool Board::setCurrentBlock(std::shared_ptr<Block> currentBlock)
 {
 	this->_currentBlock = currentBlock;
-	return true;
+	if (this->_validTranslation(Direction::NONE))
+		return true;
+	this->_currentBlock = nullptr;
+	return false;
 }

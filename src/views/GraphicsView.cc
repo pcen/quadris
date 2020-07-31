@@ -63,12 +63,10 @@ GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* cont
 
 void GraphicsView::update(void)
 {
-	if (this->_game == nullptr || !this->_game->isRunning()) {
+	if (this->_game == nullptr || !this->_game->isRunning())
 		return;
-	}
-	else {
+	else
 		this->_window.render();
-	}
 }
 
 // Interpret user keyboard and GUI input as Commands and push

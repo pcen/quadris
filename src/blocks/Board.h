@@ -30,10 +30,17 @@ public:
 
 	float getCellSize(void) const;
 
-	bool moveY(bool isDrop);
+	// translate the currently active block in the given direction
+	bool translate(Direction direction);
+	// drop the currently active block
+	bool drop(void);
+	// insert the currently active block cells into the table
+	bool insertCurrentBlock(void);
 
-	std::shared_ptr<Block> getCurrentBlock(void) const;
+	// set the currently active block
 	bool setCurrentBlock(std::shared_ptr<Block> currentBlock);
+	// get the currently active block
+	std::shared_ptr<Block> getCurrentBlock(void) const;
 
 	BoardIterator begin() const;
 	BoardIterator end() const;
@@ -55,7 +62,6 @@ private:
 	std::shared_ptr<Block> _currentBlock;
 	std::vector<int> _topOfColumns;
 	int _numBlockSinceClear;
-
 };
 
 #endif // BOARD_H
