@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 		startLevel = stoi(args.getParam("-startlevel"));
 	}
 
-	Game game(startLevel, std::string("././src/game/sequence.txt"));
+	Game game(startLevel, std::string("./src/game/sequence.txt"));
 	Controller ctrl(game);
 	ViewManager views;
 

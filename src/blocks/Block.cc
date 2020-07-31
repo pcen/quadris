@@ -75,14 +75,14 @@ BlockFactoryInitializer::BlockFactoryInitializer()
 	BlockFactory::_factories['S'] = std::make_unique<SBlock::Factory>();
 	BlockFactory::_factories['Z'] = std::make_unique<ZBlock::Factory>();
 	BlockFactory::_factories['T'] = std::make_unique<TBlock::Factory>();
-	BlockFactory::_factories['*'] = std::make_unique<DBlock::Factory>();
+	BlockFactory::_factories['D'] = std::make_unique<DBlock::Factory>();
 }
 
 std::shared_ptr<Block> BlockFactory::createBlock(const char& id, int level)
 {
 	if( _factories.find(id) != _factories.end() )
 		return _factories[id]->create(level);
-	
+
 	return nullptr;
 }
 

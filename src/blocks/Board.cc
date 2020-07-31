@@ -3,13 +3,13 @@
 #include <iostream>
 
 Board::Board()
-	: _cellSize{ default_cell_size }
+	: _cellSize{ default_cell_size }, _numBlockSinceClear{ 0 }
 {
-	this->_numBlockSinceClear = 0;
+
 }
 
 Board::Board(std::string png, float cellSize)
-	: _cellSize{ cellSize }, _emptyCellSprite{ png }, _currentBlock{ nullptr }
+	: _cellSize{ cellSize }, _emptyCellSprite{ png }, _currentBlock{ nullptr }, _numBlockSinceClear{ 0 }
 {
 	this->reset();
 }

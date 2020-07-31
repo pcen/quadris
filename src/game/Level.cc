@@ -197,7 +197,8 @@ Level4::~Level4()
 
 std::shared_ptr<Block> Level4::getNextBlock(void)
 {
-	if (!this->_game->getNumBlocksSinceClear() % 5)
+	int bsc = this->_game->getNumBlocksSinceClear();
+	if (bsc % 5 == 0 && bsc != 0)
 		return BlockFactory::createBlock('D', this->_level);
 
 	return this->_level3.getNextBlock();

@@ -32,7 +32,7 @@ enum class BlockType : char {
 	S = 'S',
 	Z = 'Z',
 	T = 'T',
-	D = '*',
+	D = '*', // D block is displayed as '*' in console views
 	EMPTY = '.'
 };
 
