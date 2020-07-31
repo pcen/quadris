@@ -4,11 +4,11 @@
 #include <string>
 
 #include "./blocks/StandardBlocks.h"
-
-Game::Game()
+Game::Game(std::string filePath)
 	: _board("./assets/_.png"), _running{true}, _score{0}, _highScore{0}
 {
-	_level = std::make_unique<Level0>(std::string("./src/game/sequence.txt"), this, true);
+	std::shared_ptr<std::ifstream> sequenceFile = std::make_shared<std::ifstream>();
+	_level = std::make_unique<Level0>(filePath, this, true, sequenceFile);
 }
 
 Game::~Game()

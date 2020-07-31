@@ -11,7 +11,7 @@ class Level
 {
 public:
 	virtual ~Level() {};
-	virtual std::shared_ptr<Block> getNextBlock(void) const = 0;
+	virtual std::shared_ptr<Block> getNextBlock(void) = 0;
 
 	int getLevel(void) const { return this->_level; }
 
@@ -21,8 +21,31 @@ protected:
 	int _level;
 	bool _random;
 	std::string _filePath;
-	std::ifstream _sequence;
+	std::shared_ptr<std::ifstream> _sequence;
 	Game* _game;
+};
+
+
+class LevelFactoryInitializer
+{
+private:
+	static LevelFactoryInitializer lfi;
+
+	LevelFactoryInitializer();
+	~LevelFactoryInitializer() {};
+};
+
+
+class LevelFactory
+{
+public:
+	virtual ~LevelFactory() {};
+	static std::unique_ptr<Level> createLevel(const int&, std::string, Game*, bool, std::shared_ptr<std::ifstream>);
+
+private:
+	friend class LevelFactoryInitializer;
+	static std::map<int, std::unique_ptr<LevelFactory>> _factories;
+	virtual std::unique_ptr<Level> create(std::string, Game*, bool, std::shared_ptr<std::ifstream>) = 0;
 };
 
 #endif // LEVEL_H
