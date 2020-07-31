@@ -23,32 +23,39 @@ const Board& Game::getBoard(void) const
 
 void Game::update(const Command& command)
 {
-	bool landed = false;
-	bool translated = false;
+	bool dropped = false;
 
 	switch(command.type) {
 		case CMD::QUIT:
 			this->_running = false;
 			break;
 		case CMD::DOWN:
-			translated = this->_board.translate(Direction::DOWN);
+			this->_board.translate(Direction::DOWN);
 			break;
 		case CMD::LEFT:
-			translated = this->_board.translate(Direction::LEFT);
+			this->_board.translate(Direction::LEFT);
 			break;
 		case CMD::RIGHT:
-			translated = this->_board.translate(Direction::RIGHT);
+			this->_board.translate(Direction::RIGHT);
 			break;
 		case CMD::DROP:
-			translated = this->_board.drop();
-			// TODO: implement landing logic
-			landed = true;
+			this->_board.drop();
+			dropped = true;
 			break;
+		case CMD::RESTART:
+			{
+				this->_board.reset();
+				auto nextBlock = std::make_shared<IBlock>(this->_level->getLevel()); // this->_level->getNextBlock();
+				if (this->_board.setCurrentBlock(nextBlock) == false) {
+					std::cerr << "could not add next block\n";
+				}
+				break;
+			}
 		default:
 			break;
 	}
 
-	if (landed) {
+	if (dropped) {
 		// put next block on the board
 		this->_board.insertCurrentBlock();
 		auto nextBlock = std::make_shared<IBlock>(this->_level->getLevel()); // this->_level->getNextBlock();

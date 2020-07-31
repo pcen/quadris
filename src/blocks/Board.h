@@ -24,11 +24,14 @@ class Board
 {
 public:
 	Board();
-	Board(std::string png, float cell_size = default_cell_size);
+	Board(std::string png, float cellSize = default_cell_size);
 
 	Cell at(Coord coord) const;
 
 	float getCellSize(void) const;
+
+	// clears all cells and the block vector
+	void reset(void);
 
 	// translate the currently active block in the given direction
 	bool translate(Direction direction);
@@ -48,7 +51,7 @@ public:
 private:
 	friend class Game;
 
-	float _cell_size;
+	float _cellSize;
 	bool _inBounds(int x, int y);
 	bool _inBounds(Coord coord);
 	void _insertBlock(std::shared_ptr<Block> block);
@@ -57,6 +60,7 @@ private:
 
 	Coord _directionDeltas(Direction direction);
 
+	std::string _emptyCellSprite;
 	std::vector<std::vector<std::shared_ptr<Cell>>> _board;
 	std::vector<std::shared_ptr<Block>> _blocks;
 	std::shared_ptr<Block> _currentBlock;

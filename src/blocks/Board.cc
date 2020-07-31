@@ -3,23 +3,40 @@
 #include <iostream>
 
 Board::Board()
-	: _cell_size{ default_cell_size }
+	: _cellSize{ default_cell_size }
 {
 	std::vector<int> zero(11, 0);
 	this->_topOfColumns = zero;
 	this->_numBlockSinceClear = 0;
 }
 
-Board::Board(std::string png, float cell_size)
-	: _cell_size{ cell_size }, _currentBlock{ nullptr }
+Board::Board(std::string png, float cellSize)
+	: _cellSize{ cellSize }, _emptyCellSprite{ png }, _currentBlock{ nullptr }
 {
+	this->reset();
+}
+
+void Board::reset(void)
+{
+	// clear the board
+	for (auto& r : this->_board)
+		r.clear();
+	this->_board.clear();
+
+	// clear blocks
+	this->_blocks.clear();
+
+	// clear the current block
+	this->_currentBlock = nullptr;
+
+	// initialize the board to empty cells
 	for (int j = 0; j < 11; ++j) {
-		std::vector<std::shared_ptr<Cell>> images;
+		std::vector<std::shared_ptr<Cell>> row;
 		for(int i = 0; i < 18; ++i){
-			std::shared_ptr<Cell> newCell = std::make_shared<Cell>(j, i, png, false, BlockType::EMPTY);
-			images.push_back(newCell);
+			auto newCell = std::make_shared<Cell>(j, i, this->_emptyCellSprite, false, BlockType::EMPTY);
+			row.push_back(newCell);
 		}
-		this->_board.push_back(images);
+		this->_board.push_back(row);
 	}
 }
 
@@ -38,7 +55,7 @@ std::shared_ptr<Block> Board::getCurrentBlock(void) const
 
 float Board::getCellSize(void) const
 {
-	return this->_cell_size;
+	return this->_cellSize;
 }
 
 BoardIterator Board::begin() const
