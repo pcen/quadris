@@ -127,18 +127,27 @@ void ConsoleView::_displayGame(const Board& board)
 	this->_out.flush();
 }
 
-// _x++;
-// if (_x >= _cols) {
-// 	_y--;
-// 	if (_y >= 0)
-// 		_x = 0;
-// }
-
 std::vector<char> ConsoleView::_createBoardChars(const Board& board)
 {
+	// prepare board as a vector of their char representations
 	std::vector<char> boardChars;
 	for (auto i = board.begin(); i != board.end(); ++i) {
 		boardChars.push_back((*i).getToken());
+	}
+	// overlay the active block's cells, if any
+	auto currentBlock = board.getCurrentBlock();
+	if (currentBlock != nullptr) {
+		auto cells = currentBlock->getCells();
+		for (auto& c : cells) {
+			int x = c->get_x();
+			// top of board is flipped in display
+			int y = 17 - c->get_y();
+			int index = 11 * y + x;
+			if (index < boardChars.size())
+				boardChars.at(index) = c->getToken();
+			else
+				std::cerr << "ERROR: currentBlock outside of board\n";
+		}
 	}
 	return boardChars;
 }
@@ -159,11 +168,9 @@ void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& board
 	int rowCount = 0;
 	std::string board_string = "   1      ";
 	for (auto& c : boardChars) {
-		std::cerr << "rc: " << rowCount << "\n";
 		if (rowCount == 11) {
 			// add text to the right of the quadris board (if applicable)
 			this->_addInfo(row, board_string);
-
 			row++;
 			board_string.append("\n   " + std::to_string(row)); // add row number
 			board_string.append(std::string(6 - (row / 10), ' ')); // pad to board
