@@ -13,7 +13,8 @@ struct Coord
 	int _y;
 
 	Coord() {};
-	Coord(uint x, uint y) : _x(x), _y(y) {};
+	Coord(unsigned int x, unsigned int y) : _x{ x }, _y{ y } {}
+	Coord(int x, int y) : _x{ x }, _y{ y } {}
 
 	Coord invert(void);
 };

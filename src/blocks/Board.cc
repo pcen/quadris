@@ -11,7 +11,7 @@ Board::Board()
 }
 
 Board::Board(std::string png, float cell_size)
-	: _cell_size{ cell_size }
+	: _cell_size{ cell_size }, _currentBlock{ nullptr }
 {
 	for (int j = 0; j < 11; ++j) {
 		std::vector<std::shared_ptr<Cell>> images;
@@ -31,6 +31,11 @@ Cell Board::at(Coord coord) const
 	return *this->_board[coord._x][coord._y];
 }
 
+std::shared_ptr<Block> Board::getCurrentBlock(void) const
+{
+	return this->_currentBlock;
+}
+
 float Board::getCellSize(void) const
 {
 	return this->_cell_size;
@@ -46,34 +51,75 @@ BoardIterator Board::end() const
 	return BoardIterator(this->_board.size(), -1, this->_board.size(), this->_board[0].size(), this->_board);
 }
 
-// gameplay methods
 
-bool Board::_insertBlock(std::shared_ptr<Block> block)
+bool Board::_inBounds(int x, int y)
 {
+	return 0 <= x && x < 11 && 0 <= y && y < 18;
+}
+
+bool Board::_inBounds(Coord coord)
+{
+	return this->_inBounds(coord._x, coord._y);
+}
+
+bool Board::_validTranslation(std::shared_ptr<Block> block, Direction direction)
+{
+	// coordinate offsets of translation
+	int dx = 0;
+	int dy = 0;
+	switch (direction) {
+		case Direction::UP:
+			dy = 1;
+			break;
+		case Direction::DOWN:
+			dy = -1;
+			break;
+		case Direction::LEFT:
+			dx = -1;
+			break;
+		case Direction::RIGHT:
+			dx = 1;
+			break;
+		case Direction::NONE:
+		default:
+			break;
+	}
 	auto cells = block->getCells();
 	for (auto& c : cells) {
-		if (this->at(c->getCoord()).getType() != BlockType::EMPTY)
+		Coord newPos(c->get_x() + dx, c->get_y() + dy);
+		// if the new position is out of bounds, return false
+		if (!this->_inBounds(newPos))
+			return false;
+
+		// if the new position is not empty cells, return false
+		if (this->at(newPos).getType() != BlockType::EMPTY)
 			return false;
 	}
-	for (auto& c : cells)
-		this->_board[c->get_x()][c->get_y()] = c;
 	return true;
 }
 
+void Board::_insertBlock(std::shared_ptr<Block> block)
+{
+	auto cells = block->getCells();
+	for (auto& c : cells)
+		this->_board[c->get_x()][c->get_y()] = c;
+}
+
+// gameplay methods
+
 bool Board::moveY(bool isDrop)
 {
-	std::cerr << "moveY()\n";
+	if (this->_validTranslation(this->_currentBlock, Direction::DOWN))
+		return true;
 	return false;
 }
 
 bool Board::setCurrentBlock(std::shared_ptr<Block> currentBlock)
 {
-	if (this->_insertBlock(currentBlock)) {
-		std::cerr << "current block set: " << (char)currentBlock->getType() << "\n";
-		return true;
-	}
-	else {
-		std::cerr << "current block could not be inserted: " << (char)currentBlock->getType() << "\n";
-		return false;
-	}
+	this->_currentBlock = currentBlock;
+	return true;
+	// if (!this->_validTranslation(currentBlock, Direction::NONE));
+	// 	return false;
+	// this->_insertBlock(currentBlock);
+	// return true;
 }

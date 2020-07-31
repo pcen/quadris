@@ -11,6 +11,15 @@ float constexpr default_cell_size = 25.0f;
 class Window;
 class ConsoleView;
 
+enum class Direction
+{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	NONE
+};
+
 class Board
 {
 public:
@@ -23,6 +32,7 @@ public:
 
 	bool moveY(bool isDrop);
 
+	std::shared_ptr<Block> getCurrentBlock(void) const;
 	bool setCurrentBlock(std::shared_ptr<Block> currentBlock);
 
 	BoardIterator begin() const;
@@ -32,7 +42,10 @@ private:
 	friend class Game;
 
 	float _cell_size;
-	bool _insertBlock(std::shared_ptr<Block> block);
+	bool _inBounds(int x, int y);
+	bool _inBounds(Coord coord);
+	void _insertBlock(std::shared_ptr<Block> block);
+	bool _validTranslation(std::shared_ptr<Block> block, Direction direction);
 
 	std::vector<std::vector<std::shared_ptr<Cell>>> _board;
 	std::vector<std::shared_ptr<Block>> _blocks;

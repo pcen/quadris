@@ -128,7 +128,9 @@ void Window::paintEvent(QPaintEvent* event)
 void Window::_drawBoard(QPainter& painter)
 {
 	const Board& board = this->_game->getBoard();
+	auto currentBlock = board.getCurrentBlock();
 	float cell_size = board.getCellSize();
+	// render board
 	for (auto i = board.begin(); i != board.end(); ++i) {
 		Cell c = *i;
 		float x = c.get_x() * cell_size;
@@ -140,6 +142,20 @@ void Window::_drawBoard(QPainter& painter)
 		QPixmap pm = sprite->getData();
 		painter.drawPixmap(target, pm, pm.rect());
 	}
+	// render current block
+	if (currentBlock != nullptr) {
+		for (auto& c : currentBlock->getCells()) {
+			float x = c->get_x() * cell_size;
+			// display y values have top at y = 0
+			float y = (17.0f - c->get_y()) * cell_size;
+
+			QRectF target = QRectF(x, y, cell_size, cell_size);
+			auto sprite = this->_sprites->getSprite(c->getSprite());
+			QPixmap pm = sprite->getData();
+			painter.drawPixmap(target, pm, pm.rect());
+		}
+	}
+
 }
 
 // handle Qt events
