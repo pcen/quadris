@@ -62,9 +62,8 @@ bool Board::_inBounds(Coord coord)
 	return this->_inBounds(coord._x, coord._y);
 }
 
-bool Board::_validTranslation(std::shared_ptr<Block> block, Direction direction)
+Coord Board::_directionDeltas(Direction direction)
 {
-	// coordinate offsets of translation
 	int dx = 0;
 	int dy = 0;
 	switch (direction) {
@@ -84,33 +83,56 @@ bool Board::_validTranslation(std::shared_ptr<Block> block, Direction direction)
 		default:
 			break;
 	}
-	auto cells = block->getCells();
+	return Coord(dx, dy);
+}
+
+bool Board::_validTranslation(Direction direction)
+{
+	Coord delta = this->_directionDeltas(direction);
+	auto cells = this->_currentBlock->getCells();
 	for (auto& c : cells) {
-		Coord newPos(c->get_x() + dx, c->get_y() + dy);
+		Coord newPos(c->get_x() + delta._x, c->get_y() + delta._y);
 		// if the new position is out of bounds, return false
-		if (!this->_inBounds(newPos))
+		if (!this->_inBounds(newPos)) {
+			std::cerr << "not in bounds\n";
 			return false;
+		}
 
 		// if the new position is not empty cells, return false
-		if (this->at(newPos).getType() != BlockType::EMPTY)
+		if (this->at(newPos).getType() != BlockType::EMPTY) {
+			std::cerr << "not empty block\n";
 			return false;
+		}
 	}
+	std::cerr << "true!\n";
 	return true;
+}
+
+void Board::_doTranslation(Direction direction)
+{
+	Coord delta = this->_directionDeltas(direction);
+	auto cells = this->_currentBlock->getCells();
+	for (auto& c : cells) {
+		c->_coords._x += delta._x;
+		c->_coords._y += delta._y;
+	}
 }
 
 void Board::_insertBlock(std::shared_ptr<Block> block)
 {
-	auto cells = block->getCells();
-	for (auto& c : cells)
-		this->_board[c->get_x()][c->get_y()] = c;
+	// auto cells = block->getCells();
+	// for (auto& c : cells)
+	// 	this->_board[c->get_x()][c->get_y()] = c;
 }
 
 // gameplay methods
 
 bool Board::moveY(bool isDrop)
 {
-	if (this->_validTranslation(this->_currentBlock, Direction::DOWN))
+	if (this->_validTranslation(Direction::DOWN)) {
+		this->_doTranslation(Direction::DOWN);
 		return true;
+	}
 	return false;
 }
 
@@ -118,8 +140,4 @@ bool Board::setCurrentBlock(std::shared_ptr<Block> currentBlock)
 {
 	this->_currentBlock = currentBlock;
 	return true;
-	// if (!this->_validTranslation(currentBlock, Direction::NONE));
-	// 	return false;
-	// this->_insertBlock(currentBlock);
-	// return true;
 }

@@ -45,7 +45,10 @@ private:
 	bool _inBounds(int x, int y);
 	bool _inBounds(Coord coord);
 	void _insertBlock(std::shared_ptr<Block> block);
-	bool _validTranslation(std::shared_ptr<Block> block, Direction direction);
+	void _doTranslation(Direction direction);
+	bool _validTranslation(Direction direction);
+
+	Coord _directionDeltas(Direction direction);
 
 	std::vector<std::vector<std::shared_ptr<Cell>>> _board;
 	std::vector<std::shared_ptr<Block>> _blocks;

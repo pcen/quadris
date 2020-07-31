@@ -20,6 +20,7 @@ public:
 private:
 	void _shutdown(void);
 
+	// Qt application arguments
 	int _qtArgCount;
 	char** _qtArgs;
 

@@ -32,7 +32,7 @@ void Game::update(const Command& command)
 		break;
 
 	case CMD::DOWN:
-		collided = this->_board.moveY(false);
+		collided = !this->_board.moveY(false);
 		break;
 
 	default:
@@ -41,8 +41,8 @@ void Game::update(const Command& command)
 
 	if (collided) {
 		std::cerr << "collided!\n";
-		auto nextBlock = std::make_shared<IBlock>(this->_level->getLevel()); // this->_level->getNextBlock();
-		this->_board.setCurrentBlock(nextBlock);
+		// auto nextBlock = std::make_shared<IBlock>(this->_level->getLevel()); // this->_level->getNextBlock();
+		// this->_board.setCurrentBlock(nextBlock);
 		// put next block on the board
 	}
 
