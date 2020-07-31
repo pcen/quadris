@@ -16,12 +16,12 @@ public:
 
 	void push(Command command);
 	void push(std::vector<Command> commands);
-	void send_commands(void);
+	void sendCommands(void);
 
 private:
 	std::mutex _lock;
 	Game& _game;
-	std::queue<Command> _command_queue;
+	std::queue<Command> _commandQueue;
 };
 
 #endif // CONTROLLER_H

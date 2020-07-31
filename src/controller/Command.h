@@ -41,9 +41,13 @@ enum class CommandType
 struct Command
 {
 	Command();
-	Command(CommandType);
-	Command(std::string, CommandType);
+	Command(CommandType, bool = false);
+	Command(std::string, CommandType, bool = false);
 	CommandType type;
+	// silent commands sent to a Subject class should not
+	// result in the Subject notifying its Observers
+	// commands are NOT silent by default
+	bool silent;
 	// for some commands, a message string may be desired
 	std::string message;
 };

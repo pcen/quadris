@@ -60,6 +60,7 @@ std::vector<Command> ConsoleView::_processCommand(const std::string& s)
 	int multiplier = multiplierString.length() ? std::stoi(multiplierString) : 1;
 	std::string command = s.substr(split);
 	Command matchingCommand = _trie->findShortestPrefix(command);
+	matchingCommand.silent = true;
 
 	if (matchingCommand.type == CMD::QUIT)
 		this->_issuedQuitCmd = true;
@@ -68,6 +69,8 @@ std::vector<Command> ConsoleView::_processCommand(const std::string& s)
 		for (int i = 0; i < multiplier; i++)
 			commands.push_back(matchingCommand);
 	}
+	if (!commands.empty())
+		commands.back().silent = false;
 	return commands;
 }
 
@@ -86,7 +89,9 @@ void ConsoleView::readInStream(void)
 		// Since the game may terminate while waiting for input, check if the
 		// game is still running before  sending the command
 		if (this->_game != nullptr && this->_game->isRunning()) {
-			this->_controller->push(this->_processCommand(command));
+			std::vector<Command> payload = this->_processCommand(command);
+			if (!payload.empty())
+				this->_controller->push(this->_processCommand(command));
 
 			// when quitting, kill thread immediately
 			Command c = _trie->findShortestPrefix(command);

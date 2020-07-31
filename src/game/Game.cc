@@ -23,18 +23,23 @@ const Board& Game::getBoard(void) const
 
 void Game::update(const Command& command)
 {
+	std::cerr << "silent command = " << command.silent << "\n";
+
 	bool dropped = false;
 
 	switch(command.type) {
 		case CMD::QUIT:
 			this->_running = false;
 			break;
+
 		case CMD::DOWN:
 			this->_board.translate(Direction::DOWN);
 			break;
+
 		case CMD::LEFT:
 			this->_board.translate(Direction::LEFT);
 			break;
+
 		case CMD::RIGHT:
 			this->_board.translate(Direction::RIGHT);
 			break;
@@ -63,7 +68,8 @@ void Game::update(const Command& command)
 		}
 	}
 
-	this->_notify();
+	if (!command.silent)
+		this->_notify();
 }
 
 void Game::launch(void)

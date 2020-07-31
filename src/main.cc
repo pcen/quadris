@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 
 	game.launch();
 	while (game.isRunning()) {
-		ctrl.send_commands();
+		ctrl.sendCommands();
 		views.pollInput();
 	}
 
