@@ -187,6 +187,12 @@ bool Board::insertCurrentBlock(void)
 bool Board::setCurrentBlock(std::shared_ptr<Block> currentBlock)
 {
 	this->_currentBlock = currentBlock;
+
+	// on recieving a nullptr, a level sequence file has reached
+	// EOF, and the game is over
+	if (currentBlock == nullptr)
+		return false;
+
 	if (this->_validTranslation(Direction::NONE))
 		return true;
 	this->_currentBlock = nullptr;

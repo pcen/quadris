@@ -23,8 +23,6 @@ const Board& Game::getBoard(void) const
 
 void Game::update(const Command& command)
 {
-	std::cerr << "silent command = " << command.silent << "\n";
-
 	bool dropped = false;
 
 	switch(command.type) {
@@ -57,9 +55,7 @@ void Game::update(const Command& command)
 	if (dropped) {
 		// put next block on the board
 		this->_board.insertCurrentBlock();
-		std::cerr << "getting next block...\n";
 		auto nextBlock = this->_level->getNextBlock();
-		std::cerr << "next block: " << (char)nextBlock->getType() << "\n";
 		if (this->_board.setCurrentBlock(nextBlock) == false) {
 			// if a new block cannot be added, the game is over
 			this->_updateScore();
@@ -74,7 +70,7 @@ void Game::update(const Command& command)
 
 void Game::launch(void)
 {
-	auto firstBlock = std::make_shared<IBlock>(this->_level->getLevel());
+	auto firstBlock = this->_level->getNextBlock();
 	if (this->_board.setCurrentBlock(firstBlock) == false) {
 		std::cerr << "could not add first block\n";
 	}
@@ -84,7 +80,7 @@ void Game::launch(void)
 void Game::restart(void)
 {
 	this->_board.reset();
-	auto nextBlock = std::make_shared<IBlock>(this->_level->getLevel()); // this->_level->getNextBlock();
+	auto nextBlock = this->_level->getNextBlock();
 	if (this->_board.setCurrentBlock(nextBlock) == false) {
 		std::cerr << "could not add next block\n";
 	}
