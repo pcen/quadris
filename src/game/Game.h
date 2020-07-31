@@ -16,7 +16,7 @@ class Level;
 class Game: public Subject
 {
 public:
-	Game();
+	Game(std::string);
 	~Game();
 	void update(const Command& command);
 	bool isRunning(void) const;

@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 {
 	auto args = Arguments(argc, argv);
 
-	Game game;
+	Game game(std::string("././src/game/sequence.txt"));
 	Controller ctrl(game);
 	ViewManager views;
 

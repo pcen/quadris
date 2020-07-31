@@ -2,24 +2,26 @@
 #include "StandardBlocks.h"
 
 // define static instances
-std::map<std::string, std::unique_ptr<BlockFactory>> BlockFactory::_factories;
-BlockFactoryInitializer BlockFactoryInitializer::si;
+std::map<char, std::unique_ptr<BlockFactory>> BlockFactory::_factories;
+BlockFactoryInitializer BlockFactoryInitializer::bfi;
 
 BlockFactoryInitializer::BlockFactoryInitializer()
 {
-	BlockFactory::_factories["I"] = std::make_unique<IBlock::Factory>();
-	BlockFactory::_factories["J"] = std::make_unique<JBlock::Factory>();
-	BlockFactory::_factories["L"] = std::make_unique<LBlock::Factory>();
-	BlockFactory::_factories["O"] = std::make_unique<OBlock::Factory>();
-	BlockFactory::_factories["S"] = std::make_unique<SBlock::Factory>();
-	BlockFactory::_factories["Z"] = std::make_unique<ZBlock::Factory>();
-	BlockFactory::_factories["T"] = std::make_unique<TBlock::Factory>();
+	BlockFactory::_factories['I'] = std::make_unique<IBlock::Factory>();
+	BlockFactory::_factories['J'] = std::make_unique<JBlock::Factory>();
+	BlockFactory::_factories['L'] = std::make_unique<LBlock::Factory>();
+	BlockFactory::_factories['O'] = std::make_unique<OBlock::Factory>();
+	BlockFactory::_factories['S'] = std::make_unique<SBlock::Factory>();
+	BlockFactory::_factories['Z'] = std::make_unique<ZBlock::Factory>();
+	BlockFactory::_factories['T'] = std::make_unique<TBlock::Factory>();
 }
 
-std::shared_ptr<Block> BlockFactory::createBlock(const std::string& id, int level)
+std::shared_ptr<Block> BlockFactory::createBlock(const char& id, int level)
 {
 	if( _factories.find(id) != _factories.end() )
 		return _factories[id]->create(level);
+	
+	return nullptr;
 }
 
 IBlock::IBlock(int level)

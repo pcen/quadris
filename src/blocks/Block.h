@@ -39,24 +39,22 @@ protected:
 class BlockFactoryInitializer
 {
 private:
-	static BlockFactoryInitializer si;
+	static BlockFactoryInitializer bfi;
 
 	BlockFactoryInitializer();
 	~BlockFactoryInitializer() {};
 };
 
-class BlockFactory;
 
 class BlockFactory
 {
-	friend class BlockFactoryInitializer;
 public:
 	virtual ~BlockFactory() {};
-
-	static std::shared_ptr<Block> createBlock(const std::string&, int);
+	static std::shared_ptr<Block> createBlock(const char&, int);
 
 private:
-	static std::map<std::string, std::unique_ptr<BlockFactory>> _factories;
+	friend class BlockFactoryInitializer;
+	static std::map<char, std::unique_ptr<BlockFactory>> _factories;
 	virtual std::shared_ptr<Block> create(int) = 0;
 };
 
