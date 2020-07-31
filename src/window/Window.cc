@@ -155,7 +155,6 @@ void Window::_drawBoard(QPainter& painter)
 			painter.drawPixmap(target, pm, pm.rect());
 		}
 	}
-
 }
 
 // handle Qt events

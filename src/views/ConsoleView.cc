@@ -120,10 +120,27 @@ void ConsoleView::readInStream(void)
 void ConsoleView::_displayGame(const Board& board)
 {
 	std::string display; // next console frame
-	this->_prepareDisplay(display, board);
+	std::vector<char> boardChars = this->_createBoardChars(board);
+	this->_prepareDisplay(display, boardChars);
 	this->_clearConsole();
 	this->_out << display;
 	this->_out.flush();
+}
+
+// _x++;
+// if (_x >= _cols) {
+// 	_y--;
+// 	if (_y >= 0)
+// 		_x = 0;
+// }
+
+std::vector<char> ConsoleView::_createBoardChars(const Board& board)
+{
+	std::vector<char> boardChars;
+	for (auto i = board.begin(); i != board.end(); ++i) {
+		boardChars.push_back((*i).getToken());
+	}
+	return boardChars;
 }
 
 void ConsoleView::_clearConsole(void)
@@ -135,24 +152,27 @@ void ConsoleView::_clearConsole(void)
 	}
 }
 
-void ConsoleView::_prepareDisplay(std::string& display, const Board& board)
+void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& boardChars)
 {
 	display.append(quadrisTitle);
 	int row = 1;
+	int rowCount = 0;
 	std::string board_string = "   1      ";
-	for (auto i = board.begin(); i != board.end(); ++i) {
-		Cell c = *i;
-
-		if (17 - c.get_y() >= row) {
+	for (auto& c : boardChars) {
+		std::cerr << "rc: " << rowCount << "\n";
+		if (rowCount == 11) {
 			// add text to the right of the quadris board (if applicable)
 			this->_addInfo(row, board_string);
 
 			row++;
 			board_string.append("\n   " + std::to_string(row)); // add row number
 			board_string.append(std::string(6 - (row / 10), ' ')); // pad to board
+			rowCount = 1;
+		} else {
+			rowCount++;
 		}
 
-		board_string.append(std::string(1, c.getToken())); // add cell token
+		board_string.append(std::string(1, c)); // add cell token
 		board_string.append(" "); // add space between cells
 	}
 	display.append(board_string);

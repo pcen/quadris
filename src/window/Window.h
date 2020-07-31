@@ -43,7 +43,6 @@ protected:
 	// override to catch and handle Qt events
 	void keyPressEvent(QKeyEvent* event) override;
 	bool event(QEvent* event) override;
-	bool confirmClose(void);
 
 	// draw methods
 	void paintEvent(QPaintEvent*) override;
