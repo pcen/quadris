@@ -45,6 +45,11 @@ public:
 	// get the currently active block
 	std::shared_ptr<Block> getCurrentBlock(void) const;
 
+	// set the next block
+	void setNextBlock(std::shared_ptr<Block> nextBlock);
+	// get the next block
+	std::shared_ptr<Block> getNextBlock(void) const;
+
 	BoardIterator begin() const;
 	BoardIterator end() const;
 
@@ -63,7 +68,10 @@ private:
 	std::string _emptyCellSprite;
 	std::vector<std::vector<std::shared_ptr<Cell>>> _board;
 	std::vector<std::shared_ptr<Block>> _blocks;
+
 	std::shared_ptr<Block> _currentBlock;
+	std::shared_ptr<Block> _nextBlock;
+
 	int _numBlockSinceClear;
 };
 

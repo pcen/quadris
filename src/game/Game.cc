@@ -82,63 +82,75 @@ void Game::update(const Command& command)
 			break;
 	}
 
-	if (dropped) {
-		++this->_board._numBlockSinceClear;
-		// put next block on the board
-		this->_board.insertCurrentBlock();
-		auto nextBlock = this->_level->getNextBlock();
-		if (this->_board.setCurrentBlock(nextBlock) == false) {
-			// if a new block cannot be added, the game is over
-			this->_updateScore();
-			this->restart();
-			std::cerr << "Game Over!\n";
-		}
-
-		if(this->_board._currentBlock->getType() == BlockType::D) {
-			this->_board.drop();
-			++this->_board._numBlockSinceClear;
-			// put next block on the board
-			this->_board.insertCurrentBlock();
-			auto nextBlock = this->_level->getNextBlock();
-			if (this->_board.setCurrentBlock(nextBlock) == false) {
-				// if a new block cannot be added, the game is over
-				this->_updateScore();
-				this->restart();
-				std::cerr << "Game Over!\n";
-			}
-		}
-	}
+	if (dropped)
+		this->_handleDrop();
 
 	if (!command.silent)
 		this->_notify();
 }
 
+void Game::_handleDrop(void)
+{
+	++this->_board._numBlockSinceClear;
+	// put next block on the board
+	this->_board.insertCurrentBlock();
+	if (this->_board.setCurrentBlock(this->_board.getNextBlock()) == false) {
+		// if a new block cannot be added, the game is over
+		this->_updateScore();
+		this->restart();
+		std::cerr << "Game Over!\n";
+		return;
+	}
+	this->_board.setNextBlock(this->_level->getNextBlock());
+
+	if(this->_board._currentBlock->getType() == BlockType::D) {
+		this->_board.drop();
+		++this->_board._numBlockSinceClear;
+		// put next block on the board
+		this->_board.insertCurrentBlock();
+		if (this->_board.setCurrentBlock(this->_board.getNextBlock()) == false) {
+			// if a new block cannot be added, the game is over
+			this->_updateScore();
+			this->restart();
+			std::cerr << "Game Over!\n";
+			return;
+		}
+		this->_board.setNextBlock(this->_level->getNextBlock());
+	}
+}
+
 void Game::launch(void)
 {
 	auto firstBlock = this->_level->getNextBlock();
+	auto nextBlock = this->_level->getNextBlock();
 	if (this->_board.setCurrentBlock(firstBlock) == false) {
 		std::cerr << "could not add first block\n";
 	}
+	this->_board.setNextBlock(nextBlock);
 	this->_notify();
 }
 
 void Game::restart(void)
 {
+	std::cerr << "restarting\n";
 	// reset the board
 	this->_board.reset();
 
 	// reset the level
 	this->_level->closeSequence();
+
+	// guarentee that EOF bit is reset
+	std::shared_ptr<std::ifstream> fs = std::make_shared<std::ifstream>();
 	this->_level = LevelFactory::createLevel(this->_startLevel,
 	                                         this->_defaultSequence,
 	                                         this,
 	                                         true,
-	                                         this->_level->_sequence);
+	                                         fs);
 
-	auto nextBlock = this->_level->getNextBlock();
-	if (this->_board.setCurrentBlock(nextBlock) == false) {
-		std::cerr << "could not add next block\n";
+	if (this->_board.setCurrentBlock(this->_level->getNextBlock()) == false) {
+		std::cerr << "could not add first block\n";
 	}
+	this->_board.setNextBlock(this->_level->getNextBlock());
 }
 
 bool Game::isRunning(void) const

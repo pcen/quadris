@@ -9,7 +9,8 @@ Board::Board()
 }
 
 Board::Board(std::string png, float cellSize)
-	: _cellSize{ cellSize }, _emptyCellSprite{ png }, _currentBlock{ nullptr }, _numBlockSinceClear{ 0 }
+	: _cellSize{ cellSize }, _emptyCellSprite{ png },
+	_currentBlock{ nullptr }, _nextBlock{ nullptr }, _numBlockSinceClear{ 0 }
 {
 	this->reset();
 }
@@ -20,13 +21,12 @@ void Board::reset(void)
 	for (auto& r : this->_board)
 		r.clear();
 	this->_board.clear();
-
 	// clear blocks
 	this->_blocks.clear();
-
 	// clear the current block
 	this->_currentBlock = nullptr;
-
+	// clear the next block
+	this->_nextBlock = nullptr;
 	// initialize the board to empty cells
 	for (int j = 0; j < 11; ++j) {
 		std::vector<std::shared_ptr<Cell>> row;
@@ -36,7 +36,6 @@ void Board::reset(void)
 		}
 		this->_board.push_back(row);
 	}
-
 	// reset the number of blocks since last clear count
 	this->_numBlockSinceClear = 0;
 }
@@ -52,6 +51,16 @@ Cell Board::at(Coord coord) const
 std::shared_ptr<Block> Board::getCurrentBlock(void) const
 {
 	return this->_currentBlock;
+}
+
+void Board::setNextBlock(std::shared_ptr<Block> nextBlock)
+{
+	this ->_nextBlock = nextBlock;
+}
+
+std::shared_ptr<Block> Board::getNextBlock(void) const
+{
+	return this->_nextBlock;
 }
 
 float Board::getCellSize(void) const

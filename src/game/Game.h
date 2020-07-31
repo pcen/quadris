@@ -34,6 +34,7 @@ public:
 	int getNumBlocksSinceClear(void);
 
 private:
+	void _handleDrop(void);
 	void _updateScore(void);
 
 	Board _board;

@@ -58,8 +58,11 @@ Level0::Level0(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<s
 	_game = gameRef;
 
 	_sequence = sin;
-	if (!_sequence->is_open())
+	if (!_sequence->is_open()) {
+		std::cerr << "opening level0 boi\n";
+		std::cerr << "opening " << filePath << "\n";
 		_sequence->open(filePath);
+	}
 }
 
 Level0::~Level0()
@@ -79,10 +82,13 @@ std::shared_ptr<Block> Level0::getNextBlock(void)
 	while (std::isspace(static_cast<unsigned char>(blockType)) != 0)
 		blockType = _sequence->get();
 
-	if (_sequence->eof())
+	if (_sequence->eof()) {
+		std::cerr << "EOF boi\n";
 		return nullptr;
-	else
+	}
+	else {
 		return BlockFactory::createBlock(blockType, this->_level);
+	}
 }
 
 // Returns random character from blocks with uniform probability
