@@ -1,8 +1,9 @@
 #include "GraphicsView.h"
 
-#include "../controller/Command.h"
-
+#include <iostream>
 #include <unordered_map>
+
+#include "../controller/Command.h"
 
 // TODO: read mappings from file
 static const std::unordered_map<std::string, CommandType> buttonCommandMap =
@@ -26,27 +27,55 @@ static const std::unordered_map<int, CommandType> keyCommandMap = {
 	{32, CMD::DROP}
 };
 
+// prevent QtWarningMsg from writing to console and ruining
+// ConsoleView's display
+void messageHandler(QtMsgType type,
+                    const QMessageLogContext &context,
+                    const QString &msg)
+{
+	switch (type) {
+		case QtDebugMsg:
+		case QtInfoMsg:
+		case QtWarningMsg:
+			break;
+		case QtCriticalMsg:
+		case QtFatalMsg:
+		default:
+			std::string message = msg.toStdString();
+			std::cerr << "Qt ERROR: " << message
+			          << " (" << context.file << ": " << context.line
+			          << ", " << context.function << ")\n";
+			break;
+	}
+}
+
 GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* controller)
 	: View{ game, controller }, _qtArgCount{ 0 }, _qtArgs{ nullptr },
 	_open{ false }, _name{ name },
 	_app(_qtArgCount, _qtArgs), _window{ name, game }
 {
+	qInstallMessageHandler(messageHandler);
+	// load quadris cell sprites
+	this->_window.loadSprites("./src/graphics/sprites.txt");
 	this->_window.open();
 	this->_open = true;
 }
 
 void GraphicsView::update(void)
 {
-	if (this->_game != nullptr || !this->_game->isRunning()) {
-		// TODO: GraphicsView should shut down here, but notify is const
-		// this->_shutdown();
-	}
-
-	this->_window.render();
+	if (this->_game == nullptr || !this->_game->isRunning())
+		return;
+	else
+		this->_window.render();
 }
 
+// Interpret user keyboard and GUI input as Commands and push
+// commands to the Controller
 void GraphicsView::pollInput(void)
 {
+	if (this->_controller == nullptr)
+		return;
+
 	// process Qt events
 	this->_app.processEvents();
 
@@ -71,6 +100,9 @@ void GraphicsView::pollInput(void)
 		this->_shutdown();
 }
 
+// Unsubscribe from game here so that parent view cannot be subject to an
+// attempted update. Set _open member to false so that if this view is
+// in a ViewManager, the ViewManager will not poll this view for input
 void GraphicsView::_shutdown(void)
 {
 	// unsubscribing stops game from notifying view

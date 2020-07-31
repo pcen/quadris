@@ -23,8 +23,9 @@ public:
 private:
 	// Display methods
 	void _displayGame(const Board& board);
+	std::vector<char> _createBoardChars(const Board& board);
 	void _clearConsole(void);
-	void _prepareDisplay(std::string& display, const Board& board);
+	void _prepareDisplay(std::string& display, std::vector<char>& boardChars);
 	void _addInfo(int row, std::string& display);
 
 	// Trie methods

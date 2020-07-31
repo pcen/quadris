@@ -1,6 +1,6 @@
 #include "Window.h"
 
-#include "../graphics/Sprite2D.h"
+#include <iostream>
 
 #include <QEvent>
 #include <QPainter>
@@ -35,7 +35,12 @@ Window::~Window()
 
 }
 
-// precondition: _board must be initialized
+void Window::loadSprites(const std::string& sprites)
+{
+	this->_sprites = std::make_unique<SpriteManager>(sprites);
+}
+
+// precondition: Game::_board must be initialized
 void Window::_initializeButtons(void)
 {
 	// set button pane position
@@ -119,17 +124,34 @@ void Window::paintEvent(QPaintEvent* event)
 
 void Window::_drawBoard(QPainter& painter)
 {
+	// render board
 	const Board& board = this->_game->getBoard();
 	float cell_size = board.getCellSize();
 	for (auto i = board.begin(); i != board.end(); ++i) {
 		Cell c = *i;
 		float x = c.get_x() * cell_size;
-		float y = c.get_y() * cell_size;
+		// display y values have top at y = 0
+		float y = (17.0f - c.get_y()) * cell_size;
 
 		QRectF target = QRectF(x, y, cell_size, cell_size);
-		Sprite2D sprite(c.getSprite());
-		QPixmap pm = sprite.getData();
+		auto sprite = this->_sprites->getSprite(c.getSprite());
+		QPixmap pm = sprite->getData();
 		painter.drawPixmap(target, pm, pm.rect());
+	}
+
+	// render current block
+	auto currentBlock = board.getCurrentBlock();
+	if (currentBlock != nullptr) {
+		for (auto& c : currentBlock->getCells()) {
+			float x = c->get_x() * cell_size;
+			// display y values have top at y = 0
+			float y = (17.0f - c->get_y()) * cell_size;
+
+			QRectF target = QRectF(x, y, cell_size, cell_size);
+			auto sprite = this->_sprites->getSprite(c->getSprite());
+			QPixmap pm = sprite->getData();
+			painter.drawPixmap(target, pm, pm.rect());
+		}
 	}
 }
 

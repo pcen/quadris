@@ -76,7 +76,7 @@ void ConsoleView::readInStream(void)
 {
 	std::string command;
 	while (this->_game->isRunning()) {
-		// EOF should terminate
+		// TODO: EOF should terminate
 		this->_in >> command;
 
 		// Since the game may terminate while waiting for input, check if the
@@ -110,9 +110,6 @@ void ConsoleView::readInStream(void)
 				}
 				return;
 			}
-			if (command == "clear") {
-				this->_clearConsole();
-			}
 		}
 	}
 }
@@ -120,10 +117,36 @@ void ConsoleView::readInStream(void)
 void ConsoleView::_displayGame(const Board& board)
 {
 	std::string display; // next console frame
-	this->_prepareDisplay(display, board);
+	std::vector<char> boardChars = this->_createBoardChars(board);
+	this->_prepareDisplay(display, boardChars);
 	this->_clearConsole();
 	this->_out << display;
 	this->_out.flush();
+}
+
+std::vector<char> ConsoleView::_createBoardChars(const Board& board)
+{
+	// prepare board as a vector of their char representations
+	std::vector<char> boardChars;
+	for (auto i = board.begin(); i != board.end(); ++i) {
+		boardChars.push_back((*i).getToken());
+	}
+	// overlay the active block's cells, if any
+	auto currentBlock = board.getCurrentBlock();
+	if (currentBlock != nullptr) {
+		auto cells = currentBlock->getCells();
+		for (auto& c : cells) {
+			int x = c->get_x();
+			// top of board is flipped in display
+			int y = 17 - c->get_y();
+			unsigned int index = 11 * y + x;
+			if (index < boardChars.size())
+				boardChars.at(index) = c->getToken();
+			else
+				std::cerr << "ERROR: currentBlock outside of board\n";
+		}
+	}
+	return boardChars;
 }
 
 void ConsoleView::_clearConsole(void)
@@ -135,24 +158,25 @@ void ConsoleView::_clearConsole(void)
 	}
 }
 
-void ConsoleView::_prepareDisplay(std::string& display, const Board& board)
+void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& boardChars)
 {
 	display.append(quadrisTitle);
 	int row = 1;
+	int rowCount = 0;
 	std::string board_string = "   1      ";
-	for (auto i = board.begin(); i != board.end(); ++i) {
-		Cell c = *i;
-
-		if (17 - c.get_y() >= row) {
+	for (auto& c : boardChars) {
+		if (rowCount == 11) {
 			// add text to the right of the quadris board (if applicable)
 			this->_addInfo(row, board_string);
-
 			row++;
 			board_string.append("\n   " + std::to_string(row)); // add row number
 			board_string.append(std::string(6 - (row / 10), ' ')); // pad to board
+			rowCount = 1;
+		} else {
+			rowCount++;
 		}
 
-		board_string.append(std::string(1, c.getToken())); // add cell token
+		board_string.append(std::string(1, c)); // add cell token
 		board_string.append(" "); // add space between cells
 	}
 	display.append(board_string);

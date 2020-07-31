@@ -1,9 +1,6 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "../game/Game.h"
-#include "../blocks/Board.h"
-
 #include <string>
 #include <vector>
 
@@ -13,6 +10,10 @@
 #include <QPushButton>
 #include <QSharedPointer>
 #include <QKeyEvent>
+
+#include "../game/Game.h"
+#include "../blocks/Board.h"
+#include "../graphics/SpriteManager.h"
 
 typedef QSharedPointer<QPushButton> QButtonPtr;
 
@@ -26,8 +27,13 @@ public:
 
 	void open(void);
 	bool isOpen(void) const;
+
+	// Mutators
 	void setTitle(const std::string& title);
 	void setSize(int height, int width, bool fixed=true);
+	void loadSprites(const std::string& sprites);
+
+	// Input accessors
 	std::vector<std::string> getButtonInput(void);
 	std::vector<int> getKeyboardInput(void);
 
@@ -37,7 +43,6 @@ protected:
 	// override to catch and handle Qt events
 	void keyPressEvent(QKeyEvent* event) override;
 	bool event(QEvent* event) override;
-	bool confirmClose(void);
 
 	// draw methods
 	void paintEvent(QPaintEvent*) override;
@@ -49,6 +54,9 @@ private:
 	std::string _title;
 
 	Game* _game;
+
+	// Cached assets
+	std::unique_ptr<SpriteManager> _sprites;
 
 	// Keyboard input
 	std::vector<int> _keyPressed;
