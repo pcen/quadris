@@ -30,8 +30,9 @@ private:
 
 	// Trie methods
 	void _buildTrie(void);
-	std::vector<Command> _processCommand(const std::string&) const;
+	std::vector<Command> _processCommand(const std::string&);
 
+	bool _issuedQuitCmd;
 	std::shared_ptr<Trie> _trie;
 	std::istream& _in;
 	std::ostream& _out;

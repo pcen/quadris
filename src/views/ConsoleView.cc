@@ -15,7 +15,7 @@ static const char* quadrisTitle =
 "  \\__\\_\\\\_,_\\__,_\\__,_|_| |_/__/\n\n";
 
 ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in, std::ostream& out)
-	: View{ game, controller }, _in{ in }, _out{ out }
+	: View{ game, controller }, _issuedQuitCmd{ false }, _in{ in }, _out{ out }
 {
 	// spin thread to read _in stream
 	this->_in_thread = std::thread(&ConsoleView::readInStream, this);
@@ -46,7 +46,7 @@ void ConsoleView::_buildTrie()
 		_trie->push(command, (CommandType) id);
 }
 
-std::vector<Command> ConsoleView::_processCommand(const std::string& s) const
+std::vector<Command> ConsoleView::_processCommand(const std::string& s)
 {
 	std::vector<Command> commands;
 	unsigned int split = 0;
@@ -60,7 +60,11 @@ std::vector<Command> ConsoleView::_processCommand(const std::string& s) const
 	int multiplier = multiplierString.length() ? std::stoi(multiplierString) : 1;
 	std::string command = s.substr(split);
 	Command matchingCommand = _trie->findShortestPrefix(command);
-	if (matchingCommand.type != CommandType::UNDEFINED_COMMAND) {
+
+	if (matchingCommand.type == CMD::QUIT)
+		this->_issuedQuitCmd = true;
+
+	if (matchingCommand.type != CMD::UNDEFINED_COMMAND) {
 		for (int i = 0; i < multiplier; i++)
 			commands.push_back(matchingCommand);
 	}
@@ -85,7 +89,8 @@ void ConsoleView::readInStream(void)
 			this->_controller->push(this->_processCommand(command));
 
 			// when quitting, kill thread immediately
-			if (command == "quit") {
+			Command c = _trie->findShortestPrefix(command);
+			if (this->_issuedQuitCmd) {
 				if (this->_game != nullptr) {
 					// Here, this view closes itself in a separate thread, and
 					// its base class may still exist when game begins notifying
