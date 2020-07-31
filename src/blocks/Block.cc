@@ -2,12 +2,20 @@
 #include "StandardBlocks.h"
 
 // Coord Implementation =======================================================
-Coord operator+(Coord a, Coord b)
+Coord operator+(Coord& a, Coord& b)
 {
 	return Coord(a._x + b._x, a._y + b._y);
 }
 
-Coord operator-(Coord a, Coord b)
+Coord& Coord::operator+=(Coord &b)
+{
+	this->_x += b._x;
+	this->_y += b._y;
+
+	return *this;
+}
+
+Coord operator-(Coord& a, Coord& b)
 {
 	return Coord(a._x - b._x, a._y - b._y);
 }
@@ -18,8 +26,8 @@ Coord Coord::invert(void)
 }
 
 // Cell Implementation ========================================================
-Cell::Cell(int x, int y, std::string png, bool isDeleted, BlockType type)
-	: _coords{x, y}, _type{type}, _sprite{png}, _isDeleted{isDeleted}
+Cell::Cell(int x, int y, std::string png, bool isCleared, BlockType type)
+	: _isCleared{isCleared}, _coords{x, y}, _type{type}, _sprite{png}
 {
 
 }
@@ -67,6 +75,7 @@ BlockFactoryInitializer::BlockFactoryInitializer()
 	BlockFactory::_factories['S'] = std::make_unique<SBlock::Factory>();
 	BlockFactory::_factories['Z'] = std::make_unique<ZBlock::Factory>();
 	BlockFactory::_factories['T'] = std::make_unique<TBlock::Factory>();
+	BlockFactory::_factories['*'] = std::make_unique<DBlock::Factory>();
 }
 
 std::shared_ptr<Block> BlockFactory::createBlock(const char& id, int level)
@@ -82,6 +91,7 @@ IBlock::IBlock(int level)
 {
 	_type = BlockType::I;
 	_bottomLeft = Coord(0,14);
+	_orientation = 0;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/t.png",false,BlockType::I));
 	_cells.emplace_back(std::make_shared<Cell>(1,14,"./assets/t.png",false,BlockType::I));
@@ -96,6 +106,7 @@ JBlock::JBlock(int level)
 {
 	_type = BlockType::J;
 	_bottomLeft = Coord(0,13);
+	_orientation = 0;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/n.png",false,BlockType::J));
 	_cells.emplace_back(std::make_shared<Cell>(0,13,"./assets/n.png",false,BlockType::J));
@@ -110,6 +121,7 @@ LBlock::LBlock(int level)
 {
 	_type = BlockType::L;
 	_bottomLeft = Coord(0,13);
+	_orientation = 0;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,13,"./assets/b.png",false,BlockType::L));
 	_cells.emplace_back(std::make_shared<Cell>(1,13,"./assets/b.png",false,BlockType::L));
@@ -124,6 +136,7 @@ OBlock::OBlock(int level)
 {
 	_type = BlockType::O;
 	_bottomLeft = Coord(0,13);
+	_orientation = 0;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,13,"./assets/y.png",false,BlockType::O));
 	_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/y.png",false,BlockType::O));
@@ -138,6 +151,7 @@ SBlock::SBlock(int level)
 {
 	_type = BlockType::S;
 	_bottomLeft = Coord(0,13);
+	_orientation = 0;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,13,"./assets/g.png",false,BlockType::S));
 	_cells.emplace_back(std::make_shared<Cell>(1,13,"./assets/g.png",false,BlockType::S));
@@ -152,6 +166,7 @@ ZBlock::ZBlock(int level)
 {
 	_type = BlockType::Z;
 	_bottomLeft = Coord(0,13);
+	_orientation = 0;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/r.png",false,BlockType::Z));
 	_cells.emplace_back(std::make_shared<Cell>(1,14,"./assets/r.png",false,BlockType::Z));
@@ -166,11 +181,23 @@ TBlock::TBlock(int level)
 {
 	_type = BlockType::T;
 	_bottomLeft = Coord(0,13);
+	_orientation = 0;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/p.png",false,BlockType::T));
 	_cells.emplace_back(std::make_shared<Cell>(1,14,"./assets/p.png",false,BlockType::T));
 	_cells.emplace_back(std::make_shared<Cell>(1,13,"./assets/p.png",false,BlockType::T));
 	_cells.emplace_back(std::make_shared<Cell>(2,14,"./assets/p.png",false,BlockType::T));
+
+	_levelGenerated = level;
+	_isHeavy = (level >= 3);
+}
+
+DBlock::DBlock(int level)
+{
+	_type = BlockType::D;
+	_bottomLeft = Coord(5,17);
+
+	_cells.emplace_back(std::make_shared<Cell>(5,17,"./assets/b.png",false,BlockType::D));
 
 	_levelGenerated = level;
 	_isHeavy = (level >= 3);

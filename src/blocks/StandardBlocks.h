@@ -143,4 +143,25 @@ private:
 	};
 };
 
+
+class DBlock : public Block
+{
+public:
+	DBlock(int);
+
+private:
+	friend class BlockFactoryInitializer;
+	class Factory;
+	friend class Factory;
+
+	class Factory : public BlockFactory
+	{
+			friend class BlockFactoryInitializer;
+		public:
+			std::shared_ptr<Block> create(int level) {
+				return std::make_shared<DBlock>(level);
+			};
+	};
+};
+
 #endif // STANDARDBLOCKS_H

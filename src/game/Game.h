@@ -16,7 +16,7 @@ class Level;
 class Game: public Subject
 {
 public:
-	Game(std::string);
+	Game(uint, std::string);
 	~Game();
 	void update(const Command& command);
 	bool isRunning(void) const;
@@ -31,6 +31,8 @@ public:
 	void leveldown(void);
 	void score(void);
 
+	int getNumBlocksSinceClear(void);
+
 private:
 	void _updateScore(void);
 
@@ -40,6 +42,7 @@ private:
 	uint _score;
 	uint _highScore;
 
+	uint _startLevel;
 };
 
 #endif // GAME_H

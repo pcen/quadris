@@ -5,8 +5,6 @@
 Board::Board()
 	: _cellSize{ default_cell_size }
 {
-	std::vector<int> zero(11, 0);
-	this->_topOfColumns = zero;
 	this->_numBlockSinceClear = 0;
 }
 
@@ -108,7 +106,7 @@ bool Board::_validTranslation(Direction direction)
 	Coord delta = this->_directionDeltas(direction);
 	auto cells = this->_currentBlock->getCells();
 	for (auto& c : cells) {
-		Coord newPos(c->get_x() + delta._x, c->get_y() + delta._y);
+		Coord newPos = c->_coords + delta;
 		// if the new position is out of bounds, return false
 		if (!this->_inBounds(newPos)) {
 			// std::cerr << "not in bounds\n";
@@ -127,10 +125,10 @@ bool Board::_validTranslation(Direction direction)
 void Board::_doTranslation(Direction direction)
 {
 	Coord delta = this->_directionDeltas(direction);
+	this->_currentBlock->_bottomLeft += delta;
 	auto cells = this->_currentBlock->getCells();
 	for (auto& c : cells) {
-		c->_coords._x += delta._x;
-		c->_coords._y += delta._y;
+		c->_coords += delta;
 	}
 }
 

@@ -15,12 +15,14 @@ struct Coord
 	Coord() {};
 	Coord(int x, int y) : _x{ x }, _y{ y } {}
 
+	Coord& operator+=(Coord& b);
 	Coord invert(void);
 };
 
 // Coordinate operators
-Coord operator+(Coord a, Coord b);
-Coord operator-(Coord a, Coord b);
+Coord operator+(Coord& a, Coord& b);
+Coord operator-(Coord& a, Coord& b);
+
 
 enum class BlockType : char {
 	I = 'I',
@@ -30,6 +32,7 @@ enum class BlockType : char {
 	S = 'S',
 	Z = 'Z',
 	T = 'T',
+	D = '*',
 	EMPTY = '.'
 };
 
@@ -46,13 +49,14 @@ public:
 	char getToken(void) const;
 	BlockType getType(void) const;
 
+	bool _isCleared;
+
 private:
 	friend class Board;
 
 	Coord _coords;
 	BlockType _type;
 	std::string _sprite;
-	bool _isDeleted;
 };
 
 class Block
@@ -64,10 +68,13 @@ public:
 	std::vector<std::shared_ptr<Cell>>& getCells(void);
 
 protected:
+	friend class Board;
+
 	BlockType _type;
 	Coord _bottomLeft;
 	std::vector<std::shared_ptr<Cell>> _cells;
 
+	int _orientation;
 	int _levelGenerated;
 	bool _isHeavy;
 };
