@@ -142,7 +142,7 @@ std::vector<char> ConsoleView::_createBoardChars(const Board& board)
 			int x = c->get_x();
 			// top of board is flipped in display
 			int y = 17 - c->get_y();
-			int index = 11 * y + x;
+			unsigned int index = 11 * y + x;
 			if (index < boardChars.size())
 				boardChars.at(index) = c->getToken();
 			else
