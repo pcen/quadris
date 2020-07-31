@@ -54,7 +54,10 @@ void Game::update(const Command& command)
 		this->_board.insertCurrentBlock();
 		auto nextBlock = std::make_shared<IBlock>(this->_level->getLevel()); // this->_level->getNextBlock();
 		if (this->_board.setCurrentBlock(nextBlock) == false) {
-			std::cerr << "could not add next block\n";
+			// if a new block cannot be added, the game is over
+			this->_updateScore();
+			this->restart();
+			std::cerr << "Game Over!\n";
 		}
 	}
 
@@ -82,4 +85,9 @@ void Game::restart(void)
 bool Game::isRunning(void) const
 {
 	return this->_running;
+}
+
+void Game::_updateScore(void)
+{
+	// TODO: implement
 }

@@ -24,14 +24,16 @@ public:
 	const Board& getBoard(void) const;
 
 	// gameplay methods
-	void launch();
-	void restart();
-	void quit();
-	void levelup();
-	void leveldown();
-	void score();
+	void launch(void);
+	void restart(void);
+	void quit(void);
+	void levelup(void);
+	void leveldown(void);
+	void score(void);
 
 private:
+	void _updateScore(void);
+
 	Board _board;
 	std::unique_ptr<Level> _level;
 	bool _running;
