@@ -16,7 +16,7 @@ Board::Board(std::string png, float cell_size)
 	for (int j = 0; j < 11; ++j) {
 		std::vector<std::shared_ptr<Cell>> images;
 		for(int i = 0; i < 18; ++i){
-			std::shared_ptr<Cell> newCell = std::make_shared<Cell>(j, i, nullptr, png, false, (char)BlockType::EMPTY);
+			std::shared_ptr<Cell> newCell = std::make_shared<Cell>(j, i, png, false, BlockType::EMPTY);
 			images.push_back(newCell);
 		}
 		this->_board.push_back(images);
@@ -52,7 +52,7 @@ bool Board::_insertBlock(std::shared_ptr<Block> block)
 {
 	auto cells = block->getCells();
 	for (auto& c : cells) {
-		if (this->at(c->getCoord()).getToken() != '.')
+		if (this->at(c->getCoord()).getType() != BlockType::EMPTY)
 			return false;
 	}
 	for (auto& c : cells)
