@@ -3,6 +3,7 @@
 
 #include <string>
 #include <fstream>
+
 #include "Game.h"
 
 class Game;
@@ -13,7 +14,10 @@ public:
 	virtual ~Level() {};
 	virtual std::shared_ptr<Block> getNextBlock(void) = 0;
 
-	int getLevel(void) const { return this->_level; }
+	int getLevel(void) const;
+	void closeSequence(void);
+	void openSequence(const std::string& sequenceFile);
+	virtual void useRandom(bool random);
 
 protected:
 	friend class Game;

@@ -37,6 +37,7 @@ private:
 	void _updateScore(void);
 
 	Board _board;
+	std::string _defaultSequence;
 	std::unique_ptr<Level> _level;
 	bool _running;
 	uint _score;

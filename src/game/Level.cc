@@ -8,6 +8,29 @@
 std::map<int, std::unique_ptr<LevelFactory>> LevelFactory::_factories;
 LevelFactoryInitializer LevelFactoryInitializer::lfi;
 
+// base class level methods
+int Level::getLevel(void) const
+{
+	return this->_level;
+}
+
+void Level::closeSequence(void)
+{
+	if (this->_sequence->is_open())
+		this->_sequence->close();
+}
+
+void Level::openSequence(const std::string& sequenceFile)
+{
+	this->closeSequence();
+	this->_filePath = sequenceFile;
+	this->_sequence->open(this->_filePath);
+}
+
+void Level::useRandom(bool random)
+{
+	this->_random = random;
+}
 
 LevelFactoryInitializer::LevelFactoryInitializer()
 {
@@ -26,11 +49,11 @@ std::unique_ptr<Level> LevelFactory::createLevel(const int& lev, std::string fil
 	return nullptr;
 }
 
-
+// Level0 Implementation
 Level0::Level0(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin)
 {
 	_level = 0;
-	_random = rand;
+	_random = false;
 	_filePath = filePath;
 	_game = gameRef;
 
@@ -45,6 +68,11 @@ Level0::~Level0()
 		_sequence->close();
 }
 
+void Level0::useRandom(bool use)
+{
+	// always using a sequence
+}
+
 std::shared_ptr<Block> Level0::getNextBlock(void)
 {
 	char blockType = ' ';
@@ -57,7 +85,6 @@ std::shared_ptr<Block> Level0::getNextBlock(void)
 		return BlockFactory::createBlock(blockType, this->_level);
 }
 
-
 // Returns random character from blocks with uniform probability
 char randomBlock(std::string blocks)
 {
@@ -65,7 +92,7 @@ char randomBlock(std::string blocks)
 }
 
 
-
+// Level1 Implementation
 Level1::Level1(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin)
 {
 	_level = 1;
@@ -105,8 +132,7 @@ std::shared_ptr<Block> Level1::getNextBlock(void)
 }
 
 
-
-
+// Level2 Implementation
 Level2::Level2(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin)
 {
 	_level = 2;
@@ -130,8 +156,7 @@ std::shared_ptr<Block> Level2::getNextBlock(void)
 }
 
 
-
-
+// Level3 Implementation
 Level3::Level3(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin)
 {
 	_level = 3;
@@ -171,8 +196,7 @@ std::shared_ptr<Block> Level3::getNextBlock(void)
 }
 
 
-
-
+// Level4 Implementation
 Level4::Level4(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin)
 {
 	_level = 4;

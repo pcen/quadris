@@ -36,6 +36,9 @@ void Board::reset(void)
 		}
 		this->_board.push_back(row);
 	}
+
+	// reset the number of blocks since last clear count
+	this->_numBlockSinceClear = 0;
 }
 
 Cell Board::at(Coord coord) const

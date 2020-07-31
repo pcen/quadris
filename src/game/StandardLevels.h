@@ -12,6 +12,7 @@ public:
 	~Level0();
 	Level0(std::string, Game*, bool, std::shared_ptr<std::ifstream>);
 	std::shared_ptr<Block> getNextBlock(void) override;
+	void useRandom(bool use) override;
 
 private:
 	friend class LevelFactoryInitializer;
