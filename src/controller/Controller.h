@@ -19,8 +19,6 @@ public:
 	void send_commands(void);
 
 private:
-	void _buildTrie();
-	std::vector<Command> _processCommand(const std::string& command) const;
 	std::mutex _lock;
 	Game& _game;
 	std::queue<Command> _command_queue;

@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <iostream>
 
 #include "StandardLevels.h"
 
@@ -44,8 +45,14 @@ Level0::~Level0()
 
 std::shared_ptr<Block> Level0::getNextBlock(void)
 {
-	char blockType = _sequence->get();
-	return BlockFactory::createBlock(blockType, _level);
+	char blockType = ' ';
+	while (std::isspace(static_cast<unsigned char>(blockType)) != 0)
+		blockType = _sequence->get();
+
+	if (_sequence->eof())
+		return nullptr;
+	else
+		return BlockFactory::createBlock(blockType, _level);
 }
 
 

@@ -8,7 +8,7 @@ Game::Game(std::string filePath)
 	: _board("./assets/_.png"), _running{true}, _score{0}, _highScore{0}
 {
 	std::shared_ptr<std::ifstream> sequenceFile = std::make_shared<std::ifstream>();
-	_level = std::make_unique<Level0>(filePath, this, true, sequenceFile);
+	this->_level = std::make_unique<Level0>(filePath, this, true, sequenceFile);
 }
 
 Game::~Game()
@@ -52,7 +52,9 @@ void Game::update(const Command& command)
 	if (dropped) {
 		// put next block on the board
 		this->_board.insertCurrentBlock();
-		auto nextBlock = std::make_shared<IBlock>(this->_level->getLevel()); // this->_level->getNextBlock();
+		std::cerr << "getting next block...\n";
+		auto nextBlock = this->_level->getNextBlock();
+		std::cerr << "next block: " << (char)nextBlock->getType() << "\n";
 		if (this->_board.setCurrentBlock(nextBlock) == false) {
 			// if a new block cannot be added, the game is over
 			this->_updateScore();
