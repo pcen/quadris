@@ -223,6 +223,11 @@ std::vector<std::shared_ptr<Cell>>& Block::getCells(void)
 	return this->_cells;
 }
 
+bool Block::isHeavy(void) const
+{
+	return this->_isHeavy;
+}
+
 // Convert a block between block space and board space
 // In block space, the origin for cell coordinates is the blocks bottom left
 // In board space, the block's cell coordinates are relative to a Board

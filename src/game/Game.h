@@ -29,10 +29,11 @@ public:
 	void quit(void);
 
 	int getNumBlocksSinceClear(void);
+	unsigned int getScore(void) const;
+	unsigned int getHighScore(void) const;
 
 private:
-	void _levelup(void);
-	void _leveldown(void);
+	void _changeLevel(bool up);
 	void _handleDrop(void);
 	void _updateScore(void);
 
@@ -40,10 +41,9 @@ private:
 	std::string _startSequence;
 	std::unique_ptr<Level> _level;
 	bool _running;
-	uint _score;
-	uint _highScore;
-
-	uint _startLevel;
+	unsigned int _score;
+	unsigned int _highScore;
+	unsigned int _startLevel;
 };
 
 #endif // GAME_H

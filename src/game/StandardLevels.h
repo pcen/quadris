@@ -5,6 +5,7 @@
 
 #include "Level.h"
 
+#define MAX_LEVEL 4
 
 class Level0 : public Level
 {

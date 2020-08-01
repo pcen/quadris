@@ -25,7 +25,8 @@ const Board& Game::getBoard(void) const
 
 void Game::update(const Command& command)
 {
-	bool rotated = false;
+	bool rotate = false;
+	bool translate = false;
 
 	switch(command.type) {
 		case CMD::QUIT:
@@ -34,19 +35,23 @@ void Game::update(const Command& command)
 
 		case CMD::CLOCKWISE:
 		case CMD::COUNTERCLOCKWISE:
-			rotated = this->_board.rotate(command.type == CMD::CLOCKWISE);
+			this->_board.rotate(command.type == CMD::CLOCKWISE);
+			rotate = true;
 			break;
 
 		case CMD::DOWN:
 			this->_board.translate(Direction::DOWN);
+			translate = true;
 			break;
 
 		case CMD::LEFT:
 			this->_board.translate(Direction::LEFT);
+			translate = true;
 			break;
 
 		case CMD::RIGHT:
 			this->_board.translate(Direction::RIGHT);
+			translate = true;
 			break;
 
 		case CMD::DROP:
@@ -58,11 +63,8 @@ void Game::update(const Command& command)
 			break;
 
 		case CMD::LEVELUP:
-			this->_levelup();
-			break;
-
 		case CMD::LEVELDOWN:
-			this->_leveldown();
+			this->_changeLevel(command.type == CMD::LEVELUP);
 			break;
 
 		// random block generation (sequence file remains unchanged)
@@ -90,6 +92,12 @@ void Game::update(const Command& command)
 
 	if (command.type == CMD::DROP)
 		this->_handleDrop();
+
+	// down heavy blocks by 1 cell
+	if (!command.silent && (rotate || translate)) {
+		if (this->_board.getCurrentBlock()->isHeavy())
+			this->_board.translate(Direction::DOWN);
+	}
 
 	if (!command.silent)
 		this->_notify();
@@ -162,28 +170,26 @@ int Game::getNumBlocksSinceClear(void)
 	return this->_board._numBlockSinceClear;
 }
 
-void Game::_levelup(void)
+void Game::_changeLevel(bool up)
 {
-	if (this->_level->getLevel() < 4) {
-		int newLevel = this->_level->_level + 1;
+	int levelNum = this->_level->getLevel();
+	if ((up && levelNum < MAX_LEVEL) || (!up && levelNum > 0)) {
+		int newLevel = levelNum + (up ? 1 : -1);
 		this->_level = LevelFactory::createLevel(newLevel,
 		                                         _level->_filePath,
 		                                         this,
 		                                         _level->_random,
 		                                         _level->_sequence);
+		this->_board.setNextBlock(this->_level->getNextBlock());
 	}
-	// std::cerr << "Level UP to : " << this->_level->_level << "\n";
 }
 
-void Game::_leveldown(void)
+unsigned int Game::getScore(void) const
 {
-	if (this->_level->getLevel() > 0) {
-		int newLevel = this->_level->_level - 1;
-		this->_level = LevelFactory::createLevel(newLevel,
-		                                         _level->_filePath,
-		                                         this,
-		                                         _level->_random,
-		                                         _level->_sequence);
-	}
-	// std::cerr << "Level D./OWN to : " << this->_level->_level << "\n";
+	return this->_score;
+}
+
+unsigned int Game::getHighScore(void) const
+{
+	return this->_highScore;
 }
