@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include <sstream>
+#include <unordered_set>
 
 // generated with: http://patorjk.com/software/taag/#p=display&f=Small&t=Quadris
 // modifications to source material:
@@ -48,6 +49,12 @@ void ConsoleView::_buildTrie()
 
 std::vector<Command> ConsoleView::_processCommand(const std::string& s)
 {
+	std::unordered_set<CommandType> invalidMultipliers = { 	CMD::RANDOM, 
+															CMD::RESTART, 
+															CMD::HINT, 
+															CMD::NORANDOM_FILE, 
+															CMD::SEQUENCE_FILE
+														};
 	std::vector<Command> commands;
 	unsigned int split = 0;
 	for (; split < s.length(); split++) {
@@ -62,6 +69,9 @@ std::vector<Command> ConsoleView::_processCommand(const std::string& s)
 	Command matchingCommand = _trie->findShortestPrefix(command);
 	matchingCommand.silent = true;
 
+	if (invalidMultipliers.find(matchingCommand.type) != invalidMultipliers.end()) // force multipler of 1
+		multiplier = 1;
+
 	if (matchingCommand.type == CMD::QUIT)
 		this->_issuedQuitCmd = true;
 
@@ -72,6 +82,11 @@ std::vector<Command> ConsoleView::_processCommand(const std::string& s)
 	if (!commands.empty())
 		commands.back().silent = false;
 	return commands;
+}
+
+bool ConsoleView::_isValidFilePath(const std::string& filePath) {
+	std::ifstream infile(filePath);
+    return infile.good();
 }
 
 // read_in_stream runs in separate thread for the lifetime
@@ -90,11 +105,29 @@ void ConsoleView::readInStream(void)
 		// game is still running before  sending the command
 		if (this->_game != nullptr && this->_game->isRunning()) {
 			std::vector<Command> payload = this->_processCommand(command);
-			if (!payload.empty())
-				this->_controller->push(this->_processCommand(command));
+
+			bool valid = !payload.empty();
+
+			if (payload.size() == 1) {
+				CommandType type = payload.at(0).type;
+				// attach filePath to command
+				if (type == CMD::NORANDOM_FILE || type == CMD::SEQUENCE_FILE) { 
+					std::string filePath;
+					this->_in >> filePath;
+					if (this->_isValidFilePath(filePath)) {
+						payload.at(0).message = filePath;
+					} else {
+						valid = false;
+					}
+				}
+			}
+
+			if (valid)
+				this->_controller->push(payload);
+			else
+				this->update(); //requery
 
 			// when quitting, kill thread immediately
-			Command c = _trie->findShortestPrefix(command);
 			if (this->_issuedQuitCmd) {
 				if (this->_game != nullptr) {
 					// Here, this view closes itself in a separate thread, and

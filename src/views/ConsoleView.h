@@ -33,6 +33,8 @@ private:
 	void _buildTrie(void);
 	std::vector<Command> _processCommand(const std::string&);
 
+	bool _isValidFilePath(const std::string& filePath);
+	
 	bool _issuedQuitCmd;
 	std::shared_ptr<Trie> _trie;
 	std::istream& _in;
