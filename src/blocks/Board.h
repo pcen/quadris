@@ -38,7 +38,7 @@ public:
 	// drop the currently active block
 	void drop(void);
 	// insert the currently active block cells into the table
-	bool insertCurrentBlock(void);
+	int insertCurrentBlock(void);
 	// rotate the current block
 	bool rotate(bool clockwise);
 
@@ -51,6 +51,7 @@ public:
 	void setNextBlock(std::shared_ptr<Block> nextBlock);
 	// get the next block
 	std::shared_ptr<Block> getNextBlock(void) const;
+	std::vector<std::shared_ptr<Block>> getBlocks(void) const;
 
 	BoardIterator begin() const;
 	BoardIterator end() const;
@@ -61,6 +62,9 @@ private:
 	float _cellSize;
 
 	void _insertBlock(std::shared_ptr<Block> block);
+	int _clearRows(void);
+
+	void _resetRow(unsigned int row);
 
 	// board boundary checking
 	bool _inBounds(int x, int y);

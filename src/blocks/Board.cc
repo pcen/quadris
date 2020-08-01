@@ -63,6 +63,11 @@ std::shared_ptr<Block> Board::getNextBlock(void) const
 	return this->_nextBlock;
 }
 
+std::vector<std::shared_ptr<Block>> Board::getBlocks(void) const 
+{
+	return _blocks;
+}
+
 float Board::getCellSize(void) const
 {
 	return this->_cellSize;
@@ -204,8 +209,40 @@ void Board::_doRotation(bool clockwise)
 	this->_currentBlock->blockSpace(false);
 }
 
+void Board::_resetRow(unsigned int row) {
+	for (unsigned int x = 0; x < 11; x++) {
+		auto newCell = std::make_shared<Cell>(x, row, this->_emptyCellSprite, false, BlockType::EMPTY);
+		_board[x][row] = newCell;
+	}
+}
+
+int Board::_clearRows(void)
+{
+	Block* block = this->_currentBlock.get();
+	Coord start = block->_bottomLeft;
+	int rowsCleared = 0;
+
+	for (int y = start._y; y < start._y + 4; y++) {
+		bool isFilled = true;
+		for (int x = 0; x < 11; x++) {
+			Cell* c = this->_board[x][y].get();
+			if (c->getType() == BlockType::EMPTY) {
+				isFilled = false;
+				break;
+			}
+		}
+		if (!isFilled)
+			break;
+
+		rowsCleared++;
+		this->_resetRow(y);
+	}
+
+	return rowsCleared;
+}
+
 // insert the cells of the currently active block into the board
-bool Board::insertCurrentBlock(void)
+int Board::insertCurrentBlock(void)
 {
 	if (this->_validTranslation(Direction::NONE)) {
 		// insert the current block's cells into the board
@@ -213,12 +250,12 @@ bool Board::insertCurrentBlock(void)
 		// put the current block into the vector of blocks,
 		// since a new block should become current
 		this->_blocks.push_back(this->_currentBlock);
-		return true;
+		return this->_clearRows();
 	}
 	else {
 		std::cerr << "ERROR: cannot insert current block since it is"
 		          << " at an invalid board position.\n";
-		return false;
+		return -1;
 	}
 }
 

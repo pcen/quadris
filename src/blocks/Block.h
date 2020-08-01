@@ -67,6 +67,7 @@ public:
 	BlockType getType(void);
 	std::vector<std::shared_ptr<Cell>>& getCells(void);
 	bool isHeavy(void) const;
+	bool isCleared(void) const;
 	void blockSpace(bool blockSpace);
 	void reflectInYeqX(void);
 	void flipX(void);

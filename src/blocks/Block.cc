@@ -228,6 +228,16 @@ bool Block::isHeavy(void) const
 	return this->_isHeavy;
 }
 
+bool Block::isCleared(void) const
+{
+	for (auto c: _cells) {
+		if (!c.get()->_isCleared) {
+			return false;
+		}
+	}
+	return true;
+}
+
 // Convert a block between block space and board space
 // In block space, the origin for cell coordinates is the blocks bottom left
 // In board space, the block's cell coordinates are relative to a Board
