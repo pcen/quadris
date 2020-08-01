@@ -209,7 +209,24 @@ void Board::_doRotation(bool clockwise)
 	this->_currentBlock->blockSpace(false);
 }
 
-void Board::_resetRow(unsigned int row) {
+void Board::_shiftDown(unsigned int top)
+{
+	auto shiftElement = [&] (int x, int y) -> void { 
+        while(y > 0 && this->_board[])
+    };
+
+	for (unsigned int x = 0; x < 11; x++) {
+		for (unsigned int y = 0; y < top; y++) {
+			Cell* c = this->_board[x][y].get();
+			if (c->isEmpty()) {
+				shiftElement(x, y);
+			}
+		}
+	}
+}
+
+void Board::_resetRow(unsigned int row)
+{
 	for (unsigned int x = 0; x < 11; x++) {
 		auto newCell = std::make_shared<Cell>(x, row, this->_emptyCellSprite, false, BlockType::EMPTY);
 		_board[x][row] = newCell;
@@ -226,7 +243,7 @@ int Board::_clearRows(void)
 		bool isFilled = true;
 		for (int x = 0; x < 11; x++) {
 			Cell* c = this->_board[x][y].get();
-			if (c->getType() == BlockType::EMPTY) {
+			if (c->isEmpty()) {
 				isFilled = false;
 				break;
 			}
@@ -237,7 +254,7 @@ int Board::_clearRows(void)
 		rowsCleared++;
 		this->_resetRow(y);
 	}
-
+	this->_shiftDown(start._y + 4);
 	return rowsCleared;
 }
 

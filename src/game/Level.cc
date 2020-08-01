@@ -22,6 +22,7 @@ void Level::closeSequence(void)
 
 void Level::openSequence(const std::string& sequenceFile)
 {
+	std::cout << sequenceFile << std::endl;
 	// if a sequence file is open, close it first
 	this->closeSequence();
 	this->_filePath = sequenceFile;

@@ -62,6 +62,10 @@ BlockType Cell::getType(void) const
 	return this->_type;
 }
 
+bool Cell::isEmpty(void) const {
+	return this->_type != BlockType::EMPTY;
+}
+
 // define static instances
 std::map<char, std::unique_ptr<BlockFactory>> BlockFactory::_factories;
 BlockFactoryInitializer BlockFactoryInitializer::bfi;

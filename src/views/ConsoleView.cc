@@ -172,7 +172,7 @@ void ConsoleView::_displayGame(const Board& board)
 	std::vector<char> boardChars = this->_createBoardChars(board);
 	std::vector<std::string> next = this->_createNextStrings(board);
 	this->_prepareDisplay(display, boardChars, next);
-	this->_clearConsole();
+	// this->_clearConsole();
 	this->_out << display;
 	this->_out.flush();
 }

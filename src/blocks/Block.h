@@ -47,6 +47,7 @@ public:
 	int get_y(void);
 	char getToken(void) const;
 	BlockType getType(void) const;
+	bool isEmpty(void) const;
 
 	bool _isCleared;
 

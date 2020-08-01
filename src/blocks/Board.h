@@ -65,6 +65,7 @@ private:
 	int _clearRows(void);
 
 	void _resetRow(unsigned int row);
+	void _shiftDown(unsigned int top);
 
 	// board boundary checking
 	bool _inBounds(int x, int y);
