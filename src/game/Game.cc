@@ -5,16 +5,17 @@
 
 #include "./blocks/StandardBlocks.h"
 Game::Game(uint startLevel, std::string filePath)
-	: _board("./assets/_.png"), _defaultSequence{ filePath }, _running{true},
+	: _board("./assets/_.png"), _startSequence{ filePath }, _running{true},
 	_score{0}, _highScore{0}, _startLevel{startLevel}
 {
-	std::shared_ptr<std::ifstream> sequenceFile = std::make_shared<std::ifstream>();
-	this->_level = LevelFactory::createLevel(startLevel, filePath, this, true, sequenceFile);
+	std::shared_ptr<std::ifstream> fs = std::make_shared<std::ifstream>();
+	this->_level = LevelFactory::createLevel(startLevel, filePath, this, true, fs);
+	this->_level->openSequence(this->_startSequence);
 }
 
 Game::~Game()
 {
-
+	this->_level->closeSequence();
 }
 
 const Board& Game::getBoard(void) const
@@ -57,11 +58,11 @@ void Game::update(const Command& command)
 			break;
 
 		case CMD::LEVELUP:
-			this->levelup();
+			this->_levelup();
 			break;
 
 		case CMD::LEVELDOWN:
-			this->leveldown();
+			this->_leveldown();
 			break;
 
 		// random block generation (sequence file remains unchanged)
@@ -116,12 +117,10 @@ void Game::_handleDrop(void)
 
 void Game::launch(void)
 {
-	auto firstBlock = this->_level->getNextBlock();
-	auto nextBlock = this->_level->getNextBlock();
-	if (this->_board.setCurrentBlock(firstBlock) == false) {
+	if (this->_board.setCurrentBlock(this->_level->getNextBlock()) == false) {
 		std::cerr << "could not add first block\n";
 	}
-	this->_board.setNextBlock(nextBlock);
+	this->_board.setNextBlock(this->_level->getNextBlock());
 	this->_notify();
 }
 
@@ -137,7 +136,7 @@ void Game::restart(void)
 	// guarentee that EOF bit is reset
 	std::shared_ptr<std::ifstream> fs = std::make_shared<std::ifstream>();
 	this->_level = LevelFactory::createLevel(this->_startLevel,
-	                                         this->_defaultSequence,
+	                                         this->_startSequence,
 	                                         this,
 	                                         true,
 	                                         fs);
@@ -163,7 +162,7 @@ int Game::getNumBlocksSinceClear(void)
 	return this->_board._numBlockSinceClear;
 }
 
-void Game::levelup(void)
+void Game::_levelup(void)
 {
 	if (this->_level->getLevel() < 4) {
 		int newLevel = this->_level->_level + 1;
@@ -176,7 +175,7 @@ void Game::levelup(void)
 	// std::cerr << "Level UP to : " << this->_level->_level << "\n";
 }
 
-void Game::leveldown(void)
+void Game::_leveldown(void)
 {
 	if (this->_level->getLevel() > 0) {
 		int newLevel = this->_level->_level - 1;

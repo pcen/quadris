@@ -27,18 +27,17 @@ public:
 	void launch(void);
 	void restart(void);
 	void quit(void);
-	void levelup(void);
-	void leveldown(void);
-	void score(void);
 
 	int getNumBlocksSinceClear(void);
 
 private:
+	void _levelup(void);
+	void _leveldown(void);
 	void _handleDrop(void);
 	void _updateScore(void);
 
 	Board _board;
-	std::string _defaultSequence;
+	std::string _startSequence;
 	std::unique_ptr<Level> _level;
 	bool _running;
 	uint _score;
