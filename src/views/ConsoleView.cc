@@ -234,13 +234,12 @@ void ConsoleView::_addInfo(int row, std::string& display, std::vector<std::strin
 		info.append("high score: " + std::to_string(highScore));
 		break;
 	case 1:
+	case 7:
 		info.append("    ┌────────────────────┐");
 		break;
 	case 5:
+	case 13:
 		info.append("    └────────────────────┘");
-		break;
-	case 7:
-		info.append("    ┌────────────────────┐");
 		break;
 	case 8:
 		info.append("next:");
@@ -256,9 +255,6 @@ void ConsoleView::_addInfo(int row, std::string& display, std::vector<std::strin
 		break;
 	case 12:
 		info.append(next.at(3));
-		break;
-	case 13:
-		info.append("    └────────────────────┘");
 		break;
 	default:
 		return;
