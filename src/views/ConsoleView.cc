@@ -124,11 +124,21 @@ void ConsoleView::readInStream(void)
 	}
 }
 
+void ConsoleView::_clearConsole(void)
+{
+	if (&this->_out != &std::cout || system(nullptr) == 0) {
+		std::cerr << "ERROR: cannot clear this console\n";
+	} else if (!(system("clear") == 0 || system("cls") == 0)) {
+		std::cerr << "ERROR: failed to clear console\n";
+	}
+}
+
 void ConsoleView::_displayGame(const Board& board)
 {
 	std::string display; // next console frame
 	std::vector<char> boardChars = this->_createBoardChars(board);
-	this->_prepareDisplay(display, boardChars);
+	std::vector<std::string> next = this->_createNextStrings(board);
+	this->_prepareDisplay(display, boardChars, next);
 	this->_clearConsole();
 	this->_out << display;
 	this->_out.flush();
@@ -159,16 +169,20 @@ std::vector<char> ConsoleView::_createBoardChars(const Board& board)
 	return boardChars;
 }
 
-void ConsoleView::_clearConsole(void)
+std::vector<std::string> ConsoleView::_createNextStrings(const Board& board)
 {
-	if (&this->_out != &std::cout || system(nullptr) == 0) {
-		std::cerr << "ERROR: cannot clear this console\n";
-	} else if (!(system("clear") == 0 || system("cls") == 0)) {
-		std::cerr << "ERROR: failed to clear console\n";
-	}
+	std::vector<std::string> next = { "        ", "        ", "        ", "        " };
+	std::shared_ptr<Block> nextBlock = board.getNextBlock();
+	if (nextBlock == nullptr)
+		return next;
+	nextBlock->blockSpace(true);
+	for (auto& cell : nextBlock->getCells())
+		next.at(cell->get_y()).at(2 * cell->get_x()) = cell->getToken();
+	nextBlock->blockSpace(false);
+	return next;
 }
 
-void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& boardChars)
+void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& boardChars, std::vector<std::string>& next)
 {
 	display.append(quadrisTitle);
 	int row = 1;
@@ -177,7 +191,7 @@ void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& board
 	for (auto& c : boardChars) {
 		if (rowCount == 11) {
 			// add text to the right of the quadris board (if applicable)
-			this->_addInfo(row, board_string);
+			this->_addInfo(row, board_string, next);
 			row++;
 			board_string.append("\n   " + std::to_string(row)); // add row number
 			board_string.append(std::string(6 - (row / 10), ' ')); // pad to board
@@ -197,13 +211,13 @@ void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& board
 	display.append("\r│ > ");
 }
 
-void ConsoleView::_addInfo(int row, std::string& display)
+void ConsoleView::_addInfo(int row, std::string& display, std::vector<std::string>& next)
 {
 	std::string info;
 	int level;
 	int score;
 	int highScore;
-	if (2 <= row && row <= 4)
+	if ((2 <= row && row <= 4) || (8 <= row && row <= 12))
 		info.append("    │ ");
 
 	switch (row) {
@@ -225,11 +239,32 @@ void ConsoleView::_addInfo(int row, std::string& display)
 	case 5:
 		info.append("    └────────────────────┘");
 		break;
+	case 7:
+		info.append("    ┌────────────────────┐");
+		break;
+	case 8:
+		info.append("next:");
+		break;
+	case 9:
+		info.append(next.at(0));
+		break;
+	case 10:
+		info.append(next.at(1));
+		break;
+	case 11:
+		info.append(next.at(2));
+		break;
+	case 12:
+		info.append(next.at(3));
+		break;
+	case 13:
+		info.append("    └────────────────────┘");
+		break;
 	default:
 		return;
 	}
 	// right hand side of info text box
-	if (2 <= row && row <= 4) {
+	if ((2 <= row && row <= 4) || (8 <= row && row <= 12)) {
 		info.append(std::string(27 - info.length(), ' '));
 		info.append("│");
 	}

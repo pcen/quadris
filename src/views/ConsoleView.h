@@ -24,9 +24,10 @@ private:
 	// Display methods
 	void _displayGame(const Board& board);
 	std::vector<char> _createBoardChars(const Board& board);
+	std::vector<std::string> _createNextStrings(const Board& board);
 	void _clearConsole(void);
-	void _prepareDisplay(std::string& display, std::vector<char>& boardChars);
-	void _addInfo(int row, std::string& display);
+	void _prepareDisplay(std::string& display, std::vector<char>& boardChars, std::vector<std::string>& next);
+	void _addInfo(int row, std::string& display, std::vector<std::string>& next);
 
 	// Trie methods
 	void _buildTrie(void);
