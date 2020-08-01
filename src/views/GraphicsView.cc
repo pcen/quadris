@@ -27,26 +27,24 @@ void messageHandler(QtMsgType type,
                     const QMessageLogContext &context,
                     const QString &msg)
 {
+	std::string message;
 	switch (type) {
-		case QtDebugMsg:
-		case QtInfoMsg:
-		case QtWarningMsg:
-			break;
 		case QtCriticalMsg:
 		case QtFatalMsg:
-		default:
-			std::string message = msg.toStdString();
+			message = msg.toStdString();
 			std::cerr << "Qt ERROR: " << message
 			          << " (" << context.file << ": " << context.line
 			          << ", " << context.function << ")\n";
+			break;
+		default:
 			break;
 	}
 }
 
 GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* controller)
 	: View{ game, controller }, _qtArgCount{ 0 }, _qtArgs{ nullptr },
-	_open{ false }, _name{ name },
-	_app(_qtArgCount, _qtArgs), _window{ name, game }
+	_open{ false }, _name{ name }, _app(_qtArgCount, _qtArgs),
+	_window{ name, game, 0, 570, (int) game->getBoard().getCellSize() * 18 }
 {
 	qInstallMessageHandler(messageHandler);
 	// load quadris cell sprites

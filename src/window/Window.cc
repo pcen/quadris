@@ -5,6 +5,7 @@
 #include <QEvent>
 #include <QPainter>
 #include <QAction>
+#include <QFont>
 
 #define BUTTON_COUNT 10
 static const std::string buttonLabels[BUTTON_COUNT] = {
@@ -15,19 +16,25 @@ static const std::string buttonLabels[BUTTON_COUNT] = {
 static const char* buttonStyle =
 "font-family: Arial;"
 "font-size: 14px;"
-"color: rgb(255,255,255);"
-"background-color: rgb(64,63,61);"
-"min-height: 25px;"
-"min-width: 40px;"
+"color: rgb(65,255,0);"
+"border-width: 1px;"
+"border-style: solid;"
+"border-color: rgb(65,255,0);"
+"padding-left: 5px;"
 "padding-right: 5px;"
-"padding-left: 5px;";
+"padding-top: 2px;"
+"padding-bottom: 2px;"
+"min-width: 40px;";
 
 Window::Window(const std::string& title, Game* game, QWidget* parent, int width, int height)
-	: QMainWindow(parent), _open{ false }, _game{ game }, _buttonPane{ this }
+	: QMainWindow(parent), _open{ false }, _game{ game },
+	_labelPane{ this }, _buttonPane{ this }
 {
+	this->setStyleSheet("background-color:black");
 	this->setTitle(title);
 	this->setSize(width, height);
 	this->_initializeButtons();
+	this->_initializeLabels();
 }
 
 Window::~Window()
@@ -44,10 +51,11 @@ void Window::loadSprites(const std::string& sprites)
 void Window::_initializeButtons(void)
 {
 	// set button pane position
-	int btnOffset = this->_game->getBoard().getCellSize() * 12;
+	int paneX = this->_game->getBoard().getCellSize() * 12;
+	int paneY = this->_game->getBoard().getCellSize() * 8;
 
-	this->_buttonPane.move(btnOffset, 0);
-	this->_buttonPane.resize(this->_width - btnOffset, this->_height);
+	this->_buttonPane.move(paneX, paneY);
+	this->_buttonPane.resize(this->_width - paneX, this->_height - paneY);
 
 	// populate the button pane
 	for (auto & label : buttonLabels) {
@@ -75,7 +83,7 @@ void Window::_initializeButtons(void)
 // precondition: _btns must be initialized
 void Window::_positionButtons(void)
 {
-	int row_space = 30;
+	int row_space = 33;
 	this->_btns["restart"]->move(0, row_space * 0);
 	this->_btns["counter clockwise"]->move(0, row_space * 1);
 	this->_btns["clockwise"]->move(145, row_space * 1);
@@ -92,6 +100,42 @@ void Window::_onButtonPress(std::string command)
 {
 	// queue button pressed for View to relay to controller
 	this->_btnPressed.push_back(command);
+}
+
+void Window::_initializeLabels(void)
+{
+	// set button pane position
+	int paneX = this->_game->getBoard().getCellSize() * 12;
+	int paneY = this->_game->getBoard().getCellSize() * 5;
+
+	this->_labelPane.move(paneX, 0);
+	this->_labelPane.resize(this->_width - paneX, paneY);
+
+	std::vector<QLabel*> labels = { &this->_level, &this->_score,
+	                                &this->_highScore, &this->_nextBlock };
+
+	int i = 0;
+	QFont font("Consolas", 14);
+	for (auto& l : labels) {
+		l->setFont(font);
+		l->setStyleSheet("color: rgb(65,255,0);");
+		l->setParent(&this->_labelPane);
+		l->move(0, i*30 + 15);
+		++i;
+	}
+	this->_nextBlock.setText("Next Block:");
+	this->_setLabelValues();
+}
+
+void Window::_setLabelValues(void)
+{
+	QString level = QString::number(this->_game->getLevel()).prepend("Level: ");
+	QString score = QString::number(this->_game->getScore()).prepend("Score: ");
+	QString hscore = QString::number(this->_game->getHighScore()).prepend("High Score: ");
+
+	this->_level.setText(level);
+	this->_score.setText(score);
+	this->_highScore.setText(hscore);
 }
 
 std::vector<std::string> Window::getButtonInput(void)
@@ -112,12 +156,14 @@ void Window::render(void)
 {
 	// trigger paintEvent by updating widget
 	QWidget::update();
+	this->_setLabelValues();
 }
 
 void Window::paintEvent(QPaintEvent* event)
 {
 	if (event != nullptr) {
 		QPainter painter(this);
+		this->_drawNextBlock(painter);
 		this->_drawBoard(painter);
 	}
 }
@@ -126,33 +172,55 @@ void Window::_drawBoard(QPainter& painter)
 {
 	// render board
 	const Board& board = this->_game->getBoard();
-	float cell_size = board.getCellSize();
+	float cellSize = board.getCellSize();
 	for (auto i = board.begin(); i != board.end(); ++i) {
 		Cell c = *i;
-		float x = c.get_x() * cell_size;
+		float x = c.get_x() * cellSize;
 		// display y values have top at y = 0
-		float y = (17.0f - c.get_y()) * cell_size;
+		float y = (17.0f - c.get_y()) * cellSize;
 
-		QRectF target = QRectF(x, y, cell_size, cell_size);
+		QRectF target = QRectF(x, y, cellSize, cellSize);
 		auto sprite = this->_sprites->getSprite(c.getSprite());
 		QPixmap pm = sprite->getData();
 		painter.drawPixmap(target, pm, pm.rect());
 	}
 
 	// render current block
-	auto currentBlock = board.getCurrentBlock();
+	std::shared_ptr<Block> currentBlock = board.getCurrentBlock();
 	if (currentBlock != nullptr) {
 		for (auto& c : currentBlock->getCells()) {
-			float x = c->get_x() * cell_size;
+			float x = c->get_x() * cellSize;
 			// display y values have top at y = 0
-			float y = (17.0f - c->get_y()) * cell_size;
+			float y = (17.0f - c->get_y()) * cellSize;
 
-			QRectF target = QRectF(x, y, cell_size, cell_size);
+			QRectF target = QRectF(x, y, cellSize, cellSize);
 			auto sprite = this->_sprites->getSprite(c->getSprite());
 			QPixmap pm = sprite->getData();
 			painter.drawPixmap(target, pm, pm.rect());
 		}
 	}
+}
+
+void Window::_drawNextBlock(QPainter& painter)
+{
+	const Board& board = this->_game->getBoard();
+	float cellSize = board.getCellSize();
+	// render next block
+	float dx = cellSize * 17.0f;
+	float dy = cellSize* 5.0f;
+	std::shared_ptr<Block> next = board.getNextBlock();
+	if (next == nullptr)
+		return;
+	next->blockSpace(true);
+	for (auto& c : next->getCells()) {
+		float x = (c->get_x() * cellSize) + dx;
+		float y = ((next->yMax() - c->get_y()) * cellSize) + dy;
+		QRectF target = QRectF(x, y, cellSize, cellSize);
+		auto sprite = this->_sprites->getSprite(c->getSprite());
+		QPixmap pm = sprite->getData();
+		painter.drawPixmap(target, pm, pm.rect());
+	}
+	next->blockSpace(false);
 }
 
 // handle Qt events

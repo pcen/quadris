@@ -31,6 +31,7 @@
 #include <QPixmap>
 #include <QWidget>
 #include <QLabel>
+#include <QFont>
 #include <QMap>
 
 #endif

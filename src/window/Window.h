@@ -5,11 +5,12 @@
 #include <vector>
 
 #include <QMap>
+#include <QLabel>
 #include <QWidget>
+#include <QKeyEvent>
 #include <QMainWindow>
 #include <QPushButton>
 #include <QSharedPointer>
-#include <QKeyEvent>
 
 #include "../game/Game.h"
 #include "../blocks/Board.h"
@@ -47,6 +48,7 @@ protected:
 	// draw methods
 	void paintEvent(QPaintEvent*) override;
 	void _drawBoard(QPainter& painter);
+	void _drawNextBlock(QPainter& painter);
 
 private:
 	bool _open;
@@ -65,6 +67,16 @@ private:
 	void _initializeButtons(void);
 	void _positionButtons(void);
 	void _onButtonPress(std::string command);
+
+	// GUI text
+	void _initializeLabels(void);
+	void _setLabelValues(void);
+	QWidget _labelPane;
+	QLabel _level;
+	QLabel _score;
+	QLabel _highScore;
+	QLabel _nextBlock;
+
 	QWidget _buttonPane;
 	QMap<std::string, QButtonPtr> _btns;
 	std::vector<std::string> _btnPressed;
