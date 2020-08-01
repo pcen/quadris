@@ -193,3 +193,8 @@ unsigned int Game::getHighScore(void) const
 {
 	return this->_highScore;
 }
+
+int Game::getLevel(void) const
+{
+	return this->_level->getLevel();
+}

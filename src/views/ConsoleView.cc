@@ -200,18 +200,24 @@ void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& board
 void ConsoleView::_addInfo(int row, std::string& display)
 {
 	std::string info;
+	int level;
+	int score;
+	int highScore;
 	if (2 <= row && row <= 4)
 		info.append("    │ ");
 
 	switch (row) {
 	case 2:
-		info.append("level: 69");
+		level = this->_game->getLevel();
+		info.append("level: " + std::to_string(level));
 		break;
 	case 3:
-		info.append("score: 420");
+		score = this->_game->getScore();
+		info.append("score: " + std::to_string(score));
 		break;
 	case 4:
-		info.append("high score: 42069");
+		highScore = this->_game->getHighScore();
+		info.append("high score: " + std::to_string(highScore));
 		break;
 	case 1:
 		info.append("    ┌────────────────────┐");

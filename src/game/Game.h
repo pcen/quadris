@@ -31,6 +31,7 @@ public:
 	int getNumBlocksSinceClear(void);
 	unsigned int getScore(void) const;
 	unsigned int getHighScore(void) const;
+	int getLevel(void) const;
 
 private:
 	void _changeLevel(bool up);
