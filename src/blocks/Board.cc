@@ -166,14 +166,42 @@ bool Board::translate(Direction direction)
 }
 
 // translate the current block down until it is no longer a valid translation
-bool Board::drop(void)
+void Board::drop(void)
 {
-	bool dropped = false;
-	while (this->_validTranslation(Direction::DOWN)) {
-		dropped = true;
+	while (this->_validTranslation(Direction::DOWN))
 		this->_doTranslation(Direction::DOWN);
+}
+
+bool Board::rotate(bool clockwise)
+{
+	// rotate in the given direction
+	this->_doRotation(clockwise);
+
+	// check if the resulting position is valid
+	if (this->_validTranslation(Direction::NONE)) {
+		// rotation was valid
+		return true;
+	} else {
+		// rotation was invalid, so undo rotation
+		this->_doRotation(!clockwise);
+		return false;
 	}
-	return dropped;
+}
+
+void Board::_doRotation(bool clockwise)
+{
+	// convert the current block coordinates to block space
+	this->_currentBlock->blockSpace(true);
+	// perform rotation
+	if (clockwise) {
+		this->_currentBlock->reflectInYeqX();
+		this->_currentBlock->flipX();
+	} else {
+		this->_currentBlock->flipX();
+		this->_currentBlock->reflectInYeqX();
+	}
+	// convert current block back to board space
+	this->_currentBlock->blockSpace(false);
 }
 
 // insert the cells of the currently active block into the board

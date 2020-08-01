@@ -58,30 +58,30 @@ void Trie::push(const std::string& value, CommandType command)
 
 Command Trie::findShortestPrefix(const std::string& value) {
 	TrieNodeRef node = this->_root;
-	
 	unsigned int i = 0;
 
-	Command matched;	
+	Command matched;
 
 	while (i < value.size() && node->is_child(value.at(i))) {
 		node = node->at(value.at(i++));
 
-		if (node->frequency == 1) { // found unique path
+		if (node->frequency == 1) {
+			// found unique path
 			matched = Command(node->command, node->type);
 		}
 	}
-	
+
 	// check to see if the rest of the command is valid
 	if (matched.type != CommandType::UNDEFINED_COMMAND && matched.message.rfind(value, 0) == 0) {
 		return matched;
 	}
 
-	return Command(); //default command
+	return Command(); // default command
 }
 
 bool Trie::search(const std::string& value) {
 	TrieNodeRef node = this->_root;
-	
+
 	unsigned int i = 0;
 	while (i < value.size()) {
 		if (!node->is_child(value.at(i))) {

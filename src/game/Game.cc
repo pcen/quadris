@@ -24,11 +24,16 @@ const Board& Game::getBoard(void) const
 
 void Game::update(const Command& command)
 {
-	bool dropped = false;
+	bool rotated = false;
 
 	switch(command.type) {
 		case CMD::QUIT:
 			this->_running = false;
+			break;
+
+		case CMD::CLOCKWISE:
+		case CMD::COUNTERCLOCKWISE:
+			rotated = this->_board.rotate(command.type == CMD::CLOCKWISE);
 			break;
 
 		case CMD::DOWN:
@@ -44,7 +49,7 @@ void Game::update(const Command& command)
 			break;
 
 		case CMD::DROP:
-			dropped = this->_board.drop();
+			this->_board.drop();
 			break;
 
 		case CMD::RESTART:
@@ -68,7 +73,7 @@ void Game::update(const Command& command)
 		case CMD::NORANDOM_FILE:
 			// ignore when level number is less than 3
 			if (this->_level->getLevel() < 3)
-				break;
+				return;
 			this->_level->openSequence(command.message);
 			this->_level->useRandom(false);
 			break;
@@ -82,7 +87,7 @@ void Game::update(const Command& command)
 			break;
 	}
 
-	if (dropped)
+	if (command.type == CMD::DROP)
 		this->_handleDrop();
 
 	if (!command.silent)
@@ -105,17 +110,7 @@ void Game::_handleDrop(void)
 
 	if(this->_board._currentBlock->getType() == BlockType::D) {
 		this->_board.drop();
-		++this->_board._numBlockSinceClear;
-		// put next block on the board
-		this->_board.insertCurrentBlock();
-		if (this->_board.setCurrentBlock(this->_board.getNextBlock()) == false) {
-			// if a new block cannot be added, the game is over
-			this->_updateScore();
-			this->restart();
-			std::cerr << "Game Over!\n";
-			return;
-		}
-		this->_board.setNextBlock(this->_level->getNextBlock());
+		this->_handleDrop();
 	}
 }
 

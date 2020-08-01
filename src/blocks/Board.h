@@ -36,9 +36,11 @@ public:
 	// translate the currently active block in the given direction
 	bool translate(Direction direction);
 	// drop the currently active block
-	bool drop(void);
+	void drop(void);
 	// insert the currently active block cells into the table
 	bool insertCurrentBlock(void);
+	// rotate the current block
+	bool rotate(bool clockwise);
 
 	// set the currently active block
 	bool setCurrentBlock(std::shared_ptr<Block> currentBlock);
@@ -57,13 +59,20 @@ private:
 	friend class Game;
 
 	float _cellSize;
+
+	void _insertBlock(std::shared_ptr<Block> block);
+
+	// board boundary checking
 	bool _inBounds(int x, int y);
 	bool _inBounds(Coord coord);
-	void _insertBlock(std::shared_ptr<Block> block);
+
+	// block translation helpers
 	void _doTranslation(Direction direction);
 	bool _validTranslation(Direction direction);
-
 	Coord _directionDeltas(Direction direction);
+
+	// block rotation helpers
+	void _doRotation(bool clockwise);
 
 	std::string _emptyCellSprite;
 	std::vector<std::vector<std::shared_ptr<Cell>>> _board;

@@ -5,7 +5,6 @@
 
 #include "../controller/Command.h"
 
-// TODO: read mappings from file
 static const std::unordered_map<std::string, CommandType> buttonCommandMap =
 {
 	{"left", CMD::LEFT}, {"right", CMD::RIGHT}, {"drop", CMD::DROP},
@@ -15,16 +14,11 @@ static const std::unordered_map<std::string, CommandType> buttonCommandMap =
 	{"restart", CMD::RESTART}, {"hint", CMD::HINT}
 };
 
-// 65 = A key
-// 83 = S key
-// 68 = D key
-// 16777234 = left arrow key
-// 16777236 = right arrow key
-// 32 = space key
 static const std::unordered_map<int, CommandType> keyCommandMap = {
-	{65, CMD::LEFT}, {83, CMD::DOWN}, {68, CMD::RIGHT},
-	{16777234, CMD::COUNTERCLOCKWISE}, {16777234, CMD::CLOCKWISE},
-	{32, CMD::DROP}
+	{Qt::Key::Key_A, CMD::LEFT}, {Qt::Key::Key_S, CMD::DOWN},
+	{Qt::Key::Key_D, CMD::RIGHT},
+	{Qt::Key::Key_Left, CMD::COUNTERCLOCKWISE},
+	{Qt::Key::Key_Right, CMD::CLOCKWISE}, {Qt::Key::Key_Space, CMD::DROP}
 };
 
 // prevent QtWarningMsg from writing to console and ruining

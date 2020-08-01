@@ -23,7 +23,6 @@ struct Coord
 Coord operator+(Coord& a, Coord& b);
 Coord operator-(Coord& a, Coord& b);
 
-
 enum class BlockType : char {
 	I = 'I',
 	J = 'J',
@@ -53,6 +52,7 @@ public:
 
 private:
 	friend class Board;
+	friend class Block;
 
 	Coord _coords;
 	BlockType _type;
@@ -66,6 +66,10 @@ public:
 
 	BlockType getType(void);
 	std::vector<std::shared_ptr<Cell>>& getCells(void);
+	void blockSpace(bool blockSpace);
+	void reflectInYeqX(void);
+	void flipX(void);
+	int yMax(void);
 
 protected:
 	friend class Board;
@@ -77,6 +81,7 @@ protected:
 	int _orientation;
 	int _levelGenerated;
 	bool _isHeavy;
+	bool _inBlockSpace;
 };
 
 class BlockFactoryInitializer

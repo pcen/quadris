@@ -92,6 +92,7 @@ IBlock::IBlock(int level)
 	_type = BlockType::I;
 	_bottomLeft = Coord(0,14);
 	_orientation = 0;
+	_inBlockSpace = false;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/t.png",false,BlockType::I));
 	_cells.emplace_back(std::make_shared<Cell>(1,14,"./assets/t.png",false,BlockType::I));
@@ -107,6 +108,7 @@ JBlock::JBlock(int level)
 	_type = BlockType::J;
 	_bottomLeft = Coord(0,13);
 	_orientation = 0;
+	_inBlockSpace = false;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/n.png",false,BlockType::J));
 	_cells.emplace_back(std::make_shared<Cell>(0,13,"./assets/n.png",false,BlockType::J));
@@ -122,6 +124,7 @@ LBlock::LBlock(int level)
 	_type = BlockType::L;
 	_bottomLeft = Coord(0,13);
 	_orientation = 0;
+	_inBlockSpace = false;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,13,"./assets/b.png",false,BlockType::L));
 	_cells.emplace_back(std::make_shared<Cell>(1,13,"./assets/b.png",false,BlockType::L));
@@ -137,6 +140,7 @@ OBlock::OBlock(int level)
 	_type = BlockType::O;
 	_bottomLeft = Coord(0,13);
 	_orientation = 0;
+	_inBlockSpace = false;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,13,"./assets/y.png",false,BlockType::O));
 	_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/y.png",false,BlockType::O));
@@ -152,6 +156,7 @@ SBlock::SBlock(int level)
 	_type = BlockType::S;
 	_bottomLeft = Coord(0,13);
 	_orientation = 0;
+	_inBlockSpace = false;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,13,"./assets/g.png",false,BlockType::S));
 	_cells.emplace_back(std::make_shared<Cell>(1,13,"./assets/g.png",false,BlockType::S));
@@ -167,6 +172,7 @@ ZBlock::ZBlock(int level)
 	_type = BlockType::Z;
 	_bottomLeft = Coord(0,13);
 	_orientation = 0;
+	_inBlockSpace = false;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/r.png",false,BlockType::Z));
 	_cells.emplace_back(std::make_shared<Cell>(1,14,"./assets/r.png",false,BlockType::Z));
@@ -182,6 +188,7 @@ TBlock::TBlock(int level)
 	_type = BlockType::T;
 	_bottomLeft = Coord(0,13);
 	_orientation = 0;
+	_inBlockSpace = false;
 
 	_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/p.png",false,BlockType::T));
 	_cells.emplace_back(std::make_shared<Cell>(1,14,"./assets/p.png",false,BlockType::T));
@@ -196,6 +203,7 @@ DBlock::DBlock(int level)
 {
 	_type = BlockType::D;
 	_bottomLeft = Coord(5,17);
+	_inBlockSpace = false;
 
 	_cells.emplace_back(std::make_shared<Cell>(5,17,"./assets/b.png",false,BlockType::D));
 
@@ -213,4 +221,48 @@ BlockType Block::getType(void)
 std::vector<std::shared_ptr<Cell>>& Block::getCells(void)
 {
 	return this->_cells;
+}
+
+// Convert a block between block space and board space
+// In block space, the origin for cell coordinates is the blocks bottom left
+// In board space, the block's cell coordinates are relative to a Board
+void Block::blockSpace(bool blockSpace)
+{
+	// if a block is already in block space or already in board space,
+	// do not modify cell coordinates
+	if (blockSpace == this->_inBlockSpace)
+		return;
+
+	for (auto& cell : this->_cells) {
+		if (blockSpace)
+			cell->_coords = cell->_coords - this->_bottomLeft;
+		else
+			cell->_coords = cell->_coords + this->_bottomLeft;
+	}
+	this->_inBlockSpace = blockSpace;
+}
+
+// Returns the largest y-coordinate of its cells
+int Block::yMax(void)
+{
+	int max = 0;
+	for (auto& cell : this->_cells)
+		max = std::max(max, cell->get_y());
+	return max;
+}
+
+// Reflects the cell coordinates in y = x
+void Block::reflectInYeqX(void)
+{
+	for (auto& cell : this->_cells)
+		cell->_coords = cell->_coords.invert();
+}
+
+// Reflect the block along the horizontal axis
+// x = median x value of block cell coordinates
+void Block::flipX(void)
+{
+	int maxY = this->yMax();
+	for (auto& cell : this->_cells)
+		cell->_coords._y = maxY - cell->get_y();
 }
