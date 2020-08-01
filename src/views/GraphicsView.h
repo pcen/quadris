@@ -3,6 +3,7 @@
 
 #include <string>
 #include <QApplication>
+#include <QLabel>
 
 #include "View.h"
 #include "../window/Window.h"
@@ -28,6 +29,10 @@ private:
 	std::string _name;
 	QApplication _app;
 	Window _window;
+	QLabel _level;
+	QLabel _score;
+	QLabel _highScore;
+	QLabel _nextBlock;
 };
 
 #endif // GRAPHICSVIEW_H
