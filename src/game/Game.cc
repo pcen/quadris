@@ -76,7 +76,7 @@ void Game::update(const Command& command)
 		case CMD::NORANDOM_FILE:
 			// ignore when level number is less than 3
 			if (this->_level->getLevel() < 3)
-				return;
+				break;
 			this->_level->openSequence(command.message);
 			this->_level->useRandom(false);
 			break;
@@ -117,7 +117,7 @@ void Game::_handleDrop(void)
 	}
 	this->_board.setNextBlock(this->_level->getNextBlock());
 
-	if(this->_board._currentBlock->getType() == BlockType::D) {
+	if (this->_board._currentBlock->getType() == BlockType::D) {
 		this->_board.drop();
 		this->_handleDrop();
 	}
