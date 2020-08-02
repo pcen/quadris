@@ -38,7 +38,7 @@ private:
 	void _handleDrop(void);
 	void _updateScore(int rowsCleared);
 	void _setNextBlock(void);
-	void _setBlockFromCache(void);
+	void _setBlockFromCache(int prevLevel);
 
 	Board _board;
 	std::string _startSequence;
