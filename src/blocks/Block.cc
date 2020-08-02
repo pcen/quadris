@@ -253,6 +253,11 @@ bool Block::isCleared(void) const
 	return true;
 }
 
+int Block::getLevelGenerated(void) const
+{
+	return this->_levelGenerated;
+}
+
 // Convert a block between block space and board space
 // In block space, the origin for cell coordinates is the blocks bottom left
 // In board space, the block's cell coordinates are relative to a Board

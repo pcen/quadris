@@ -51,7 +51,7 @@ public:
 	void setNextBlock(std::shared_ptr<Block> nextBlock);
 	// get the next block
 	std::shared_ptr<Block> getNextBlock(void) const;
-	std::vector<std::shared_ptr<Block>> getBlocks(void) const;
+	std::vector<std::shared_ptr<Block>>& getBlocks(void);
 
 	BoardIterator begin() const;
 	BoardIterator end() const;

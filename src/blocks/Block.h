@@ -74,6 +74,7 @@ public:
 	void reflectInYeqX(void);
 	void flipX(void);
 	int yMax(void);
+	int getLevelGenerated(void) const;
 
 protected:
 	friend class Board;

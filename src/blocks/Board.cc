@@ -63,7 +63,7 @@ std::shared_ptr<Block> Board::getNextBlock(void) const
 	return this->_nextBlock;
 }
 
-std::vector<std::shared_ptr<Block>> Board::getBlocks(void) const
+std::vector<std::shared_ptr<Block>>& Board::getBlocks(void)
 {
 	return _blocks;
 }
@@ -290,7 +290,7 @@ int Board::_clearRows(void)
 	int rowsCleared = 0;
 	int highestCleared = 0;
 
-	for (int y = bottom; y < top; y++) {
+	for (int y = bottom; y <= top; y++) {
 		if (!this->_isRowFull(y))
 			continue;
 

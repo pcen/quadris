@@ -2,8 +2,10 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
 
 #include "./blocks/StandardBlocks.h"
+
 Game::Game(uint startLevel, std::string filePath)
 	: _board("./assets/_.png"), _startSequence{ filePath }, _running{true},
 	_score{0}, _highScore{0}, _startLevel{startLevel}
@@ -107,10 +109,12 @@ void Game::_handleDrop(void)
 {
 	++this->_board._numBlockSinceClear;
 	// put next block on the board
-	this->_board.insertCurrentBlock();
+	int rowsCleared = this->_board.insertCurrentBlock();
+	if (rowsCleared > 0)
+		this->_updateScore(rowsCleared);
+
 	if (this->_board.setCurrentBlock(this->_board.getNextBlock()) == false) {
 		// if a new block cannot be added, the game is over
-		this->_updateScore();
 		this->restart();
 		std::cerr << "Game Over!\n";
 		return;
@@ -134,9 +138,12 @@ void Game::launch(void)
 
 void Game::restart(void)
 {
-	std::cerr << "restarting\n";
 	// reset the board
 	this->_board.reset();
+
+	// reset the score and set the highscore
+	this->_highScore = std::max(this->_highScore, this->_score);
+	this->_score = 0;
 
 	// reset the level
 	this->_level->closeSequence();
@@ -162,9 +169,21 @@ bool Game::isRunning(void) const
 	return this->_running;
 }
 
-void Game::_updateScore(void)
+void Game::_updateScore(int rowsCleared)
 {
-	// TODO: implement
+	int rowClearPoints = std::pow(this->_level->getLevel() + rowsCleared, 2);
+	int blocksClearedPoints = 0;
+	auto blocks = this->_board.getBlocks();
+	for (auto b = blocks.begin(); b != blocks.end();) {
+		Block* block = b->get();
+		if (block->isCleared()) {
+			blocksClearedPoints += std::pow(block->getLevelGenerated() + 1, 2);
+			b = blocks.erase(b);
+		} else {
+			++b;
+		}
+	}
+	this->_score += rowClearPoints + blocksClearedPoints;
 }
 
 int Game::getNumBlocksSinceClear(void)
