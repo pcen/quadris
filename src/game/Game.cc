@@ -182,7 +182,19 @@ void Game::_changeLevel(bool up)
 		                                         this,
 		                                         _level->_random,
 		                                         _level->_sequence);
+
+		// save the next block for this level
+		// if (!this->_level->isRandom()) {
+		// 	this->_nextBlocks[levelNum] = this->_board.getNextBlock();
+		// }
+		// if (this->_nextBlocks.has(this->_level->getLevel())) {
+		// 	// check if there is a cached next block
+		// 	this->_board.setNextBlock(this->_nextBlocks.at(this->_level->getLevel()));
+		// } else {
+		// 	// otherwise, generate a new next block for the new level
 		this->_board.setNextBlock(this->_level->getNextBlock());
+		// }
+
 	}
 }
 

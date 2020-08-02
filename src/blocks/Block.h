@@ -48,8 +48,8 @@ public:
 	char getToken(void) const;
 	BlockType getType(void) const;
 	bool isEmpty(void) const;
-
-	bool _isCleared;
+	void setCleared(bool cleared);
+	bool getCleared(void) const;
 
 private:
 	friend class Board;
@@ -58,6 +58,7 @@ private:
 	Coord _coords;
 	BlockType _type;
 	std::string _sprite;
+	bool _cleared;
 };
 
 class Block
