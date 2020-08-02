@@ -89,12 +89,15 @@ void Game::update(const Command& command)
 			break;
 
 		// run a sequence of commands from a file (for testing)
+		// this is implemented by the console view
 		case CMD::SEQUENCE_FILE:
-			// set a new sequence file
-			break;
-
 		default:
 			break;
+	}
+
+	if (command.type >= CMD::I && command.type <= CMD::T && command.message.length()) {
+		BlockType blockType = (BlockType) command.message[0]; // extract block type
+		this->_board.setCurrentBlock(this->_level->getBlock((char) blockType, this->_level->getLevel()));
 	}
 
 	if (command.type == CMD::DROP)

@@ -36,6 +36,11 @@ void Level::useRandom(bool random)
 		this->_sequence->open(this->_filePath);
 }
 
+std::shared_ptr<Block> Level::getBlock(const char& blockType, int level) 
+{
+	return BlockFactory::createBlock(blockType, level);
+}
+
 LevelFactoryInitializer::LevelFactoryInitializer()
 {
 	LevelFactory::_factories[0] = std::make_unique<Level0::Factory>();
