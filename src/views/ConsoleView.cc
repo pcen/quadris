@@ -49,10 +49,10 @@ void ConsoleView::_buildTrie()
 
 std::vector<Command> ConsoleView::_processCommand(const std::string& s)
 {
-	std::unordered_set<CommandType> invalidMultipliers = { 	CMD::RANDOM, 
-															CMD::RESTART, 
-															CMD::HINT, 
-															CMD::NORANDOM_FILE, 
+	std::unordered_set<CommandType> invalidMultipliers = { 	CMD::RANDOM,
+															CMD::RESTART,
+															CMD::HINT,
+															CMD::NORANDOM_FILE,
 															CMD::SEQUENCE_FILE
 														};
 	std::vector<Command> commands;
@@ -111,7 +111,7 @@ void ConsoleView::readInStream(void)
 			if (payload.size() == 1) {
 				CommandType type = payload.at(0).type;
 				// attach filePath to command
-				if (type == CMD::NORANDOM_FILE || type == CMD::SEQUENCE_FILE) { 
+				if (type == CMD::NORANDOM_FILE || type == CMD::SEQUENCE_FILE) {
 					std::string filePath;
 					this->_in >> filePath;
 					if (this->_isValidFilePath(filePath)) {

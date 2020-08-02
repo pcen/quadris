@@ -27,7 +27,7 @@ Coord Coord::invert(void)
 
 // Cell Implementation ========================================================
 Cell::Cell(int x, int y, std::string png, bool isCleared, BlockType type)
-	: _isCleared{isCleared}, _coords{x, y}, _type{type}, _sprite{png}
+	: _cleared{isCleared}, _coords{x, y}, _type{type}, _sprite{png}
 {
 
 }
@@ -60,6 +60,21 @@ char Cell::getToken(void) const
 BlockType Cell::getType(void) const
 {
 	return this->_type;
+}
+
+bool Cell::isEmpty(void) const
+{
+	return this->_type == BlockType::EMPTY;
+}
+
+void Cell::setCleared(bool cleared)
+{
+	this->_cleared = cleared;
+}
+
+bool Cell::getCleared(void) const
+{
+	return this->_cleared;
 }
 
 // define static instances
@@ -231,11 +246,16 @@ bool Block::isHeavy(void) const
 bool Block::isCleared(void) const
 {
 	for (auto c: _cells) {
-		if (!c.get()->_isCleared) {
+		if (!c->getCleared()) {
 			return false;
 		}
 	}
 	return true;
+}
+
+int Block::getLevelGenerated(void) const
+{
+	return this->_levelGenerated;
 }
 
 // Convert a block between block space and board space

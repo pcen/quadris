@@ -40,20 +40,37 @@ int main(int argc, char* argv[])
 {
 	auto args = Arguments(argc, argv);
 
-	uint startLevel = 0;
-	if (args.has("-startlevel")) {
-		startLevel = stoi(args.getParam("-startlevel"));
+	// set start level
+	unsigned int startLevel = 0;
+	if (args.has("-startlevel"))
+		startLevel = std::stoi(args.getParam("-startlevel"));
+
+	// seed PRNG std::rand
+	if (args.has("-seed")) {
+		unsigned int seed = std::stoi(args.getParam("-seed"));
+		std::srand(seed);
+	}
+
+	// TODO: set script file
+	std::string script;
+	bool useScript = false;
+	if (args.has("-scriptfile")) {
+		script = args.getParam("-scriptfile");
+		// TODO: check if script file exists
+		useScript = true;
 	}
 
 	Game game(startLevel, std::string("./src/game/sequence.txt"));
 	Controller ctrl(game);
 	ViewManager views;
 
+	// add graphics view
 	if (!args.has("-text")) {
 		auto gv = std::make_shared<GraphicsView>("Quadris", &game, &ctrl);
 		views.push(gv);
 	}
 
+	// add console view
 	auto cv = std::make_shared<ConsoleView>(&game, &ctrl, std::cin, std::cout);
 	views.push(cv);
 

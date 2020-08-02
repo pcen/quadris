@@ -51,7 +51,7 @@ public:
 	void setNextBlock(std::shared_ptr<Block> nextBlock);
 	// get the next block
 	std::shared_ptr<Block> getNextBlock(void) const;
-	std::vector<std::shared_ptr<Block>> getBlocks(void) const;
+	std::vector<std::shared_ptr<Block>>& getBlocks(void);
 
 	BoardIterator begin() const;
 	BoardIterator end() const;
@@ -64,7 +64,13 @@ private:
 	void _insertBlock(std::shared_ptr<Block> block);
 	int _clearRows(void);
 
-	void _resetRow(unsigned int row);
+	// row filled helpers
+	void _clearSingleRow(int row);
+	void _shiftDown(int bottom, int highest, int offset);
+	bool _isRowEmpty(int row);
+	bool _isRowFull(int row);
+	void _shiftSingleRowDown(int row, int offset = 1);
+	void _clearCell(int x, int y);
 
 	// board boundary checking
 	bool _inBounds(int x, int y);

@@ -36,7 +36,7 @@ public:
 private:
 	void _changeLevel(bool up);
 	void _handleDrop(void);
-	void _updateScore(void);
+	void _updateScore(int rowsCleared);
 
 	Board _board;
 	std::string _startSequence;

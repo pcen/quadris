@@ -47,8 +47,9 @@ public:
 	int get_y(void);
 	char getToken(void) const;
 	BlockType getType(void) const;
-
-	bool _isCleared;
+	bool isEmpty(void) const;
+	void setCleared(bool cleared);
+	bool getCleared(void) const;
 
 private:
 	friend class Board;
@@ -57,6 +58,7 @@ private:
 	Coord _coords;
 	BlockType _type;
 	std::string _sprite;
+	bool _cleared;
 };
 
 class Block
@@ -72,6 +74,7 @@ public:
 	void reflectInYeqX(void);
 	void flipX(void);
 	int yMax(void);
+	int getLevelGenerated(void) const;
 
 protected:
 	friend class Board;

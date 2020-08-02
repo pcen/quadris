@@ -63,7 +63,7 @@ std::shared_ptr<Block> Board::getNextBlock(void) const
 	return this->_nextBlock;
 }
 
-std::vector<std::shared_ptr<Block>> Board::getBlocks(void) const 
+std::vector<std::shared_ptr<Block>>& Board::getBlocks(void)
 {
 	return _blocks;
 }
@@ -209,35 +209,99 @@ void Board::_doRotation(bool clockwise)
 	this->_currentBlock->blockSpace(false);
 }
 
-void Board::_resetRow(unsigned int row) {
+void Board::_shiftSingleRowDown(int row, int offset)
+{
+	// offset must be in the board
+	if (row - offset < 0)
+		return;
+
 	for (unsigned int x = 0; x < 11; x++) {
-		auto newCell = std::make_shared<Cell>(x, row, this->_emptyCellSprite, false, BlockType::EMPTY);
-		_board[x][row] = newCell;
+		// shift cell down
+		this->_board[x][row - offset] = this->_board[x][row];
+		// update y coordinate
+		this->_board[x][row - offset]->_coords._y = row - offset;
+		// make current cell empty
+		this->_clearCell(x, row);
 	}
 }
 
-int Board::_clearRows(void)
+void Board::_shiftDown(int bottom, int highest, int offset)
 {
-	Block* block = this->_currentBlock.get();
-	Coord start = block->_bottomLeft;
-	int rowsCleared = 0;
-
-	for (int y = start._y; y < start._y + 4; y++) {
-		bool isFilled = true;
-		for (int x = 0; x < 11; x++) {
-			Cell* c = this->_board[x][y].get();
-			if (c->getType() == BlockType::EMPTY) {
-				isFilled = false;
-				break;
-			}
+	// 1. Ensure that the number of empty consecutive rows below the first row
+	//    to shift down is equal to offset. The first to shift down is always
+	//    the row that is 4 cells above the bottom left corner of the block
+	//    that completed row(s)
+	for (int i = bottom + 1; i <= highest; i++) {
+		// if the row below is empty, shift this row down
+		if (this->_isRowEmpty(i - 1)) {
+			this->_shiftSingleRowDown(i);
 		}
-		if (!isFilled)
-			break;
-
-		rowsCleared++;
-		this->_resetRow(y);
 	}
 
+	// 2. Shift every row above the highest empty row down by offset number of
+	//    blocks.
+	for (int i = highest + 1; i < 15; i++)
+		this->_shiftSingleRowDown(i, offset);
+}
+
+void Board::_clearCell(int x, int y)
+{
+	auto newCell = std::make_shared<Cell>(x, y, this->_emptyCellSprite, false, BlockType::EMPTY);
+	this->_board[x][y] = newCell;
+}
+
+// set all the cells in a row to empty
+void Board::_clearSingleRow(int row)
+{
+	for (int x = 0; x < 11; x++) {
+		// set Block's cells to cleared
+		_board[x][row]->setCleared(true);
+		// reset row to contain empty cells
+		this->_clearCell(x, row);
+	}
+}
+
+// return true if a row is empty else false
+bool Board::_isRowEmpty(int row)
+{
+	for (int x = 0; x < 11; x++) {
+		if (!this->_board[x][row]->isEmpty())
+			return false;
+	}
+	return true;
+}
+
+// return true if a row is full
+bool Board::_isRowFull(int row)
+{
+	for (int x = 0; x < 11; x++) {
+		if (this->_board[x][row]->isEmpty())
+			return false;
+	}
+	return true;
+}
+
+// remove filled rows and shift down cells above the cleared rows
+// return the number of rows cleared
+int Board::_clearRows(void)
+{
+	int bottom = this->_currentBlock->_bottomLeft._y;
+	int top = this->_currentBlock->yMax();
+	int rowsCleared = 0;
+	int highestCleared = 0;
+
+	for (int y = bottom; y <= top; y++) {
+		if (!this->_isRowFull(y))
+			continue;
+
+		// row needs to be cleared
+		highestCleared = y;
+		rowsCleared++;
+		this->_clearSingleRow(y);
+	}
+
+	if (rowsCleared != 0)
+		this->_shiftDown(bottom, highestCleared, rowsCleared);
 	return rowsCleared;
 }
 

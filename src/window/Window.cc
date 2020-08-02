@@ -121,6 +121,7 @@ void Window::_initializeLabels(void)
 		l->setStyleSheet("color: rgb(65,255,0);");
 		l->setParent(&this->_labelPane);
 		l->move(0, i*30 + 15);
+		l->setMinimumWidth(300);
 		++i;
 	}
 	this->_nextBlock.setText("Next Block:");
@@ -132,7 +133,6 @@ void Window::_setLabelValues(void)
 	QString level = QString::number(this->_game->getLevel()).prepend("Level: ");
 	QString score = QString::number(this->_game->getScore()).prepend("Score: ");
 	QString hscore = QString::number(this->_game->getHighScore()).prepend("High Score: ");
-
 	this->_level.setText(level);
 	this->_score.setText(score);
 	this->_highScore.setText(hscore);
