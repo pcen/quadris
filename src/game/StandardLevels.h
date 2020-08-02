@@ -11,9 +11,10 @@ class Level0 : public Level
 {
 public:
 	~Level0();
+	Level0() {};
 	Level0(std::string, Game*, bool, std::shared_ptr<std::ifstream>);
-	std::shared_ptr<Block> getNextBlock(void) override;
-	void useRandom(bool use) override;
+	virtual std::shared_ptr<Block> getNextBlock(int) override;
+	virtual void useRandom(bool use) override;
 
 private:
 	friend class LevelFactoryInitializer;
@@ -36,7 +37,7 @@ class Level1 : public Level
 public:
 	~Level1();
 	Level1(std::string, Game*, bool, std::shared_ptr<std::ifstream>);
-	std::shared_ptr<Block> getNextBlock(void) override;
+	std::shared_ptr<Block> getNextBlock(int) override;
 
 private:
 	friend class LevelFactoryInitializer;
@@ -59,7 +60,7 @@ class Level2 : public Level
 public:
 	~Level2();
 	Level2(std::string, Game*, bool, std::shared_ptr<std::ifstream>);
-	std::shared_ptr<Block> getNextBlock(void) override;
+	std::shared_ptr<Block> getNextBlock(int) override;
 
 private:
 	friend class LevelFactoryInitializer;
@@ -77,18 +78,23 @@ private:
 };
 
 
-class Level3 : public Level
+class Level4;
+
+class Level3 : public Level0
 {
 public:
 	~Level3();
 	Level3() {};
 	Level3(std::string, Game*, bool, std::shared_ptr<std::ifstream>);
-	virtual std::shared_ptr<Block> getNextBlock(void) override;
+	virtual std::shared_ptr<Block> getNextBlock(int) override;
+
+	void useRandom(bool random) override;
 
 private:
 	friend class LevelFactoryInitializer;
 	class Factory;
 	friend class Factory;
+	friend class Level4;
 
 	class Factory : public LevelFactory
 	{
@@ -98,6 +104,8 @@ private:
 				return std::make_unique<Level3>(filePath, gameRef, rand, sin);
 			};
 	};
+
+	Level0 _level0;
 };
 
 
@@ -106,7 +114,9 @@ class Level4 : public Level3
 public:
 	~Level4();
 	Level4(std::string, Game*, bool, std::shared_ptr<std::ifstream>);
-	std::shared_ptr<Block> getNextBlock(void) override;
+	std::shared_ptr<Block> getNextBlock(int) override;
+
+	void useRandom(bool random) override;
 
 private:
 	friend class LevelFactoryInitializer;

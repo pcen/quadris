@@ -90,6 +90,7 @@ private:
 
 	std::shared_ptr<Block> _currentBlock;
 	std::shared_ptr<Block> _nextBlock;
+	std::vector<std::shared_ptr<Block>> _prevLevelBlocks;
 
 	int _numBlockSinceClear;
 };
