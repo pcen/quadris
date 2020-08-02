@@ -39,7 +39,7 @@ ConsoleView::~ConsoleView()
 		this->_scriptIn.close();
 
 	// clean up console otherwise input box artifacts remain
-	// this->_clearConsole();
+	this->_clearConsole();
 
 	// join the _inThread before application exits
 	if (this->_inThread.joinable())
