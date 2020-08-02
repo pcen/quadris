@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <unordered_map>
 
 #include "../generic/Subject.h"
 #include "../blocks/Board.h"
@@ -38,12 +39,14 @@ private:
 	void _handleDrop(void);
 	void _updateScore(int rowsCleared);
 	void _setNextBlock(void);
-	void _setBlockFromCache(int prevLevel);
+	void _setBlockFromCache();
+	bool _sequencedMode();
 
 	Board _board;
 	std::string _startSequence;
 	std::unique_ptr<Level> _level;
 	std::unordered_map<int, std::shared_ptr<Block>> _prevLevelBlocks;
+	std::shared_ptr<Block> _sequenceCache;
 	bool _running;
 	unsigned int _score;
 	unsigned int _highScore;
