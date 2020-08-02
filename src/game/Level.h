@@ -13,6 +13,7 @@ class Level
 public:
 	virtual ~Level() {};
 	virtual std::shared_ptr<Block> getNextBlock(int) = 0;
+	std::shared_ptr<Block> getBlock(const char&, int);
 
 	int getLevel(void) const;
 	void closeSequence(void);
