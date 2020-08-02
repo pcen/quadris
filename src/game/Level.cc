@@ -58,7 +58,7 @@ std::unique_ptr<Level> LevelFactory::createLevel(const int& lev, std::string fil
 Level0::Level0(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin)
 {
 	_level = 0;
-	_random = false;
+	_random = rand;
 	_filePath = filePath;
 	_game = gameRef;
 	_sequence = sin;
@@ -74,7 +74,7 @@ void Level0::useRandom(bool use)
 	// Level0 always uses a sequence
 }
 
-std::shared_ptr<Block> Level0::getNextBlock(void)
+std::shared_ptr<Block> Level0::getNextBlock(int level)
 {
 	char blockType = ' ';
 	while (std::isspace(static_cast<unsigned char>(blockType)) != 0)
@@ -83,7 +83,7 @@ std::shared_ptr<Block> Level0::getNextBlock(void)
 	if (_sequence->eof())
 		return nullptr;
 	else
-		return BlockFactory::createBlock(blockType, this->_level);
+		return BlockFactory::createBlock(blockType, level);
 }
 
 // Returns random character from blocks with uniform probability
@@ -108,7 +108,7 @@ Level1::~Level1()
 
 }
 
-std::shared_ptr<Block> Level1::getNextBlock(void)
+std::shared_ptr<Block> Level1::getNextBlock(int level)
 {
 	char nextBlockType = '.';
 	switch (std::rand()%6)
@@ -128,7 +128,7 @@ std::shared_ptr<Block> Level1::getNextBlock(void)
 			break;
 
 	}
-	return BlockFactory::createBlock(nextBlockType, this->_level);
+	return BlockFactory::createBlock(nextBlockType, level);
 }
 
 
@@ -147,11 +147,11 @@ Level2::~Level2()
 
 }
 
-std::shared_ptr<Block> Level2::getNextBlock(void)
+std::shared_ptr<Block> Level2::getNextBlock(int level)
 {
 	// Any of IJLOSZT with uniform probability (1/7)
 	char nextBlockType = randomBlock(std::string("IJLOSZT"));
-	return BlockFactory::createBlock(nextBlockType, this->_level);
+	return BlockFactory::createBlock(nextBlockType, level);
 }
 
 
@@ -163,6 +163,7 @@ Level3::Level3(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<s
 	_filePath = filePath;
 	_game = gameRef;
 	_sequence = sin;
+	_level0 = Level0(filePath, gameRef, rand, sin);
 }
 
 Level3::~Level3()
@@ -170,8 +171,19 @@ Level3::~Level3()
 
 }
 
-std::shared_ptr<Block> Level3::getNextBlock(void)
+void Level3::useRandom(bool random)
 {
+	this->_random = random;
+	// if switching to using sequence file and it is not open, open it
+	if (!random && !this->_sequence->is_open())
+		this->_sequence->open(this->_filePath);
+}
+
+std::shared_ptr<Block> Level3::getNextBlock(int level)
+{
+	if (!_random)
+		return this->_level0.getNextBlock(level);
+
 	char nextBlockType = '.';
 	switch (std::rand() % 9)
 	{
@@ -185,7 +197,7 @@ std::shared_ptr<Block> Level3::getNextBlock(void)
 			nextBlockType = randomBlock(std::string("IJLOT"));
 			break;
 	}
-	return BlockFactory::createBlock(nextBlockType, this->_level);
+	return BlockFactory::createBlock(nextBlockType, level);
 }
 
 
@@ -196,8 +208,8 @@ Level4::Level4(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<s
 	_random = rand;
 	_filePath = filePath;
 	_game = gameRef;
-	_level3 = Level3(filePath, gameRef, rand, sin);
 	_sequence = sin;
+	_level3 = Level3(filePath, gameRef, rand, sin);
 }
 
 Level4::~Level4()
@@ -205,11 +217,23 @@ Level4::~Level4()
 
 }
 
-std::shared_ptr<Block> Level4::getNextBlock(void)
+void Level4::useRandom(bool random)
 {
+	this->_random = random;
+	this->_level3._random = random;
+	// if switching to using sequence file and it is not open, open it
+	if (!random && !this->_sequence->is_open())
+		this->_sequence->open(this->_filePath);
+}
+
+std::shared_ptr<Block> Level4::getNextBlock(int level)
+{
+	if (!_random)
+		return this->_level3.getNextBlock(level);
+
 	int bsc = this->_game->getNumBlocksSinceClear();
 	if (bsc % 5 == 0 && bsc != 0)
-		return BlockFactory::createBlock('D', this->_level);
+		return BlockFactory::createBlock('D', level);
 
-	return this->_level3.getNextBlock();
+	return this->_level3.getNextBlock(level);
 }
