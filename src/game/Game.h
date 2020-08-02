@@ -37,10 +37,13 @@ private:
 	void _changeLevel(bool up);
 	void _handleDrop(void);
 	void _updateScore(int rowsCleared);
+	void _setNextBlock(void);
+	void _setBlockFromCache(void);
 
 	Board _board;
 	std::string _startSequence;
 	std::unique_ptr<Level> _level;
+	std::unordered_map<int, std::shared_ptr<Block>> _prevLevelBlocks;
 	bool _running;
 	unsigned int _score;
 	unsigned int _highScore;

@@ -25,6 +25,14 @@ const Board& Game::getBoard(void) const
 	return this->_board;
 }
 
+void Game::_setNextBlock(void)
+{
+	int level = this->_level->getLevel();
+	std::shared_ptr<Block> nextBlock = this->_level->getNextBlock(level);
+	this->_board.setNextBlock(nextBlock);
+	this->_prevLevelBlocks[level] = nextBlock;
+}
+
 void Game::update(const Command& command)
 {
 	bool rotate = false;
@@ -75,7 +83,7 @@ void Game::update(const Command& command)
 			if (this->_level->getLevel() < 3 || this->_level->_random)
 				break;
 			this->_level->useRandom(true);
-			this->_board.setNextBlock(this->_level->getNextBlock(this->_level->getLevel()));
+			this->_setNextBlock();
 			break;
 
 		// non-random block generation from the specified sequence file
@@ -85,7 +93,7 @@ void Game::update(const Command& command)
 				break;
 			this->_level->openSequence(command.message);
 			this->_level->useRandom(false);
-			this->_board.setNextBlock(this->_level->getNextBlock(this->_level->getLevel()));
+			this->_setNextBlock();
 			break;
 
 		// run a sequence of commands from a file (for testing)
@@ -126,7 +134,7 @@ void Game::_handleDrop(void)
 		std::cerr << "Game Over!\n";
 		return;
 	}
-	this->_board.setNextBlock(this->_level->getNextBlock(this->_level->getLevel()));
+	this->_setNextBlock();
 
 	if (this->_board._currentBlock->getType() == BlockType::D) {
 		this->_board.drop();
@@ -139,7 +147,7 @@ void Game::launch(void)
 	if (this->_board.setCurrentBlock(this->_level->getNextBlock(this->_level->getLevel())) == false) {
 		std::cerr << "could not add first block\n";
 	}
-	this->_board.setNextBlock(this->_level->getNextBlock(this->_level->getLevel()));
+	this->_setNextBlock();
 	this->_notify();
 }
 
@@ -168,7 +176,7 @@ void Game::restart(void)
 	if (this->_board.setCurrentBlock(this->_level->getNextBlock(this->_level->getLevel())) == false) {
 		std::cerr << "could not add first block\n";
 	}
-	this->_board.setNextBlock(this->_level->getNextBlock(this->_level->getLevel()));
+	this->_setNextBlock();
 }
 
 bool Game::isRunning(void) const
@@ -198,6 +206,16 @@ int Game::getNumBlocksSinceClear(void)
 	return this->_board._numBlockSinceClear;
 }
 
+void Game::_setBlockFromCache(void)
+{
+	int level = this->_level->getLevel();
+	auto cacheLoc = this->_prevLevelBlocks.find(level);
+	if (cacheLoc != this->_prevLevelBlocks.end())
+		this->_board._nextBlock = (*cacheLoc).second;
+	else 
+		this->_setNextBlock();
+}
+
 void Game::_changeLevel(bool up)
 {
 	int levelNum = this->_level->getLevel();
@@ -218,11 +236,8 @@ void Game::_changeLevel(bool up)
 		// 	this->_board.setNextBlock(this->_nextBlocks.at(this->_level->getLevel()));
 		// } else {
 		// 	// otherwise, generate a new next block for the new level
-
-		if (!(newLevel == 0 || (newLevel >= 3 && !this->_level->_random)))
-			this->_board.setNextBlock(this->_level->getNextBlock(this->_level->getLevel()));
-		// }
-
+		
+		this->_setBlockFromCache();
 	}
 }
 
