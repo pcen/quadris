@@ -114,13 +114,13 @@ void ConsoleView::readInStream(void)
 	std::string command;
 
 	while (this->_game->isRunning()) {
+		std::cerr << "reading input\n";
 		this->_readActiveInputStream(command);
 
-		if (this->_scriptIn.eof()) {
-			std::cerr << "EOF\n\n\n\n";
-			this->_controller->push(Command(CMD::QUIT));
-			while (this->_game->isRunning()) {}
-			return;
+		if (this->_usingScript && this->_scriptIn.eof()) {
+			this->_scriptIn.close();
+			this->_usingScript = false;
+			continue;
 		}
 
 		// Since the game may terminate while waiting for input, check if the
@@ -135,13 +135,15 @@ void ConsoleView::readInStream(void)
 				// attach filePath to command
 				if (type == CMD::NORANDOM_FILE || type == CMD::SEQUENCE_FILE) {
 					std::string filePath;
-
 					this->_readActiveInputStream(filePath);
-
-					if (this->_isValidFilePath(filePath))
-						payload.at(0).message = filePath;
-					else
+					if (!this->_isValidFilePath(filePath))
 						valid = false;
+
+					if (type == CMD::SEQUENCE_FILE)
+						this->setScript(filePath);
+
+					if (type == CMD::NORANDOM_FILE)
+						payload.at(0).message = filePath;
 				}
 			}
 
@@ -175,8 +177,8 @@ void ConsoleView::_clearConsole(void)
 	if (this->_usingScript)
 		return;
 
-	if (!(system("clear") == 0 || system("cls") == 0))
-		std::cerr << "ERROR: failed to clear console\n";
+	if (system("clear") == 0 || system("cls") == 0)
+		return;
 }
 
 void ConsoleView::_displayGame(const Board& board)
@@ -207,8 +209,6 @@ std::vector<char> ConsoleView::_createBoardChars(const Board& board)
 			unsigned int index = 11 * y + x;
 			if (index < boardChars.size())
 				boardChars.at(index) = c->getToken();
-			else
-				std::cerr << "ERROR: currentBlock outside of board\n";
 		}
 	}
 	return boardChars;
@@ -321,6 +321,7 @@ void ConsoleView::setScript(const std::string& scriptFile)
 
 	this->_scriptIn.open(this->_scriptFile);
 	this->_usingScript = true;
+	this->_out << "\n";
 }
 
 void ConsoleView::pollInput(void)

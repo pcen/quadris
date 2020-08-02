@@ -30,7 +30,7 @@ void Game::_setNextBlock(void)
 	int level = this->_level->getLevel();
 	std::shared_ptr<Block> nextBlock = this->_level->getNextBlock(level);
 	this->_board.setNextBlock(nextBlock);
-	this->_prevLevelBlocks[level] = nextBlock;
+	// this->_prevLevelBlocks[level] = nextBlock;
 }
 
 void Game::update(const Command& command)
@@ -97,10 +97,8 @@ void Game::update(const Command& command)
 			break;
 
 		// run a sequence of commands from a file (for testing)
+		// this is implemented by the console view
 		case CMD::SEQUENCE_FILE:
-			// set a new sequence file
-			break;
-
 		default:
 			break;
 	}
@@ -173,7 +171,7 @@ void Game::restart(void)
 
 	this->_level->openSequence(this->_startSequence);
 
-	this->_prevLevelBlocks.clear();
+	// this->_prevLevelBlocks.clear();
 
 	if (this->_board.setCurrentBlock(this->_level->getNextBlock(this->_level->getLevel())) == false) {
 		std::cerr << "could not add first block\n";
@@ -210,12 +208,12 @@ int Game::getNumBlocksSinceClear(void)
 
 void Game::_setBlockFromCache(void)
 {
-	int level = this->_level->getLevel();
-	auto cacheLoc = this->_prevLevelBlocks.find(level);
-	if (cacheLoc != this->_prevLevelBlocks.end())
-		this->_board._nextBlock = (*cacheLoc).second;
-	else 
-		this->_setNextBlock();
+	// int level = this->_level->getLevel();
+	// auto cacheLoc = this->_prevLevelBlocks.find(level);
+	// if (cacheLoc != this->_prevLevelBlocks.end())
+	// 	this->_board._nextBlock = (*cacheLoc).second;
+	// else
+	// 	this->_setNextBlock();
 }
 
 void Game::_changeLevel(bool up)
@@ -238,7 +236,7 @@ void Game::_changeLevel(bool up)
 		// 	this->_board.setNextBlock(this->_nextBlocks.at(this->_level->getLevel()));
 		// } else {
 		// 	// otherwise, generate a new next block for the new level
-		
+
 		this->_setBlockFromCache();
 	}
 }

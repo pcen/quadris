@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
 	}
 
 	// add graphics view
-	if (!args.has("-text") && !args.has("-scriptfile")) {
+	if (!args.has("-text")) {
 		auto gv = std::make_shared<GraphicsView>("Quadris", &game, &ctrl);
 		views.push(gv);
 	}
