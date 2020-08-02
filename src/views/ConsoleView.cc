@@ -16,26 +16,42 @@ static const char* quadrisTitle =
 "  \\__\\_\\\\_,_\\__,_\\__,_|_| |_/__/\n\n";
 
 ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in, std::ostream& out)
-	: View{ game, controller }, _issuedQuitCmd{ false }, _in{ in }, _out{ out }
+	: View{ game, controller }, _usingScript{ false },
+	_issuedQuitCmd{ false }, _consoleIn{ in }, _out{ out }
 {
-	// spin thread to read _in stream
-	this->_in_thread = std::thread(&ConsoleView::readInStream, this);
-
 	// construct trie
 	this->_trie = std::make_shared<Trie>();
 	this->_buildTrie();
 
-	// this->_clearConsole();
+	this->_clearConsole();
+}
+
+void ConsoleView::launch(void)
+{
+	// spin thread to read _in stream
+	this->_inThread = std::thread(&ConsoleView::readInStream, this);
 }
 
 ConsoleView::~ConsoleView()
 {
+	// close open file streams
+	if (this->_usingScript && this->_scriptIn.is_open())
+		this->_scriptIn.close();
+
 	// clean up console otherwise input box artifacts remain
 	// this->_clearConsole();
 
-	// join the _in_thread before application exits
-	if (this->_in_thread.joinable())
-		this->_in_thread.join();
+	// join the _inThread before application exits
+	if (this->_inThread.joinable())
+		this->_inThread.join();
+}
+
+void ConsoleView::_readActiveInputStream(std::string& str)
+{
+	if (this->_usingScript)
+		this->_scriptIn >> str;
+	else
+		this->_consoleIn >> str;
 }
 
 void ConsoleView::_buildTrie()
@@ -49,12 +65,11 @@ void ConsoleView::_buildTrie()
 
 std::vector<Command> ConsoleView::_processCommand(const std::string& s)
 {
-	std::unordered_set<CommandType> invalidMultipliers = { 	CMD::RANDOM,
-															CMD::RESTART,
-															CMD::HINT,
-															CMD::NORANDOM_FILE,
-															CMD::SEQUENCE_FILE
-														};
+	std::unordered_set<CommandType> invalidMultipliers = { CMD::RANDOM,
+	                                                       CMD::RESTART,
+	                                                       CMD::HINT,
+	                                                       CMD::NORANDOM_FILE,
+	                                                       CMD::SEQUENCE_FILE };
 	std::vector<Command> commands;
 	unsigned int split = 0;
 	for (; split < s.length(); split++) {
@@ -86,28 +101,25 @@ std::vector<Command> ConsoleView::_processCommand(const std::string& s)
 
 bool ConsoleView::_isValidFilePath(const std::string& filePath) {
 	std::ifstream infile(filePath);
-    return infile.good();
+	return infile.good();
 }
 
-// read_in_stream runs in separate thread for the lifetime
+// readInStream runs in separate thread for the lifetime
 // of a ConsoleView instance. This method may attempt to
 // call methods of Controller, and Subject::unsubscribe,
 // so these classes / methods should ensure that data members are
-// thread safe in instances where read_in_stream may call them
+// thread safe in instances where readInStream may call them
 void ConsoleView::readInStream(void)
 {
 	std::string command;
-	while (this->_game->isRunning()) {
-		// TODO: EOF should terminate
-		this->_in >> command;
-		std::cerr << "command: " << command << "\n";
 
-		if (this->_in.eof()) {
+	while (this->_game->isRunning()) {
+		this->_readActiveInputStream(command);
+
+		if (this->_scriptIn.eof()) {
+			std::cerr << "EOF\n\n\n\n";
 			this->_controller->push(Command(CMD::QUIT));
-			if (this->_game != nullptr) {
-				this->_game->unsubscribe(this);
-				this->_subscribed = false;
-			}
+			while (this->_game->isRunning()) {}
 			return;
 		}
 
@@ -123,12 +135,13 @@ void ConsoleView::readInStream(void)
 				// attach filePath to command
 				if (type == CMD::NORANDOM_FILE || type == CMD::SEQUENCE_FILE) {
 					std::string filePath;
-					this->_in >> filePath;
-					if (this->_isValidFilePath(filePath)) {
+
+					this->_readActiveInputStream(filePath);
+
+					if (this->_isValidFilePath(filePath))
 						payload.at(0).message = filePath;
-					} else {
+					else
 						valid = false;
-					}
 				}
 			}
 
@@ -145,19 +158,8 @@ void ConsoleView::readInStream(void)
 					// observers it has recieved a "quit" command. To ensure
 					// that game does not try to call notify on the virtual View
 					// base class from which ConsoleView is described, unsubscribe
-					// here. Unsubscribing ensures one of the following outcomes:
-					// 1 - If game begins notifying observers before this line of
-					//     code is reached, game's mutex will be locked (since
-					//     Subject::_notify is a threadsafe method), so this line
-					//     hangs until game calls notify on this class. This hang
-					//     ensures that the ConsoleView instance still exists when
-					//     game calls notify on this object
-					// 2 - If this line executes before game begins notifying
-					//     observers, game will hang upon calling _notify until
-					//     this ConsoleView has finished unsubscribing, since
-					//     unsubscribe is also a threadsafe method and will lock
-					//     game's mutex, ensuring that game will not attempt to
-					//     notify this console view while this has begun destructing
+					// here to ensure complete destruction or destruction after
+					// recieving Game's notification.
 					this->_game->unsubscribe(this);
 					this->_subscribed = false;
 				}
@@ -169,11 +171,12 @@ void ConsoleView::readInStream(void)
 
 void ConsoleView::_clearConsole(void)
 {
-	if (&this->_out != &std::cout || system(nullptr) == 0) {
-		std::cerr << "ERROR: cannot clear this console\n";
-	} else if (!(system("clear") == 0 || system("cls") == 0)) {
+	// if using a script file, do not clear output stream
+	if (this->_usingScript)
+		return;
+
+	if (!(system("clear") == 0 || system("cls") == 0))
 		std::cerr << "ERROR: failed to clear console\n";
-	}
 }
 
 void ConsoleView::_displayGame(const Board& board)
@@ -182,7 +185,7 @@ void ConsoleView::_displayGame(const Board& board)
 	std::vector<char> boardChars = this->_createBoardChars(board);
 	std::vector<std::string> next = this->_createNextStrings(board);
 	this->_prepareDisplay(display, boardChars, next);
-	// this->_clearConsole();
+	this->_clearConsole();
 	this->_out << display;
 	this->_out.flush();
 }
@@ -191,14 +194,13 @@ std::vector<char> ConsoleView::_createBoardChars(const Board& board)
 {
 	// prepare board as a vector of their char representations
 	std::vector<char> boardChars;
-	for (auto i = board.begin(); i != board.end(); ++i) {
+	for (auto i = board.begin(); i != board.end(); ++i)
 		boardChars.push_back((*i).getToken());
-	}
+
 	// overlay the active block's cells, if any
 	auto currentBlock = board.getCurrentBlock();
 	if (currentBlock != nullptr) {
-		auto cells = currentBlock->getCells();
-		for (auto& c : cells) {
+		for (auto& c : currentBlock->getCells()) {
 			int x = c->get_x();
 			// top of board is flipped in display
 			int y = 17 - c->get_y();
@@ -220,7 +222,7 @@ std::vector<std::string> ConsoleView::_createNextStrings(const Board& board)
 		return next;
 	nextBlock->blockSpace(true);
 	for (auto& cell : nextBlock->getCells())
-		next.at(cell->get_y()).at(2 * cell->get_x()) = cell->getToken();
+		next.at(3 - cell->get_y()).at(2 * cell->get_x()) = cell->getToken();
 	nextBlock->blockSpace(false);
 	return next;
 }
@@ -247,12 +249,15 @@ void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& board
 		board_string.append(" "); // add space between cells
 	}
 	display.append(board_string);
-	display.append("\n  > ");
-	// display.append("\n┌────────────────────────────────────────────────────────┐\n");
-	// display.append("│ >                                                      │\n");
-	// display.append("└────────────────────────────────────────────────────────┘");
-	// display.append("\x1b[A");
-	// display.append("\r│ > ");
+	if (!this->_usingScript) {
+		display.append("\n┌────────────────────────────────────────────────────────┐\n");
+		display.append("│ >                                                      │\n");
+		display.append("└────────────────────────────────────────────────────────┘");
+		display.append("\x1b[A");
+		display.append("\r│ > ");
+	} else {
+		display.append("\n\n");
+	}
 }
 
 void ConsoleView::_addInfo(int row, std::string& display, std::vector<std::string>& next)
@@ -289,16 +294,10 @@ void ConsoleView::_addInfo(int row, std::string& display, std::vector<std::strin
 		info.append("next:");
 		break;
 	case 9:
-		info.append(next.at(0));
-		break;
 	case 10:
-		info.append(next.at(1));
-		break;
 	case 11:
-		info.append(next.at(2));
-		break;
 	case 12:
-		info.append(next.at(3));
+		info.append(next.at(row - 9));
 		break;
 	default:
 		return;
@@ -311,6 +310,19 @@ void ConsoleView::_addInfo(int row, std::string& display, std::vector<std::strin
 	display.append(info);
 }
 
+void ConsoleView::setScript(const std::string& scriptFile)
+{
+	if (!this->_isValidFilePath(scriptFile))
+		return;
+
+	this->_scriptFile = scriptFile;
+	if (this->_scriptIn.is_open())
+		this->_scriptIn.close();
+
+	this->_scriptIn.open(this->_scriptFile);
+	this->_usingScript = true;
+}
+
 void ConsoleView::pollInput(void)
 {
 	// input stream must be polled from separate thread and not here
@@ -318,8 +330,7 @@ void ConsoleView::pollInput(void)
 
 void ConsoleView::update(void)
 {
-	const Board& board = this->_game->getBoard();
-	this->_displayGame(board);
+	this->_displayGame(this->_game->getBoard());
 }
 
 // A normal ConsoleView tied to the program's execution and thus is

@@ -14,6 +14,7 @@ public:
 
 	virtual void pollInput(void) = 0;
 	virtual bool isOpen(void) const = 0;
+	virtual void launch(void);
 
 protected:
 	Game* _game;

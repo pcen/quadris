@@ -29,10 +29,8 @@ void Controller::push(std::vector<Command> cs)
 {
 	thread_lock lk(this->_lock);
 
-	for (auto& c: cs) {
-		std::cerr << "command pushed to queue\n";
+	for (auto& c: cs)
 		this->_commandQueue.push(c);
-	}
 }
 
 // lock mutex to prevent the queue from being accessed while

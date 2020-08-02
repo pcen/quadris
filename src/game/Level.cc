@@ -22,7 +22,6 @@ void Level::closeSequence(void)
 
 void Level::openSequence(const std::string& sequenceFile)
 {
-	std::cout << sequenceFile << std::endl;
 	// if a sequence file is open, close it first
 	this->closeSequence();
 	this->_filePath = sequenceFile;
@@ -57,11 +56,11 @@ std::unique_ptr<Level> LevelFactory::createLevel(const int& lev, std::string fil
 // Level0 Implementation
 Level0::Level0(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin)
 {
-	_level = 0;
-	_random = rand;
-	_filePath = filePath;
-	_game = gameRef;
-	_sequence = sin;
+	this->_level = 0;
+	this->_random = rand;
+	this->_filePath = filePath;
+	this->_game = gameRef;
+	this->_sequence = sin;
 }
 
 Level0::~Level0()
@@ -78,9 +77,9 @@ std::shared_ptr<Block> Level0::getNextBlock(int level)
 {
 	char blockType = ' ';
 	while (std::isspace(static_cast<unsigned char>(blockType)) != 0)
-		blockType = _sequence->get();
+		blockType = this->_sequence->get();
 
-	if (_sequence->eof())
+	if (this->_sequence->eof())
 		return nullptr;
 	else
 		return BlockFactory::createBlock(blockType, level);
@@ -96,11 +95,11 @@ char randomBlock(std::string blocks)
 // Level1 Implementation
 Level1::Level1(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin)
 {
-	_level = 1;
-	_random = rand;
-	_filePath = filePath;
-	_game = gameRef;
-	_sequence = sin;
+	this->_level = 1;
+	this->_random = rand;
+	this->_filePath = filePath;
+	this->_game = gameRef;
+	this->_sequence = sin;
 }
 
 Level1::~Level1()
@@ -111,7 +110,7 @@ Level1::~Level1()
 std::shared_ptr<Block> Level1::getNextBlock(int level)
 {
 	char nextBlockType = '.';
-	switch (std::rand()%6)
+	switch (std::rand() % 6)
 	{
 		// case 0 with probability 1/6
 		case 0:
@@ -135,11 +134,11 @@ std::shared_ptr<Block> Level1::getNextBlock(int level)
 // Level2 Implementation
 Level2::Level2(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin)
 {
-	_level = 2;
-	_random = rand;
-	_filePath = filePath;
-	_game = gameRef;
-	_sequence = sin;
+	this->_level = 2;
+	this->_random = rand;
+	this->_filePath = filePath;
+	this->_game = gameRef;
+	this->_sequence = sin;
 }
 
 Level2::~Level2()
@@ -158,12 +157,12 @@ std::shared_ptr<Block> Level2::getNextBlock(int level)
 // Level3 Implementation
 Level3::Level3(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin)
 {
-	_level = 3;
-	_random = rand;
-	_filePath = filePath;
-	_game = gameRef;
-	_sequence = sin;
-	_level0 = Level0(filePath, gameRef, rand, sin);
+	this->_level = 3;
+	this->_random = rand;
+	this->_filePath = filePath;
+	this->_game = gameRef;
+	this->_sequence = sin;
+	this->_level0 = Level0(filePath, gameRef, rand, sin);
 }
 
 Level3::~Level3()
@@ -181,7 +180,7 @@ void Level3::useRandom(bool random)
 
 std::shared_ptr<Block> Level3::getNextBlock(int level)
 {
-	if (!_random)
+	if (!this->_random)
 		return this->_level0.getNextBlock(level);
 
 	char nextBlockType = '.';
@@ -204,12 +203,12 @@ std::shared_ptr<Block> Level3::getNextBlock(int level)
 // Level4 Implementation
 Level4::Level4(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin)
 {
-	_level = 4;
-	_random = rand;
-	_filePath = filePath;
-	_game = gameRef;
-	_sequence = sin;
-	_level3 = Level3(filePath, gameRef, rand, sin);
+	this->_level = 4;
+	this->_random = rand;
+	this->_filePath = filePath;
+	this->_game = gameRef;
+	this->_sequence = sin;
+	this->_level3 = Level3(filePath, gameRef, rand, sin);
 }
 
 Level4::~Level4()
@@ -228,7 +227,7 @@ void Level4::useRandom(bool random)
 
 std::shared_ptr<Block> Level4::getNextBlock(int level)
 {
-	if (!_random)
+	if (!this->_random)
 		return this->_level3.getNextBlock(level);
 
 	int bsc = this->_game->getNumBlocksSinceClear();

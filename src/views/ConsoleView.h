@@ -17,6 +17,8 @@ public:
 	void pollInput(void) override;
 	void readInStream(void);
 	bool isOpen(void) const override;
+	void setScript(const std::string& scriptFile);
+	void launch(void) override;
 
 	void update(void) override;
 
@@ -33,13 +35,21 @@ private:
 	void _buildTrie(void);
 	std::vector<Command> _processCommand(const std::string&);
 
+	// read from the active input stream
+	void _readActiveInputStream(std::string& str);
+
+	// Command input script file
+	std::string _scriptFile;
+	bool _usingScript;
+	std::ifstream _scriptIn;
+
 	bool _isValidFilePath(const std::string& filePath);
 
 	bool _issuedQuitCmd;
 	std::shared_ptr<Trie> _trie;
-	std::istream& _in;
+	std::istream& _consoleIn;
 	std::ostream& _out;
-	std::thread _in_thread;
+	std::thread _inThread;
 };
 
 #endif // CONSOLEVIEW_H

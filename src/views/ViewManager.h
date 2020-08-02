@@ -16,6 +16,7 @@ public:
 	void push(view_ptr view);
 	void pop(view_ptr view);
 
+	void launchViews(void);
 	void pollInput(void);
 
 private:
