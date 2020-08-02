@@ -25,7 +25,7 @@ ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in, s
 	this->_trie = std::make_shared<Trie>();
 	this->_buildTrie();
 
-	this->_clearConsole();
+	// this->_clearConsole();
 }
 
 ConsoleView::~ConsoleView()
@@ -100,6 +100,8 @@ void ConsoleView::readInStream(void)
 	while (this->_game->isRunning()) {
 		// TODO: EOF should terminate
 		this->_in >> command;
+		std::cerr << "command: " << command << "\n";
+
 		if (this->_in.eof()) {
 			this->_controller->push(Command(CMD::QUIT));
 			if (this->_game != nullptr) {
@@ -180,7 +182,7 @@ void ConsoleView::_displayGame(const Board& board)
 	std::vector<char> boardChars = this->_createBoardChars(board);
 	std::vector<std::string> next = this->_createNextStrings(board);
 	this->_prepareDisplay(display, boardChars, next);
-	this->_clearConsole();
+	// this->_clearConsole();
 	this->_out << display;
 	this->_out.flush();
 }
@@ -245,11 +247,12 @@ void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& board
 		board_string.append(" "); // add space between cells
 	}
 	display.append(board_string);
-	display.append("\n┌────────────────────────────────────────────────────────┐\n");
-	display.append("│ >                                                      │\n");
-	display.append("└────────────────────────────────────────────────────────┘");
-	display.append("\x1b[A");
-	display.append("\r│ > ");
+	display.append("\n  > ");
+	// display.append("\n┌────────────────────────────────────────────────────────┐\n");
+	// display.append("│ >                                                      │\n");
+	// display.append("└────────────────────────────────────────────────────────┘");
+	// display.append("\x1b[A");
+	// display.append("\r│ > ");
 }
 
 void ConsoleView::_addInfo(int row, std::string& display, std::vector<std::string>& next)

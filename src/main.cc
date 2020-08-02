@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <fstream>
 
 #include "views/ConsoleView.h"
 #include "views/GraphicsView.h"
@@ -70,8 +71,12 @@ int main(int argc, char* argv[])
 		views.push(gv);
 	}
 
+	script = "./tests/score.in";
+	std::ifstream ifs;
+	ifs.open(script);
+
 	// add console view
-	auto cv = std::make_shared<ConsoleView>(&game, &ctrl, std::cin, std::cout);
+	auto cv = std::make_shared<ConsoleView>(&game, &ctrl, ifs, std::cout);
 	views.push(cv);
 
 	game.launch();
@@ -79,6 +84,8 @@ int main(int argc, char* argv[])
 		ctrl.sendCommands();
 		views.pollInput();
 	}
+
+	ifs.close();
 
 	return 0;
 }
