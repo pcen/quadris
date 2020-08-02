@@ -148,7 +148,7 @@ void Game::restart(void)
 	// reset the level
 	this->_level->closeSequence();
 
-	// guarentee that EOF bit is reset
+	// guarantee that EOF bit is reset
 	std::shared_ptr<std::ifstream> fs = std::make_shared<std::ifstream>();
 	this->_level = LevelFactory::createLevel(this->_startLevel,
 	                                         this->_startSequence,

@@ -100,6 +100,14 @@ void ConsoleView::readInStream(void)
 	while (this->_game->isRunning()) {
 		// TODO: EOF should terminate
 		this->_in >> command;
+		if (this->_in.eof()) {
+			this->_controller->push(Command(CMD::QUIT));
+			if (this->_game != nullptr) {
+				this->_game->unsubscribe(this);
+				this->_subscribed = false;
+			}
+			return;
+		}
 
 		// Since the game may terminate while waiting for input, check if the
 		// game is still running before  sending the command
