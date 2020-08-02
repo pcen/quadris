@@ -6,6 +6,9 @@
 
 #include <vector>
 
+#define BOARD_HEIGHT 18
+#define BOARD_WIDTH 11
+
 float constexpr default_cell_size = 25.0f;
 
 class Window;
@@ -41,20 +44,32 @@ public:
 	int insertCurrentBlock(void);
 	// rotate the current block
 	bool rotate(bool clockwise);
+	// show hint
+	void hint(void);
+	// true if hint is being displayed
+	bool hasHint(void) const;
+	// remove the hint block
+	void removeHint(void);
 
 	// set the currently active block
 	bool setCurrentBlock(std::shared_ptr<Block> currentBlock);
+
 	// get the currently active block
 	std::shared_ptr<Block> getCurrentBlock(void) const;
 
 	// set the next block
 	void setNextBlock(std::shared_ptr<Block> nextBlock);
+
 	// get the next block
 	std::shared_ptr<Block> getNextBlock(void) const;
+
+	// get the hint block
+	std::shared_ptr<Block> getHintBlock(void) const;
+
 	std::vector<std::shared_ptr<Block>>& getBlocks(void);
 
-	BoardIterator begin() const;
-	BoardIterator end() const;
+	BoardIterator begin(void) const;
+	BoardIterator end(void) const;
 
 private:
 	friend class Game;
@@ -84,12 +99,16 @@ private:
 	// block rotation helpers
 	void _doRotation(bool clockwise);
 
+	// hint helpers
+	void _calculateHintPosition(void);
+
 	std::string _emptyCellSprite;
 	std::vector<std::vector<std::shared_ptr<Cell>>> _board;
 	std::vector<std::shared_ptr<Block>> _blocks;
 
 	std::shared_ptr<Block> _currentBlock;
 	std::shared_ptr<Block> _nextBlock;
+	std::shared_ptr<Block> _hintBlock;
 
 	int _numBlockSinceClear;
 };

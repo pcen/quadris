@@ -32,6 +32,7 @@ enum class BlockType : char {
 	Z = 'Z',
 	T = 'T',
 	D = '*', // D block is displayed as '*' in console views
+	HINT = '?',
 	EMPTY = '.'
 };
 
@@ -75,6 +76,8 @@ public:
 	void flipX(void);
 	int yMax(void);
 	int getLevelGenerated(void) const;
+	void setSprite(const std::string& sprite);
+	void setType(BlockType type);
 
 protected:
 	friend class Game;

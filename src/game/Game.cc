@@ -30,6 +30,11 @@ void Game::update(const Command& command)
 	bool rotate = false;
 	bool translate = false;
 
+	// remove hint
+	if (command.type != CMD::HINT && this->_board.hasHint()) {
+
+	}
+
 	switch(command.type) {
 		case CMD::QUIT:
 			this->_running = false;
@@ -67,6 +72,12 @@ void Game::update(const Command& command)
 		case CMD::LEVELUP:
 		case CMD::LEVELDOWN:
 			this->_changeLevel(command.type == CMD::LEVELUP);
+			break;
+
+		// show hint
+		case CMD::HINT:
+			if (!this->_board.hasHint())
+				this->_board.hint();
 			break;
 
 		// random block generation (sequence file remains unchanged)
@@ -119,6 +130,7 @@ void Game::_handleDrop(void)
 	// put next block on the board
 	int rowsCleared = this->_board.insertCurrentBlock();
 	if (rowsCleared > 0) {
+		// if row(s) are cleared, update the score
 		this->_updateScore(rowsCleared);
 		this->_board._numBlockSinceClear = 0;
 	}

@@ -26,7 +26,7 @@ Coord Coord::invert(void)
 
 // Cell Implementation ========================================================
 Cell::Cell(int x, int y, std::string png, bool isCleared, BlockType type)
-	: _cleared{isCleared}, _coords{x, y}, _type{type}, _sprite{png}
+	: _coords{x, y}, _type{type}, _sprite{png}, _cleared{isCleared}
 {
 
 }
@@ -299,4 +299,19 @@ void Block::flipX(void)
 	int maxY = this->yMax();
 	for (auto& cell : this->_cells)
 		cell->_coords._y = maxY - cell->get_y();
+}
+
+// Sets the sprite of all of the block's cells
+void Block::setSprite(const std::string& sprite)
+{
+	for (auto& c : this->_cells)
+		c->_sprite = sprite;
+}
+
+// Sets the type of a block (and updates its cells)
+void Block::setType(BlockType type)
+{
+	this->_type = type;
+	for (auto& c : this->_cells)
+		c->_type = type;
 }

@@ -10,7 +10,8 @@ Board::Board()
 
 Board::Board(std::string png, float cellSize)
 	: _cellSize{ cellSize }, _emptyCellSprite{ png },
-	_currentBlock{ nullptr }, _nextBlock{ nullptr }, _numBlockSinceClear{ 0 }
+	_currentBlock{ nullptr }, _nextBlock{ nullptr }, _hintBlock{ nullptr },
+	_numBlockSinceClear{ 0 }
 {
 	this->reset();
 }
@@ -28,9 +29,9 @@ void Board::reset(void)
 	// clear the next block
 	this->_nextBlock = nullptr;
 	// initialize the board to empty cells
-	for (int j = 0; j < 11; ++j) {
+	for (int j = 0; j < BOARD_WIDTH; ++j) {
 		std::vector<std::shared_ptr<Cell>> row;
-		for(int i = 0; i < 18; ++i){
+		for(int i = 0; i < BOARD_HEIGHT; ++i){
 			auto newCell = std::make_shared<Cell>(j, i, this->_emptyCellSprite, false, BlockType::EMPTY);
 			row.push_back(newCell);
 		}
@@ -42,7 +43,9 @@ void Board::reset(void)
 
 Cell Board::at(Coord coord) const
 {
-	assert(0 <= coord._x && coord._x <= 10 && 0 <= coord._y && coord._y <= 17);
+	assert(   0 <= coord._x && coord._x < BOARD_WIDTH
+	       && 0 <= coord._y && coord._y < BOARD_HEIGHT);
+
 	return *this->_board[coord._x][coord._y];
 }
 
@@ -59,6 +62,11 @@ void Board::setNextBlock(std::shared_ptr<Block> nextBlock)
 std::shared_ptr<Block> Board::getNextBlock(void) const
 {
 	return this->_nextBlock;
+}
+
+std::shared_ptr<Block> Board::getHintBlock(void) const
+{
+	return this->_hintBlock;
 }
 
 std::vector<std::shared_ptr<Block>>& Board::getBlocks(void)
@@ -84,7 +92,7 @@ BoardIterator Board::end() const
 
 bool Board::_inBounds(int x, int y)
 {
-	return 0 <= x && x < 11 && 0 <= y && y < 18;
+	return 0 <= x && x < BOARD_WIDTH && 0 <= y && y < BOARD_HEIGHT;
 }
 
 bool Board::_inBounds(Coord coord)
@@ -210,7 +218,7 @@ void Board::_shiftSingleRowDown(int row, int offset)
 	if (row - offset < 0)
 		return;
 
-	for (unsigned int x = 0; x < 11; x++) {
+	for (int x = 0; x < BOARD_WIDTH; x++) {
 		// shift cell down
 		this->_board[x][row - offset] = this->_board[x][row];
 		// update y coordinate
@@ -235,7 +243,7 @@ void Board::_shiftDown(int bottom, int highest, int offset)
 
 	// 2. Shift every row above the highest empty row down by offset number of
 	//    blocks.
-	for (int i = highest + 1; i < 15; i++)
+	for (int i = highest + 1; i < (BOARD_HEIGHT - 3); i++)
 		this->_shiftSingleRowDown(i, offset);
 }
 
@@ -248,7 +256,7 @@ void Board::_clearCell(int x, int y)
 // set all the cells in a row to empty
 void Board::_clearSingleRow(int row)
 {
-	for (int x = 0; x < 11; x++) {
+	for (int x = 0; x < BOARD_WIDTH; x++) {
 		// set Block's cells to cleared
 		_board[x][row]->setCleared(true);
 		// reset row to contain empty cells
@@ -259,7 +267,7 @@ void Board::_clearSingleRow(int row)
 // return true if a row is empty else false
 bool Board::_isRowEmpty(int row)
 {
-	for (int x = 0; x < 11; x++) {
+	for (int x = 0; x < BOARD_WIDTH; x++) {
 		if (!this->_board[x][row]->isEmpty())
 			return false;
 	}
@@ -269,7 +277,7 @@ bool Board::_isRowEmpty(int row)
 // return true if a row is full
 bool Board::_isRowFull(int row)
 {
-	for (int x = 0; x < 11; x++) {
+	for (int x = 0; x < BOARD_WIDTH; x++) {
 		if (this->_board[x][row]->isEmpty())
 			return false;
 	}
@@ -311,9 +319,7 @@ int Board::insertCurrentBlock(void)
 		this->_blocks.push_back(this->_currentBlock);
 		return this->_clearRows();
 	}
-	else {
-		return -1;
-	}
+	return -1;
 }
 
 bool Board::setCurrentBlock(std::shared_ptr<Block> currentBlock)
@@ -329,4 +335,28 @@ bool Board::setCurrentBlock(std::shared_ptr<Block> currentBlock)
 		return true;
 	this->_currentBlock = nullptr;
 	return false;
+}
+
+bool Board::hasHint(void) const
+{
+	return this->_hintBlock != nullptr;
+}
+
+void Board::removeHint(void)
+{
+	this->_hintBlock = nullptr;
+}
+
+void Board::hint(void)
+{
+	Block hintBlock = *this->_currentBlock.get();
+	hintBlock.setType(BlockType::HINT);
+	hintBlock.setSprite("./assets/b_.png"); // TODO: need black sprite
+	*this->_hintBlock.get() = hintBlock;
+	this->_calculateHintPosition();
+}
+
+void Board::_calculateHintPosition(void)
+{
+
 }
