@@ -15,18 +15,18 @@ public:
 
 private:
 	// data
-	char value;
-	CommandType type;
-	std::string command;
+	char _value;
+	CommandType _type;
+	std::string _command;
 
-	int frequency;
-	bool is_end_of_word;
+	int _frequency;
+	bool _isEndOfWord;
 
 	std::shared_ptr<TrieNode> at(char child);
-	void add_child(char child, CommandType command, std::string s);
-	bool is_child(char child);
+	void _addChild(char child, CommandType command, std::string s);
+	bool _isChild(char child);
 
-	std::unordered_map<char, std::shared_ptr<TrieNode>> children;
+	std::unordered_map<char, std::shared_ptr<TrieNode>> _children;
 };
 
 typedef std::shared_ptr<TrieNode> TrieNodeRef;
@@ -40,12 +40,9 @@ public:
 	void push(const std::string& value, CommandType command);
 	Command findShortestPrefix(const std::string& value);
 	bool search(const std::string& value);
-	void print(void);
 
 private:
-	void _print(TrieNodeRef node);
 	TrieNodeRef _root;
-
 };
 
 #endif // TRIE_H

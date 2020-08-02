@@ -3,28 +3,28 @@
 #include <iostream>
 
 TrieNode::TrieNode(char value, CommandType type, std::string command)
-	: value{value}, type{type}, command{command}, frequency{1}
+	: _value{value}, _type{type}, _command{command}, _frequency{1}
 {
 
 }
 
 TrieNodeRef TrieNode::at(char child)
 {
-	if (this->is_child(child))
-		return this->children[child];
+	if (this->_isChild(child))
+		return this->_children[child];
 	else
 		return nullptr;
 }
 
-void TrieNode::add_child(char child, CommandType type, std::string command)
+void TrieNode::_addChild(char child, CommandType type, std::string command)
 {
-	if (!this->is_child(child))
-		this->children[child] = std::make_shared<TrieNode>(child, type, command);
+	if (!this->_isChild(child))
+		this->_children[child] = std::make_shared<TrieNode>(child, type, command);
 }
 
-bool TrieNode::is_child(char child)
+bool TrieNode::_isChild(char child)
 {
-	return this->children.find(child) != this->children.end();
+	return this->_children.find(child) != this->_children.end();
 }
 
 // Trie Implementation
@@ -44,16 +44,16 @@ void Trie::push(const std::string& value, CommandType command)
 {
 	TrieNodeRef node = this->_root;
 	for (unsigned int i = 0; i < value.length(); i++) {
-		while (node->is_child(value.at(i))) {
+		while (node->_isChild(value.at(i))) {
 			node = node->at(value.at(i++));
-			node->frequency++;
+			node->_frequency++;
 		}
 
-		node->add_child(value.at(i), command, value);
+		node->_addChild(value.at(i), command, value);
 		node = node->at(value.at(i));
 	}
 
-	node->is_end_of_word = true;
+	node->_isEndOfWord = true;
 }
 
 Command Trie::findShortestPrefix(const std::string& value) {
@@ -62,19 +62,18 @@ Command Trie::findShortestPrefix(const std::string& value) {
 
 	Command matched;
 
-	while (i < value.size() && node->is_child(value.at(i))) {
+	while (i < value.size() && node->_isChild(value.at(i))) {
 		node = node->at(value.at(i++));
 
-		if (node->frequency == 1) {
+		if (node->_frequency == 1) {
 			// found unique path
-			matched = Command(node->command, node->type);
+			matched = Command(node->_command, node->_type);
 		}
 	}
 
 	// check to see if the rest of the command is valid
-	if (matched.type != CommandType::UNDEFINED_COMMAND && matched.message.rfind(value, 0) == 0) {
+	if (matched.type != CommandType::UNDEFINED_COMMAND && matched.message.rfind(value, 0) == 0)
 		return matched;
-	}
 
 	return Command(); // default command
 }
@@ -84,26 +83,10 @@ bool Trie::search(const std::string& value) {
 
 	unsigned int i = 0;
 	while (i < value.size()) {
-		if (!node->is_child(value.at(i))) {
+		if (!node->_isChild(value.at(i)))
 			return false;
-		}
 		node = node->at(value.at(i++));
 	}
 
-	return node->is_end_of_word;
-}
-
-void Trie::print(void)
-{
-	this->_print(this->_root);
-}
-
-void Trie::_print(TrieNodeRef node)
-{
-	std::cout << node->value;
-	for (auto& n: node->children) {
-		this->_print(n.second);
-		if (node->value == '\0' && node->children.size() > 1)
-			std::cout << '\n';
-	}
+	return node->_isEndOfWord;
 }

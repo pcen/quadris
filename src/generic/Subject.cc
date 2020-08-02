@@ -10,7 +10,7 @@ typedef std::lock_guard<std::mutex> thread_lock;
 void Subject::subscribe(Observer* observer)
 {
 	assert(observer != nullptr);
-	thread_lock lk(_lock);
+	thread_lock lk(this->_lock);
 	_observers.emplace(observer);
 }
 
@@ -19,8 +19,8 @@ void Subject::subscribe(Observer* observer)
 void Subject::unsubscribe(Observer* observer)
 {
 	assert(observer != nullptr);
-	thread_lock lk(_lock);
-	_observers.erase(observer);
+	thread_lock lk(this->_lock);
+	this->_observers.erase(observer);
 }
 
 // only the thread owning Subject should notify observers, however
@@ -28,7 +28,7 @@ void Subject::unsubscribe(Observer* observer)
 // subscribe or unsubscribe
 void Subject::_notify(void)
 {
-	thread_lock lk(_lock);
-	for (auto& observer: _observers)
+	thread_lock lk(this->_lock);
+	for (auto& observer: this->_observers)
 		observer->update();
 }

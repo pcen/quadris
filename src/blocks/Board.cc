@@ -1,6 +1,6 @@
 #include "Board.h"
 
-#include <iostream>
+#include <cassert>
 
 Board::Board()
 	: _cellSize{ default_cell_size }, _numBlockSinceClear{ 0 }
@@ -42,9 +42,7 @@ void Board::reset(void)
 
 Cell Board::at(Coord coord) const
 {
-	if (coord._x > 10 || coord._y > 17)
-		std::cerr << "invalid coordinates to acces board\n";
-
+	assert(0 <= coord._x && coord._x <= 10 && 0 <= coord._y && coord._y <= 17);
 	return *this->_board[coord._x][coord._y];
 }
 
@@ -65,7 +63,7 @@ std::shared_ptr<Block> Board::getNextBlock(void) const
 
 std::vector<std::shared_ptr<Block>>& Board::getBlocks(void)
 {
-	return _blocks;
+	return this->_blocks;
 }
 
 float Board::getCellSize(void) const
@@ -143,10 +141,8 @@ void Board::_doTranslation(Direction direction)
 {
 	Coord delta = this->_directionDeltas(direction);
 	this->_currentBlock->_bottomLeft += delta;
-	auto cells = this->_currentBlock->getCells();
-	for (auto& c : cells) {
+	for (auto& c : this->_currentBlock->getCells())
 		c->_coords += delta;
-	}
 }
 
 // insert the given block's cells into the board
@@ -154,8 +150,7 @@ void Board::_doTranslation(Direction direction)
 // at the blocks position
 void Board::_insertBlock(std::shared_ptr<Block> block)
 {
-	auto cells = block->getCells();
-	for (auto& c : cells)
+	for (auto& c : block->getCells())
 		this->_board[c->get_x()][c->get_y()] = c;
 }
 
@@ -317,8 +312,6 @@ int Board::insertCurrentBlock(void)
 		return this->_clearRows();
 	}
 	else {
-		std::cerr << "ERROR: cannot insert current block since it is"
-		          << " at an invalid board position.\n";
 		return -1;
 	}
 }
