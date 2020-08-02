@@ -44,7 +44,7 @@ void messageHandler(QtMsgType type,
 GraphicsView::GraphicsView(const std::string& name, Game* game, Controller* controller)
 	: View{ game, controller }, _qtArgCount{ 0 }, _qtArgs{ nullptr },
 	_open{ false }, _name{ name }, _app(_qtArgCount, _qtArgs),
-	_window{ name, game, 0, 570, (int) game->getBoard().getCellSize() * 18 }
+	_window{ name, game, 0, 550, (int) game->getBoard().getCellSize() * 18 }
 {
 	qInstallMessageHandler(messageHandler);
 	// load quadris cell sprites
