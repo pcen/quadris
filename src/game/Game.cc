@@ -206,14 +206,79 @@ int Game::getNumBlocksSinceClear(void)
 	return this->_board._numBlockSinceClear;
 }
 
-void Game::_setBlockFromCache(void)
+void Game::_setBlockFromCache(int prevLevel)
 {
-	// int level = this->_level->getLevel();
-	// auto cacheLoc = this->_prevLevelBlocks.find(level);
-	// if (cacheLoc != this->_prevLevelBlocks.end())
-	// 	this->_board._nextBlock = (*cacheLoc).second;
-	// else
-	// 	this->_setNextBlock();
+	int level = this->_level->getLevel();
+	// In the case that we are in sequenced mode
+	if (!this->_level->_random) {
+		// To switch to sequenced mode we must have gone to level 3 or 4at some point
+		// to get from level 3 or 4 to level 0 we must have gone through level 3
+		if (level == 0) {
+			// Find the sequenced cache block from level3 and set the next block to it
+			std::shared_ptr<Block> prevSequenceBlock = this->_prevLevelBlocks[3];
+			this->_prevLevelBlocks[0] = prevSequenceBlock;
+			this->_board._nextBlock = prevSequenceBlock;
+			// If we have not reached the end of our file then we want to also
+			// make sure the next block has the correct properties for level 0 blocks
+			if (this->_board._nextBlock != nullptr) {
+				this->_board._nextBlock->_levelGenerated = 0;
+				this->_board._nextBlock->_isHeavy = false;
+			}
+		}
+		// If we are switching from level 3 to level 4 in sequenced mode
+		if (level == 4 && prevLevel == 3) {
+			// Set the next block of level 4 to the cached block from level 3
+			this->_prevLevelBlocks[4] = this->_prevLevelBlocks[3];
+			if (this->_board._nextBlock != nullptr)
+				// if we have not depleted sequence.txt then update the next block's level
+				this->_board._nextBlock->_levelGenerated = 4;
+			return;
+		}
+		if (level == 3) {
+			// If we are switching from level 4 to level 3 in sequenced mode
+			if (prevLevel == 4) {
+				// Set the next block to the cached block from level 4
+				this->_prevLevelBlocks[3] = this->_prevLevelBlocks[4];
+				if (this->_board._nextBlock != nullptr)
+					// if we have not depleted sequence.txt then update the next block's level
+					this->_board._nextBlock->_levelGenerated = 3;
+				return;
+			}
+			// Otherwise we have switched from a lower level back to 3 in sequenced mode
+			else {
+				// Level 0 will use the same sequence file so if we have used it in level0
+				// before switching back, we must have the next block in the sequence cached
+				if (this->_prevLevelBlocks.find(0) != this->_prevLevelBlocks.end()) {
+					// Set the nextblock and level3's cached block to also be this block
+					std::shared_ptr<Block> prevSequenceBlock = this->_prevLevelBlocks[0];
+					this->_prevLevelBlocks[3] = prevSequenceBlock;
+					this->_board._nextBlock = prevSequenceBlock;
+					if (this->_board._nextBlock != nullptr) {
+						// If we have not depleted sequence.txt update the block's properties
+						this->_board._nextBlock->_levelGenerated = 3;
+						this->_board._nextBlock->_isHeavy = true;
+					}
+				}
+			}
+		}
+	}
+
+	// Check if we have a cached nextBlock from a previous switch to the level
+	// and set the next block back to it if we do
+	auto cacheLoc = this->_prevLevelBlocks.find(level);
+	if (cacheLoc != this->_prevLevelBlocks.end()) {
+		this->_board._nextBlock = (*cacheLoc).second;
+		// If we have switched to level 3 or 4, but previously were in norandom/sequenced
+		// mode, then we want to check if the cached block is empty due to having depleted
+		// the sequence.txt file, in which case we want to generate a new block
+		if (level == 3 || level == 4) {
+			if (this->_level->_random && this->_board._nextBlock == nullptr)
+				this->_setNextBlock();
+		}
+	}
+	else
+		// Otherwise we generate a new block entirely
+		this->_setNextBlock();
 }
 
 void Game::_changeLevel(bool up)
@@ -237,7 +302,7 @@ void Game::_changeLevel(bool up)
 		// } else {
 		// 	// otherwise, generate a new next block for the new level
 
-		this->_setBlockFromCache();
+		this->_setBlockFromCache(levelNum);
 	}
 }
 

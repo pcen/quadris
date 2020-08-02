@@ -77,6 +77,7 @@ public:
 	int getLevelGenerated(void) const;
 
 protected:
+	friend class Game;
 	friend class Board;
 
 	BlockType _type;

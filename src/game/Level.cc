@@ -228,7 +228,7 @@ void Level4::useRandom(bool random)
 std::shared_ptr<Block> Level4::getNextBlock(int level)
 {
 	if (!this->_random)
-		return this->_level3.getNextBlock(level);
+		return this->_level3._level0.getNextBlock(level);
 
 	int bsc = this->_game->getNumBlocksSinceClear();
 	if (bsc % 5 == 0 && bsc != 0)
