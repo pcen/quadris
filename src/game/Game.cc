@@ -173,6 +173,8 @@ void Game::restart(void)
 
 	this->_level->openSequence(this->_startSequence);
 
+	this->_prevLevelBlocks.clear();
+
 	if (this->_board.setCurrentBlock(this->_level->getNextBlock(this->_level->getLevel())) == false) {
 		std::cerr << "could not add first block\n";
 	}
