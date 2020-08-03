@@ -53,6 +53,7 @@ public:
 	bool isEmpty(void) const;
 
 private:
+	friend class Game;
 	friend class Board;
 	friend class Block;
 
@@ -79,6 +80,7 @@ public:
 	void setSprite(const std::string& sprite);
 	void setType(BlockType type);
 	void copyCells(std::shared_ptr<Block> block);
+	void setPosition(Coord bottomLeft);
 
 protected:
 	friend class Game;

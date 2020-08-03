@@ -105,13 +105,13 @@ IBlock::IBlock(int level)
 	this->_inBlockSpace = false;
 
 	this->_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/t.png",
-							  false,BlockType::I));
+	                          false,BlockType::I));
 	this->_cells.emplace_back(std::make_shared<Cell>(1,14,"./assets/t.png",
 	                          false,BlockType::I));
 	this->_cells.emplace_back(std::make_shared<Cell>(2,14,"./assets/t.png",
 	                          false,BlockType::I));
 	this->_cells.emplace_back(std::make_shared<Cell>(3,14,"./assets/t.png",
-							  false,BlockType::I));
+	                          false,BlockType::I));
 
 	this->_levelGenerated = level;
 	this->_isHeavy = (level >= 3);
@@ -124,13 +124,13 @@ JBlock::JBlock(int level)
 	this->_inBlockSpace = false;
 
 	this->_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/n.png",
-							  false,BlockType::J));
+	                          false,BlockType::J));
 	this->_cells.emplace_back(std::make_shared<Cell>(0,13,"./assets/n.png",
-							  false,BlockType::J));
+	                          false,BlockType::J));
 	this->_cells.emplace_back(std::make_shared<Cell>(1,13,"./assets/n.png",
-							  false,BlockType::J));
+	                          false,BlockType::J));
 	this->_cells.emplace_back(std::make_shared<Cell>(2,13,"./assets/n.png",
-							  false,BlockType::J));
+	                          false,BlockType::J));
 
 	this->_levelGenerated = level;
 	this->_isHeavy = (level >= 3);
@@ -143,13 +143,13 @@ LBlock::LBlock(int level)
 	this->_inBlockSpace = false;
 
 	this->_cells.emplace_back(std::make_shared<Cell>(0,13,"./assets/m.png",
-							  false,BlockType::L));
+	                          false,BlockType::L));
 	this->_cells.emplace_back(std::make_shared<Cell>(1,13,"./assets/m.png",
-							  false,BlockType::L));
+	                          false,BlockType::L));
 	this->_cells.emplace_back(std::make_shared<Cell>(2,13,"./assets/m.png",
-							  false,BlockType::L));
+	                          false,BlockType::L));
 	this->_cells.emplace_back(std::make_shared<Cell>(2,14,"./assets/m.png",
-							  false,BlockType::L));
+	                          false,BlockType::L));
 
 	this->_levelGenerated = level;
 	this->_isHeavy = (level >= 3);
@@ -162,13 +162,13 @@ OBlock::OBlock(int level)
 	this->_inBlockSpace = false;
 
 	this->_cells.emplace_back(std::make_shared<Cell>(0,13,"./assets/y.png",
-							  false,BlockType::O));
+	                          false,BlockType::O));
 	this->_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/y.png",
-							  false,BlockType::O));
+	                          false,BlockType::O));
 	this->_cells.emplace_back(std::make_shared<Cell>(1,13,"./assets/y.png",
-							  false,BlockType::O));
+	                          false,BlockType::O));
 	this->_cells.emplace_back(std::make_shared<Cell>(1,14,"./assets/y.png",
-							  false,BlockType::O));
+	                          false,BlockType::O));
 
 	this->_levelGenerated = level;
 	this->_isHeavy = (level >= 3);
@@ -181,13 +181,13 @@ SBlock::SBlock(int level)
 	this->_inBlockSpace = false;
 
 	this->_cells.emplace_back(std::make_shared<Cell>(0,13,"./assets/g.png",
-							  false,BlockType::S));
+	                          false,BlockType::S));
 	this->_cells.emplace_back(std::make_shared<Cell>(1,13,"./assets/g.png",
-							  false,BlockType::S));
+	                          false,BlockType::S));
 	this->_cells.emplace_back(std::make_shared<Cell>(1,14,"./assets/g.png",
-							  false,BlockType::S));
+	                          false,BlockType::S));
 	this->_cells.emplace_back(std::make_shared<Cell>(2,14,"./assets/g.png",
-							  false,BlockType::S));
+	                          false,BlockType::S));
 
 	this->_levelGenerated = level;
 	this->_isHeavy = (level >= 3);
@@ -200,13 +200,13 @@ ZBlock::ZBlock(int level)
 	this->_inBlockSpace = false;
 
 	this->_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/r.png",
-							  false,BlockType::Z));
+	                          false,BlockType::Z));
 	this->_cells.emplace_back(std::make_shared<Cell>(1,14,"./assets/r.png",
-							  false,BlockType::Z));
+	                          false,BlockType::Z));
 	this->_cells.emplace_back(std::make_shared<Cell>(1,13,"./assets/r.png",
-							  false,BlockType::Z));
+	                          false,BlockType::Z));
 	this->_cells.emplace_back(std::make_shared<Cell>(2,13,"./assets/r.png",
-							  false,BlockType::Z));
+	                          false,BlockType::Z));
 
 	this->_levelGenerated = level;
 	this->_isHeavy = (level >= 3);
@@ -219,13 +219,13 @@ TBlock::TBlock(int level)
 	this->_inBlockSpace = false;
 
 	this->_cells.emplace_back(std::make_shared<Cell>(0,14,"./assets/p.png",
-						      false,BlockType::T));
+	                          false,BlockType::T));
 	this->_cells.emplace_back(std::make_shared<Cell>(1,14,"./assets/p.png",
-						      false,BlockType::T));
+	                          false,BlockType::T));
 	this->_cells.emplace_back(std::make_shared<Cell>(1,13,"./assets/p.png",
-						      false,BlockType::T));
+	                          false,BlockType::T));
 	this->_cells.emplace_back(std::make_shared<Cell>(2,14,"./assets/p.png",
-						      false,BlockType::T));
+	                          false,BlockType::T));
 
 	this->_levelGenerated = level;
 	this->_isHeavy = (level >= 3);
@@ -238,7 +238,7 @@ DBlock::DBlock(int level)
 	this->_inBlockSpace = false;
 
 	this->_cells.emplace_back(std::make_shared<Cell>(5,17,"./assets/b.png",
-							  false,BlockType::D));
+	                          false,BlockType::D));
 
 	this->_levelGenerated = level;
 	this->_isHeavy = (level >= 3);
@@ -342,4 +342,9 @@ void Block::copyCells(std::shared_ptr<Block> block)
 		Cell cell = *c;
 		this->_cells.push_back(std::make_shared<Cell>(cell));
 	}
+}
+
+void Block::setPosition(Coord bottomLeft)
+{
+	this->_bottomLeft = bottomLeft;
 }

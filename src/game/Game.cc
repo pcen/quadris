@@ -299,7 +299,54 @@ int Game::getLevel(void) const
 	return this->_level->getLevel();
 }
 
+void Game::_resetHint(void)
+{
+	for (int i = 0; i < 4; ++i) {
+		this->_board._hintBlock->_cells[i]->_coords
+			= this->_board._currentBlock->_cells[i]->_coords;
+	}
+}
+
 void Game::_calculateHint(void)
 {
+	std::shared_ptr<Block> hintBlock = this->_board.getHintBlock();
 
+	int maxScore = -1;
+
+	Coord hintLocation = hintBlock->_bottomLeft;
+
+	for (int i = 0; i < 3; i++) {
+		this->_resetHint();
+		for (int r = 0; r < i; ++r)
+			this->_board.rotate(true, hintBlock);
+
+		// traverse to the right
+		for (int j = hintLocation._x; j < BOARD_WIDTH; j++) {
+
+			// move block to column
+			for (int k = hintLocation._x; k < j; k++)
+				this->_board.translate(Direction::RIGHT, hintBlock);
+
+			// move down if heavy
+			if (this->_board.getCurrentBlock()->isHeavy());
+				this->_board.translate(Direction::DOWN, hintBlock);
+
+			//this->_board.drop(hintBlock);
+		}
+
+		// traverse to the left
+		for (int j = hintLocation._x - 1; j >= 0; j--) {
+			hintBlock->setPosition(hintLocation);
+
+			for (int k = hintLocation._x; k > j; k--)
+				this->_board.translate(Direction::LEFT, hintBlock);
+			if (this->_board.getCurrentBlock()->isHeavy());
+				this->_board.translate(Direction::DOWN, hintBlock);
+
+		}
+	}
+	// for every orientation
+	//		for every column
+	//			drop and calculate score
+	// modify hint block to have coordinates
 }

@@ -28,7 +28,7 @@ static const char* buttonStyle =
 "min-width: 40px;";
 
 Window::Window(const std::string& title, Game* game, QWidget* parent,
-			   int width, int height)
+               int width, int height)
 	: QMainWindow(parent), _open{ false }, _game{ game },
 	_labelPane{ this }
 {

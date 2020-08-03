@@ -42,6 +42,7 @@ private:
 	void _setBlockFromCache(void);
 	bool _sequencedMode(void);
 	void _calculateHint(void);
+	void _resetHint(void);
 
 	Board _board;
 	std::string _startSequence;
