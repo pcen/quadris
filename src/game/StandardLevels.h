@@ -25,7 +25,11 @@ private:
 	{
 		friend class LevelFactoryInitializer;
 		public:
-			virtual std::unique_ptr<Level> create(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin) {
+			virtual std::unique_ptr<Level> create(std::string 	filePath,
+												  Game* 		gameRef,
+												  bool 			rand,
+												  std::shared_ptr<std::ifstream>
+												  				sin) {
 				return std::make_unique<Level0>(filePath, gameRef, rand, sin);
 			};
 	};
@@ -48,7 +52,11 @@ private:
 	{
 		friend class LevelFactoryInitializer;
 		public:
-			virtual std::unique_ptr<Level> create(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin) {
+			virtual std::unique_ptr<Level> create(std::string 	filePath,
+												  Game* 		gameRef,
+												  bool 			rand,
+												  std::shared_ptr<std::ifstream>
+												  				sin) {
 				return std::make_unique<Level1>(filePath, gameRef, rand, sin);
 			};
 	};
@@ -71,7 +79,11 @@ private:
 	{
 		friend class LevelFactoryInitializer;
 		public:
-			virtual std::unique_ptr<Level> create(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin) {
+			virtual std::unique_ptr<Level> create(std::string 	filePath,
+												  Game*			gameRef,
+												  bool			rand,
+												  std::shared_ptr<std::ifstream>
+												  				sin) {
 				return std::make_unique<Level2>(filePath, gameRef, rand, sin);
 			};
 	};
@@ -100,7 +112,11 @@ private:
 	{
 		friend class LevelFactoryInitializer;
 		public:
-			virtual std::unique_ptr<Level> create(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin) {
+			virtual std::unique_ptr<Level> create(std::string	filePath,
+												  Game*			gameRef,
+												  bool			rand,
+												  std::shared_ptr<std::ifstream>
+												  				sin) {
 				return std::make_unique<Level3>(filePath, gameRef, rand, sin);
 			};
 	};
@@ -127,7 +143,11 @@ private:
 	{
 		friend class LevelFactoryInitializer;
 		public:
-			virtual std::unique_ptr<Level> create(std::string filePath, Game* gameRef, bool rand, std::shared_ptr<std::ifstream> sin) {
+			virtual std::unique_ptr<Level> create(std::string 	filePath,
+												  Game*			gameRef,
+												  bool			rand,
+												  std::shared_ptr<std::ifstream>
+												  				sin) {
 				return std::make_unique<Level4>(filePath, gameRef, rand, sin);
 			};
 	};

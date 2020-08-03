@@ -6,12 +6,23 @@
 
 #include "./blocks/StandardBlocks.h"
 
+/*
+	- GUI buttons
+	- multi-threading - no flag
+	- no explicit memory use (4) - no flag
+	- arrow keys
+*/
+
 Game::Game(uint startLevel, std::string filePath)
 	: _board("./assets/_.png"), _startSequence{ filePath }, _running{true},
 	_score{0}, _highScore{0}, _startLevel{startLevel}
 {
 	std::shared_ptr<std::ifstream> fs = std::make_shared<std::ifstream>();
-	this->_level = LevelFactory::createLevel(startLevel, filePath, this, true, fs);
+	this->_level = LevelFactory::createLevel(startLevel,
+	                                         filePath,
+	                                         this,
+	                                         true,
+	                                         fs);
 	this->_level->openSequence(this->_startSequence);
 }
 
@@ -31,9 +42,8 @@ void Game::update(const Command& command)
 	bool translate = false;
 
 	// remove hint
-	if (command.type != CMD::HINT && this->_board.hasHint()) {
-
-	}
+	if (command.type != CMD::HINT && this->_board.hasHint())
+		this->_board.removeHint();
 
 	switch(command.type) {
 		case CMD::QUIT:
@@ -76,8 +86,10 @@ void Game::update(const Command& command)
 
 		// show hint
 		case CMD::HINT:
-			if (!this->_board.hasHint())
-				this->_board.hint();
+			if (!this->_board.hasHint()) {
+				this->_board.createHintBlock();
+				this->_calculateHint();
+			}
 			break;
 
 		// random block generation (sequence file remains unchanged)
@@ -106,9 +118,11 @@ void Game::update(const Command& command)
 			break;
 	}
 
-	if (command.type >= CMD::I && command.type <= CMD::T && command.message.length()) {
-		BlockType blockType = (BlockType) command.message[0]; // extract block type
-		this->_board.setCurrentBlock(this->_level->getBlock((char) blockType, this->_level->getLevel()));
+	bool isBlockCommand = command.type >= CMD::I && command.type <= CMD::T;
+	if (isBlockCommand && command.message.length()) {
+		BlockType blockType = (BlockType) command.message[0];
+		this->_board.setCurrentBlock(this->_level->getBlock((char) blockType,
+		                             this->_level->getLevel()));
 	}
 
 	if (command.type == CMD::DROP)
@@ -151,9 +165,8 @@ void Game::_handleDrop(void)
 
 void Game::launch(void)
 {
-	if (this->_board.setCurrentBlock(this->_level->getNextBlock(this->_level->getLevel())) == false) {
-		std::cerr << "could not add first block\n";
-	}
+	int level = this->_level->getLevel();
+	this->_board.setCurrentBlock(this->_level->getNextBlock(level));
 	this->_setNextBlock();
 	this->_notify();
 }
@@ -183,9 +196,8 @@ void Game::restart(void)
 	this->_prevLevelBlocks.clear();
 	this->_sequenceCache = nullptr;
 
-	if (this->_board.setCurrentBlock(this->_level->getNextBlock(this->_level->getLevel())) == false) {
-		std::cerr << "could not add first block\n";
-	}
+	int level = this->_level->getLevel();
+	this->_board.setCurrentBlock(this->_level->getNextBlock(level));
 	this->_setNextBlock();
 }
 
@@ -216,10 +228,11 @@ int Game::getNumBlocksSinceClear(void)
 	return this->_board._numBlockSinceClear;
 }
 
-bool Game::_sequencedMode()
+bool Game::_sequencedMode(void)
 {
 	int level = this->_level->getLevel();
-	return level == 0 || ((level == 3 || level == 4) && !this->_level->_random);
+	bool noRandHiLvl = (level == 3 || level == 4) && !this->_level->_random;
+	return level == 0 || noRandHiLvl;
 }
 
 void Game::_setNextBlock(void)
@@ -233,7 +246,7 @@ void Game::_setNextBlock(void)
 		this->_prevLevelBlocks[level] = nextBlock;
 }
 
-void Game::_setBlockFromCache()
+void Game::_setBlockFromCache(void)
 {
 	int level = this->_level->getLevel();
 	// Check if we have a cached nextBlock from a previous switch to the level
@@ -244,8 +257,9 @@ void Game::_setBlockFromCache()
 			this->_board._nextBlock->_levelGenerated = level;
 			this->_board._nextBlock->_isHeavy = (level == 3 || level == 4);
 		}
-		else
+		else {
 			this->_setNextBlock();
+		}
 	}
 	else {
 		auto cacheLoc = this->_prevLevelBlocks.find(level);
@@ -266,17 +280,6 @@ void Game::_changeLevel(bool up)
 		                                         this,
 		                                         _level->_random,
 		                                         _level->_sequence);
-
-		// save the next block for this level
-		// if (!this->_level->isRandom()) {
-		// 	this->_nextBlocks[levelNum] = this->_board.getNextBlock();
-		// }
-		// if (this->_nextBlocks.has(this->_level->getLevel())) {
-		// 	// check if there is a cached next block
-		// 	this->_board.setNextBlock(this->_nextBlocks.at(this->_level->getLevel()));
-		// } else {
-		// 	// otherwise, generate a new next block for the new level
-		
 		this->_setBlockFromCache();
 	}
 }
@@ -294,4 +297,9 @@ unsigned int Game::getHighScore(void) const
 int Game::getLevel(void) const
 {
 	return this->_level->getLevel();
+}
+
+void Game::_calculateHint(void)
+{
+
 }

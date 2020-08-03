@@ -11,6 +11,8 @@
 
 float constexpr default_cell_size = 25.0f;
 
+typedef std::shared_ptr<Block> block_ptr;
+
 class Window;
 class ConsoleView;
 
@@ -36,37 +38,44 @@ public:
 	// clears all cells and the block vector
 	void reset(void);
 
-	// translate the currently active block in the given direction
+	// translates a block in the given direction
+	bool translate(Direction direction, block_ptr block);
 	bool translate(Direction direction);
-	// drop the currently active block
+
+	// drops a block
+	void drop(block_ptr block);
 	void drop(void);
+
 	// insert the currently active block cells into the table
 	int insertCurrentBlock(void);
-	// rotate the current block
+
+	// rotates a block
+	bool rotate(bool clockwise, block_ptr block);
 	bool rotate(bool clockwise);
+
 	// show hint
-	void hint(void);
+	void createHintBlock(void);
 	// true if hint is being displayed
 	bool hasHint(void) const;
 	// remove the hint block
 	void removeHint(void);
 
 	// set the currently active block
-	bool setCurrentBlock(std::shared_ptr<Block> currentBlock);
+	bool setCurrentBlock(block_ptr currentBlock);
 
 	// get the currently active block
-	std::shared_ptr<Block> getCurrentBlock(void) const;
+	block_ptr getCurrentBlock(void) const;
 
 	// set the next block
-	void setNextBlock(std::shared_ptr<Block> nextBlock);
+	void setNextBlock(block_ptr nextBlock);
 
 	// get the next block
-	std::shared_ptr<Block> getNextBlock(void) const;
+	block_ptr getNextBlock(void) const;
 
 	// get the hint block
-	std::shared_ptr<Block> getHintBlock(void) const;
+	block_ptr getHintBlock(void) const;
 
-	std::vector<std::shared_ptr<Block>>& getBlocks(void);
+	std::vector<block_ptr>& getBlocks(void);
 
 	BoardIterator begin(void) const;
 	BoardIterator end(void) const;
@@ -76,7 +85,7 @@ private:
 
 	float _cellSize;
 
-	void _insertBlock(std::shared_ptr<Block> block);
+	void _insertBlock(block_ptr block);
 	int _clearRows(void);
 
 	// row filled helpers
@@ -92,23 +101,20 @@ private:
 	bool _inBounds(Coord coord);
 
 	// block translation helpers
-	void _doTranslation(Direction direction);
-	bool _validTranslation(Direction direction);
+	void _doTranslation(Direction direction, block_ptr block);
+	bool _validTranslation(Direction direction, block_ptr block);
 	Coord _directionDeltas(Direction direction);
 
 	// block rotation helpers
-	void _doRotation(bool clockwise);
-
-	// hint helpers
-	void _calculateHintPosition(void);
+	void _doRotation(bool clockwise, block_ptr block);
 
 	std::string _emptyCellSprite;
 	std::vector<std::vector<std::shared_ptr<Cell>>> _board;
-	std::vector<std::shared_ptr<Block>> _blocks;
+	std::vector<block_ptr> _blocks;
 
-	std::shared_ptr<Block> _currentBlock;
-	std::shared_ptr<Block> _nextBlock;
-	std::shared_ptr<Block> _hintBlock;
+	block_ptr _currentBlock;
+	block_ptr _nextBlock;
+	block_ptr _hintBlock;
 
 	int _numBlockSinceClear;
 };

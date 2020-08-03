@@ -15,7 +15,8 @@ static const char* quadrisTitle =
 " | (_) | || / _` / _` | '_| (_-<\n"
 "  \\__\\_\\\\_,_\\__,_\\__,_|_| |_/__/\n\n";
 
-ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in, std::ostream& out)
+ConsoleView::ConsoleView(Game* game, Controller* controller, std::istream& in,
+                         std::ostream& out)
 	: View{ game, controller }, _usingScript{ false },
 	_issuedQuitCmd{ false }, _consoleIn{ in }, _out{ out }
 {
@@ -79,12 +80,14 @@ std::vector<Command> ConsoleView::_processCommand(const std::string& s)
 	}
 
 	std::string multiplierString = s.substr(0, split);
-	int multiplier = multiplierString.length() ? std::stoi(multiplierString) : 1;
+	int multiplier = multiplierString.length() ?
+	                 std::stoi(multiplierString) : 1;
 	std::string command = s.substr(split);
 	Command matchingCommand = _trie->findShortestPrefix(command);
 	matchingCommand.silent = true;
 
-	if (invalidMultipliers.find(matchingCommand.type) != invalidMultipliers.end()) // force multipler of 1
+	if (invalidMultipliers.find(matchingCommand.type)
+	    != invalidMultipliers.end()) // force multipler of 1
 		multiplier = 1;
 
 	if (matchingCommand.type == CMD::QUIT)
@@ -94,8 +97,10 @@ std::vector<Command> ConsoleView::_processCommand(const std::string& s)
 		for (int i = 0; i < multiplier; i++)
 			commands.push_back(matchingCommand);
 	}
-	if (!commands.empty())
+
+	if (!commands.empty()) // set last command to not silent
 		commands.back().silent = false;
+
 	return commands;
 }
 
@@ -114,7 +119,6 @@ void ConsoleView::readInStream(void)
 	std::string command;
 
 	while (this->_game->isRunning()) {
-		std::cerr << "reading input\n";
 		this->_readActiveInputStream(command);
 
 		if (this->_usingScript && this->_scriptIn.eof()) {
@@ -128,7 +132,7 @@ void ConsoleView::readInStream(void)
 		if (this->_game != nullptr && this->_game->isRunning()) {
 			std::vector<Command> payload = this->_processCommand(command);
 
-			bool valid = !payload.empty();
+			bool sendToController = !payload.empty();
 
 			if (payload.size() == 1) {
 				CommandType type = payload.at(0).type;
@@ -136,18 +140,19 @@ void ConsoleView::readInStream(void)
 				if (type == CMD::NORANDOM_FILE || type == CMD::SEQUENCE_FILE) {
 					std::string filePath;
 					this->_readActiveInputStream(filePath);
-					if (!this->_isValidFilePath(filePath))
-						valid = false;
 
-					if (type == CMD::SEQUENCE_FILE)
+					sendToController = this->_isValidFilePath(filePath);
+
+					if (type == CMD::SEQUENCE_FILE) {
 						this->setScript(filePath);
-
+						sendToController = false; // don't need to tell controller
+					}
 					if (type == CMD::NORANDOM_FILE)
 						payload.at(0).message = filePath;
 				}
 			}
 
-			if (valid)
+			if (sendToController)
 				this->_controller->push(payload);
 			else
 				this->update(); //requery
@@ -159,9 +164,9 @@ void ConsoleView::readInStream(void)
 					// its base class may still exist when game begins notifying
 					// observers it has recieved a "quit" command. To ensure
 					// that game does not try to call notify on the virtual View
-					// base class from which ConsoleView is described, unsubscribe
-					// here to ensure complete destruction or destruction after
-					// recieving Game's notification.
+					// base class from which ConsoleView is described,
+					// unsubscribe here to ensure complete destruction or
+					// destruction after recieving Game's notification.
 					this->_game->unsubscribe(this);
 					this->_subscribed = false;
 				}
@@ -174,6 +179,7 @@ void ConsoleView::readInStream(void)
 void ConsoleView::_clearConsole(void)
 {
 	// if using a script file, do not clear output stream
+	// in order for script output to be piped into file
 	if (this->_usingScript)
 		return;
 
@@ -201,8 +207,20 @@ std::vector<char> ConsoleView::_createBoardChars(const Board& board)
 
 	// overlay the active block's cells, if any
 	auto currentBlock = board.getCurrentBlock();
-	if (currentBlock != nullptr) {
-		for (auto& c : currentBlock->getCells()) {
+	this->_overlaySpecialBlock(boardChars, currentBlock);
+
+	// overlay the hint block's cells, if any
+	auto hintBlock = board.getHintBlock();
+	this->_overlaySpecialBlock(boardChars, hintBlock);
+
+	return boardChars;
+}
+
+void ConsoleView::_overlaySpecialBlock(std::vector<char>& boardChars,
+									   std::shared_ptr<Block> block)
+{
+	if (block != nullptr) {
+		for (auto& c : block->getCells()) {
 			int x = c->get_x();
 			// top of board is flipped in display
 			int y = 17 - c->get_y();
@@ -211,12 +229,12 @@ std::vector<char> ConsoleView::_createBoardChars(const Board& board)
 				boardChars.at(index) = c->getToken();
 		}
 	}
-	return boardChars;
 }
 
 std::vector<std::string> ConsoleView::_createNextStrings(const Board& board)
 {
-	std::vector<std::string> next = { "        ", "        ", "        ", "        " };
+	std::vector<std::string> next = { "        ", "        ", "        ",
+									  "        " };
 	std::shared_ptr<Block> nextBlock = board.getNextBlock();
 	if (nextBlock == nullptr)
 		return next;
@@ -227,7 +245,9 @@ std::vector<std::string> ConsoleView::_createNextStrings(const Board& board)
 	return next;
 }
 
-void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& boardChars, std::vector<std::string>& next)
+void ConsoleView::_prepareDisplay(std::string& display,
+                                  std::vector<char>& boardChars,
+								  std::vector<std::string>& next)
 {
 	display.append(quadrisTitle);
 	int row = 1;
@@ -238,8 +258,10 @@ void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& board
 			// add text to the right of the quadris board (if applicable)
 			this->_addInfo(row, board_string, next);
 			row++;
-			board_string.append("\n   " + std::to_string(row)); // add row number
-			board_string.append(std::string(6 - (row / 10), ' ')); // pad to board
+			// add row number
+			board_string.append("\n   " + std::to_string(row));
+			// pad to board
+			board_string.append(std::string(6 - (row / 10), ' '));
 			rowCount = 1;
 		} else {
 			rowCount++;
@@ -250,9 +272,12 @@ void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& board
 	}
 	display.append(board_string);
 	if (!this->_usingScript) {
-		display.append("\n┌────────────────────────────────────────────────────────┐\n");
-		display.append("│ >                                                      │\n");
-		display.append("└────────────────────────────────────────────────────────┘");
+		display.append(
+			"\n┌────────────────────────────────────────────────────────┐\n");
+		display.append(
+			  "│ >                                                      │\n");
+		display.append(
+			  "└────────────────────────────────────────────────────────┘");
 		display.append("\x1b[A");
 		display.append("\r│ > ");
 	} else {
@@ -260,7 +285,8 @@ void ConsoleView::_prepareDisplay(std::string& display, std::vector<char>& board
 	}
 }
 
-void ConsoleView::_addInfo(int row, std::string& display, std::vector<std::string>& next)
+void ConsoleView::_addInfo(int row, std::string& display,
+						   std::vector<std::string>& next)
 {
 	std::string info;
 	int level;

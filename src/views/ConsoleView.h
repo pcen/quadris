@@ -11,7 +11,8 @@
 class ConsoleView : public View
 {
 public:
-	ConsoleView(Game* game, Controller* controller, std::istream& in, std::ostream& out);
+	ConsoleView(Game* game, Controller* controller, std::istream& in,
+	            std::ostream& out);
 	~ConsoleView();
 
 	void pollInput(void) override;
@@ -26,16 +27,22 @@ private:
 	// Display methods
 	void _displayGame(const Board& board);
 	std::vector<char> _createBoardChars(const Board& board);
+	void _overlaySpecialBlock(std::vector<char>& boardChars,
+	                          std::shared_ptr<Block> block);
 	std::vector<std::string> _createNextStrings(const Board& board);
 	void _clearConsole(void);
-	void _prepareDisplay(std::string& display, std::vector<char>& boardChars, std::vector<std::string>& next);
-	void _addInfo(int row, std::string& display, std::vector<std::string>& next);
+	void _prepareDisplay(std::string& display,
+	                     std::vector<char>& boardChars,
+	                     std::vector<std::string>& next);
+	void _addInfo(int row,
+	              std::string& display,
+	              std::vector<std::string>& next);
 
 	// Trie methods
 	void _buildTrie(void);
 	std::vector<Command> _processCommand(const std::string&);
 
-	// read from the active input stream
+	// Read from the active input stream
 	void _readActiveInputStream(std::string& str);
 
 	// Command input script file

@@ -23,6 +23,7 @@ struct Coord
 Coord operator+(Coord& a, Coord& b);
 Coord operator-(Coord& a, Coord& b);
 
+// Default block types
 enum class BlockType : char {
 	I = 'I',
 	J = 'J',
@@ -42,15 +43,14 @@ class Cell
 public:
 	Cell(int x, int y, std::string png, bool isDeleted, BlockType type);
 
-	std::string getSprite(void);
+	std::string getSprite(void) const;
 	Coord getCoord(void) const;
-	int get_x(void);
-	int get_y(void);
+	int get_x(void) const;
+	int get_y(void) const;
 	char getToken(void) const;
 	BlockType getType(void) const;
-	bool isEmpty(void) const;
-	void setCleared(bool cleared);
 	bool getCleared(void) const;
+	bool isEmpty(void) const;
 
 private:
 	friend class Board;
@@ -78,6 +78,7 @@ public:
 	int getLevelGenerated(void) const;
 	void setSprite(const std::string& sprite);
 	void setType(BlockType type);
+	void copyCells(std::shared_ptr<Block> block);
 
 protected:
 	friend class Game;
@@ -87,7 +88,6 @@ protected:
 	Coord _bottomLeft;
 	std::vector<std::shared_ptr<Cell>> _cells;
 
-	int _orientation;
 	int _levelGenerated;
 	bool _isHeavy;
 	bool _inBlockSpace;

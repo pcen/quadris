@@ -5,8 +5,10 @@
 // C++ Headers
 #if defined __cplusplus
 
+// C++ Standard Library Headers
 #include <unordered_set>
 #include <unordered_map>
+#include <algorithm>
 #include <iostream>
 #include <cassert>
 #include <fstream>

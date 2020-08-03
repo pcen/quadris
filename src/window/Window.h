@@ -23,20 +23,22 @@ class Window: public QMainWindow
 	Q_OBJECT
 
 public:
-	explicit Window(const std::string& title, Game* game, QWidget* parent = 0, int width=640, int height=480);
+	explicit Window(const std::string& title, Game* game, QWidget* parent = 0,
+					int width=640, int height=480);
 	~Window();
 
+	// Accessors
 	void open(void);
 	bool isOpen(void) const;
+
+	// Input accessors
+	std::vector<std::string> getButtonInput(void);
+	std::vector<int> getKeyboardInput(void);
 
 	// Mutators
 	void setTitle(const std::string& title);
 	void setSize(int height, int width, bool fixed=true);
 	void loadSprites(const std::string& sprites);
-
-	// Input accessors
-	std::vector<std::string> getButtonInput(void);
-	std::vector<int> getKeyboardInput(void);
 
 	void render(void);
 

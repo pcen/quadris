@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "../Arguments.h"
 
 #include <iostream>
 
@@ -26,14 +27,16 @@ static const char* buttonStyle =
 "padding-bottom: 2px;"
 "min-width: 40px;";
 
-Window::Window(const std::string& title, Game* game, QWidget* parent, int width, int height)
+Window::Window(const std::string& title, Game* game, QWidget* parent,
+			   int width, int height)
 	: QMainWindow(parent), _open{ false }, _game{ game },
-	_labelPane{ this }, _buttonPane{ this }
+	_labelPane{ this }
 {
 	this->setStyleSheet("background-color:black");
 	this->setTitle(title);
 	this->setSize(width, height);
-	this->_initializeButtons();
+	if (Arguments::has("-bonus"))
+		this->_initializeButtons();
 	this->_initializeLabels();
 }
 
@@ -51,6 +54,9 @@ void Window::loadSprites(const std::string& sprites)
 void Window::_initializeButtons(void)
 {
 	// set button pane position
+
+	this->_buttonPane.setParent(this);
+
 	int paneX = this->_game->getBoard().getCellSize() * 12;
 	int paneY = this->_game->getBoard().getCellSize() * 8;
 
@@ -130,9 +136,10 @@ void Window::_initializeLabels(void)
 
 void Window::_setLabelValues(void)
 {
-	QString level = QString::number(this->_game->getLevel()).prepend("Level: ");
-	QString score = QString::number(this->_game->getScore()).prepend("Score: ");
-	QString hscore = QString::number(this->_game->getHighScore()).prepend("High Score: ");
+	auto level = QString::number(this->_game->getLevel()).prepend("Level: ");
+	auto score = QString::number(this->_game->getScore()).prepend("Score: ");
+	auto hscore = QString::number(this->_game->getHighScore());
+	hscore.prepend("High Score: ");
 	this->_level.setText(level);
 	this->_score.setText(score);
 	this->_highScore.setText(hscore);
@@ -209,8 +216,10 @@ void Window::_drawNextBlock(QPainter& painter)
 	float dx = cellSize * 17.0f;
 	float dy = cellSize* 5.0f;
 	std::shared_ptr<Block> next = board.getNextBlock();
+
 	if (next == nullptr)
 		return;
+
 	next->blockSpace(true);
 	for (auto& c : next->getCells()) {
 		float x = (c->get_x() * cellSize) + dx;
@@ -242,7 +251,8 @@ bool Window::event(QEvent* event)
 
 void Window::keyPressEvent(QKeyEvent* event)
 {
-	this->_keyPressed.push_back(event->key());
+	if (Arguments::has("-bonus"))
+		this->_keyPressed.push_back(event->key());
 }
 
 void Window::open(void)

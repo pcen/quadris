@@ -19,7 +19,9 @@ TrieNodeRef TrieNode::at(char child)
 void TrieNode::_addChild(char child, CommandType type, std::string command)
 {
 	if (!this->_isChild(child))
-		this->_children[child] = std::make_shared<TrieNode>(child, type, command);
+		this->_children[child] = std::make_shared<TrieNode>(child,
+															type,
+															command);
 }
 
 bool TrieNode::_isChild(char child)
@@ -30,7 +32,8 @@ bool TrieNode::_isChild(char child)
 // Trie Implementation
 
 Trie::Trie()
-	: _root{ std::make_unique<TrieNode>('\0', CommandType::UNDEFINED_COMMAND, "") }
+	: _root{ std::make_unique<TrieNode>('\0',
+	                                    CommandType::UNDEFINED_COMMAND,"") }
 {
 
 }
@@ -72,7 +75,8 @@ Command Trie::findShortestPrefix(const std::string& value) {
 	}
 
 	// check to see if the rest of the command is valid
-	if (matched.type != CommandType::UNDEFINED_COMMAND && matched.message.rfind(value, 0) == 0)
+	if (matched.type != CommandType::UNDEFINED_COMMAND
+	    && matched.message.rfind(value, 0) == 0)
 		return matched;
 
 	return Command(); // default command

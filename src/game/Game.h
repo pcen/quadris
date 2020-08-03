@@ -17,7 +17,7 @@ class Level;
 class Game: public Subject
 {
 public:
-	Game(uint, std::string);
+	Game(unsigned int, std::string);
 	~Game();
 	void update(const Command& command);
 	bool isRunning(void) const;
@@ -39,8 +39,9 @@ private:
 	void _handleDrop(void);
 	void _updateScore(int rowsCleared);
 	void _setNextBlock(void);
-	void _setBlockFromCache();
-	bool _sequencedMode();
+	void _setBlockFromCache(void);
+	bool _sequencedMode(void);
+	void _calculateHint(void);
 
 	Board _board;
 	std::string _startSequence;
