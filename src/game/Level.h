@@ -45,12 +45,19 @@ class LevelFactory
 {
 public:
 	virtual ~LevelFactory() {};
-	static std::unique_ptr<Level> createLevel(const int&, std::string, Game*, bool, std::shared_ptr<std::ifstream>);
+	static std::unique_ptr<Level> createLevel(const int&,
+											  std::string,
+											  Game*,
+	                                          bool,
+											  std::shared_ptr<std::ifstream>);
 
 private:
 	friend class LevelFactoryInitializer;
 	static std::map<int, std::unique_ptr<LevelFactory>> _factories;
-	virtual std::unique_ptr<Level> create(std::string, Game*, bool, std::shared_ptr<std::ifstream>) = 0;
+	virtual std::unique_ptr<Level> create(std::string,
+										  Game*,
+										  bool,
+										  std::shared_ptr<std::ifstream>) = 0;
 };
 
 #endif // LEVEL_H

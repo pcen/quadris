@@ -14,7 +14,8 @@ SpriteManager::SpriteManager(const std::string& spriteFile)
 }
 
 // Retrieve a sprite based off of the sprite's asset file
-std::shared_ptr<Sprite2D> SpriteManager::getSprite(const std::string& spriteFile)
+std::shared_ptr<Sprite2D> SpriteManager::getSprite(const std::string&
+												   spriteFile)
 {
 	if (this->_sprites.find(spriteFile) == this->_sprites.end())
 		return nullptr;

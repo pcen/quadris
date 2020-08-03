@@ -19,5 +19,6 @@ BoardIterator& BoardIterator::operator++()
 
 bool BoardIterator::operator!=(const BoardIterator& other) const
 {
-	return this->_cells != other._cells || this->_x != other._x || this->_y != other._y;
+	return this->_cells != other._cells || this->_x != other._x
+	                                    || this->_y != other._y;
 }

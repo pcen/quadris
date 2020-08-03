@@ -9,49 +9,20 @@
 #include "views/ViewManager.h"
 #include "game/Game.h"
 #include "controller/Controller.h"
-
-class Arguments
-{
-public:
-	Arguments(int argc, char* argv[])
-	{
-		for (int i = 1; i < argc; i++) {
-			std::string arg = argv[i];
-			_arguments.emplace_back(arg);
-		}
-	}
-
-	std::vector<std::string>::iterator find(const std::string& loc)
-	{
-		return std::find(this->_arguments.begin(), this->_arguments.end(), loc);
-	}
-
-	bool has(const std::string& arg)
-	{
-		return this->find(arg) != this->_arguments.end();
-	}
-
-	std::string getParam(const std::string& param)
-	{
-		return *(++this->find(param));
-	}
-
-private:
-	std::vector<std::string> _arguments;
-};
+#include "Arguments.h"
 
 int main(int argc, char* argv[])
 {
-	auto args = Arguments(argc, argv);
+	Arguments::parse(argc, argv);
 
 	// set start level
 	unsigned int startLevel = 0;
-	if (args.has("-startlevel"))
-		startLevel = std::stoi(args.getParam("-startlevel"));
+	if (Arguments::has("-startlevel"))
+		startLevel = std::stoi(Arguments::getParam("-startlevel"));
 
 	// seed PRNG std::rand
-	if (args.has("-seed")) {
-		unsigned int seed = std::stoi(args.getParam("-seed"));
+	if (Arguments::has("-seed")) {
+		unsigned int seed = std::stoi(Arguments::getParam("-seed"));
 		std::srand(seed);
 	}
 
@@ -64,13 +35,13 @@ int main(int argc, char* argv[])
 	views.push(cv);
 
 	// set script file
-	if (args.has("-scriptfile")) {
-		std::string script = args.getParam("-scriptfile");
+	if (Arguments::has("-scriptfile")) {
+		std::string script = Arguments::getParam("-scriptfile");
 		cv->setScript(script);
 	}
 
 	// add graphics view
-	if (!args.has("-text")) {
+	if (!Arguments::has("-text")) {
 		auto gv = std::make_shared<GraphicsView>("Quadris", &game, &ctrl);
 		views.push(gv);
 	}
