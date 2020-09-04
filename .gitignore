@@ -4,6 +4,9 @@ quadris
 *.out
 *.exe
 
+# Test Scripts
+tests/
+
 # Qmake
 .qmake.*
 
