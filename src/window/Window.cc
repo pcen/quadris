@@ -35,8 +35,7 @@ Window::Window(const std::string& title, Game* game, QWidget* parent,
 	this->setStyleSheet("background-color:black");
 	this->setTitle(title);
 	this->setSize(width, height);
-	if (Arguments::has("-bonus"))
-		this->_initializeButtons();
+	this->_initializeButtons();
 	this->_initializeLabels();
 }
 
@@ -251,8 +250,7 @@ bool Window::event(QEvent* event)
 
 void Window::keyPressEvent(QKeyEvent* event)
 {
-	if (Arguments::has("-bonus"))
-		this->_keyPressed.push_back(event->key());
+	this->_keyPressed.push_back(event->key());
 }
 
 void Window::open(void)
